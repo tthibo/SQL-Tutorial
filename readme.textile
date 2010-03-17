@@ -109,23 +109,19 @@ You can paste these three lines into the 'Enter SQL' text box together. The semi
 Click "Run SQL" 
 
 h3. Selecting Data
+
 Now that we have a small data set to use, let's start querying it.
 Type the following in the Enter SQL text box:
 <pre><code>SELECT * FROM contributors;</code></pre>
 And click the "Run SQL" button.
 
-You should see a nice grid display of all contributors you've added. The '*' character is a common wildcard. In this SELECT, it is used to indicate all columns.
-So, we have selected all columns from all rows
+You should see a nice grid display of all contributors you've added. The '*' character is a common wildcard. In this SELECT, it is used to indicate all columns. So, we have selected all columns from all rows
 
-Now let's define which columns of data we want to return by providing a comma-separated list of column names to SELECT:
+To define which columns of data you want to return, simply provide a comma-separated list of column names to SELECT:
 <pre><code>SELECT city, state FROM contributors;</code></pre>
 Clicking "Run SQL" should give you a two-column table of cities and states.
 
-
-
-
-
-
+TO BE CONTINUED . . .
 
 h2. Further References
 
