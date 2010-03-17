@@ -4,15 +4,15 @@ SQL or Structured Query language is the language used to communicate with relati
 * Data is organized into tables (relations) that represent a collection of similar objects (e.g. contributors). 
 * The columns of the table represent the attributes that members of the collection share (last name, home address, amount of contribution). 
 * Each row in the table represents an individual member of the collection (one contributor). 
-* And the fields in the row represent the attributes of that individual (Smith, 1228 Laurel St., $250).
+* And the values in the row represent the attributes of that individual (Smith, 1228 Laurel St., $250).
 
 Much of the power of a relational database lies in the ability to query these relations, both within a table (give me all contributors who donated at least $500 and who live in Wyoming) and among tables (from the contributors, judges and litigants tables, give me all contributors who donated at least $1000 to Judge Crawford and who also had legal cases over which Judge Crawford presided). SQL is the powerful and rather minimalist language we use to ask such questions of our data in a relational database. How minimalist is SQL? The basic vocabulary comes down to a few main verbs:
-<pre><code>
-SELECT
+
+<pre><code>SELECT
 INSERT
 UPDATE
-DELETE
-</code></pre>
+DELETE</code></pre>
+
 I imagine you can guess what each of those verbs does, even if you've never written a database query.
 To create and change tables in the database, there are a few other verbs to use:
 <pre><code>
@@ -23,63 +23,20 @@ ALTER
 Those are the keyword verbs for almost everything you need to do. The language also includes a number of modifiers that help specify the action of the verbs, but the core list comes down to a couple dozen words. These basic keywords are common across pretty much all relational databases. A specific database management system (Access, MySQL or SQLite) may add its own extensions to the common keywords, but the lion's share of the work is done with this handful of words, and they're basically the same across database applications. 
 
 By combining these simple keywords, you can create remarkably complex and specific queries. And the basic syntax still reads fairly clearly:
-<pre><code>
-SELECT last_name FROM contributors WHERE state = 'WY'; 
-</code></pre>
-The SQL query above reads pretty much like the English sentence for the same request: "Select the last name from the contributors table for all contributors whose state is WY." If you're using a graphical interface for Access or another database, that interface is simply constructing queries like these behind the scenes. So, why not
-take command of your queries and write them yourself?
+<pre><code>SELECT last_name FROM contributors WHERE state = 'WY'; </code></pre>
+The SQL query above reads pretty much like the English sentence for the same request: "Select the last name from the contributors table for all contributors whose state is WY." If you're using a graphical interface for Access or another database, that interface is simply constructing queries like these behind the scenes. So, why not take command of your queries and write them yourself?
 
 So, let's dive in. For this tutorial, we will be using SQLite, a free and open source database manager that's lightweight and portable.
 
-DO WE HAVE TO INSTALL SINCE WE'RE USING FIREFOX SQLITE MANAGER?
-First, we have to install SQLite. 
+h3. Installing SQLite
+If you have the Firefox browser, you have SQLite. Firefox uses SQLite to manage its own data, so when you install Firefox, it brings SQLite along with it. (A growing number of software packages are using SQLite in this way.) So, if you don't have Firefox installed, install it now: http://www.mozilla.com/en-US/firefox/personal.html
 
-For Mac:
-If you're using a Mac with OS X 10.5 Leopard or newer, do nothing. It's already installed. 
-Open up your Terminal (<a href="http://www.osxterminal.com/launch_terminal/">here's how</a>), and type 'which sqlite3'. 
-You should see the path to SQLite 3, which looks something like this: /usr/local/bin/sqlite3.
-Now test the SQLite command prompt. Type 'sqlite3'. You should see something like this:
-
-SQLite version 3.6.22
-Enter ".help" for instructions
-Enter SQL statements terminated with a ";"
-sqlite> 
-
-For PC:
-First you will need to download two files from the SQLite web site:
-1) Go to http://www.sqlite.org/download.html 
-2) Under the ‘Precompiled Binaries For Windows’ section, download these two files:
-
-sqlite-3_6_23.zip (214.32 KiB)
-A command-line program for accessing and modifing SQLite databases. 
-See the documentation for additional information.
-
-sqlitedll-3_6_23.zip (213.17 KiB)
-This is a DLL of the SQLite library without the TCL bindings. 
-The only external dependency is MSVCRT.DLL.
-
-Download the zip files to C:\Program Files (Technically, you just need to download these files to somewhere your system can find them; any folder defined in the system PATH will do).
-
-3) Unzip the files. (If you do not have WinZip or another Zip archive extractor on your system, then you may need to download one, such as Aladdin Expander: http://download.cnet.com/Aladdin-Expander/3000-2250_4-2931968.html.)
-
-4) Inside the unzipped sqlite-3_6_23, you should find sqlite3.exe. Click on that file, and you should see a black box pop up with something like
-<pre>
-SQLite version 3.6.22
-Enter ".help" for instructions
-Enter SQL statements terminated with a ";"
-sqlite> 
-</pre>
-
-At this point you have done all the configuration and installation you need to do for SQLite. Taxing, I know.
-You are looking at a command-line interface for SQLite. You can type all of your SQL commands here, and eventually you may want to. But we're going to use a different interface to get started. If you want to check out the command-line interface, type ".help" and see what's there. When you're ready, go ahead and exit from that prompt
-by typing ".exit". Close the Terminal window for Mac or the command console for Windows.
-
-
-h3. Install the SQLite Manager Firefox Plugin
-Go to https://addons.mozilla.org/en-US/firefox/addon/5817 and click Add to Firefox.
-Click Install Now.
+h3. Install the SQLite Manager Firefox Add-on
+To create our own databases using Firefox's SQLite installation, we'll use the free SQLite Manager add-on.
+Go to https://addons.mozilla.org/en-US/firefox/addon/5817 and click "Add to Firefox".
+Click Install Now. (You may need to upgrade Firefox if you're using an older version.)
 Restart Firefox.
-In the Tools menu, you should find the SQLite Manager: [screen shot]
+In the Tools menu, you should find the SQLite Manager: !tool_menu.jpg!
 Clicking that item should bring up the manager. It's a simple interface for creating and interacting
 with your SQLite databases.
 
