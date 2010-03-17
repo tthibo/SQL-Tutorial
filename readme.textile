@@ -24,7 +24,7 @@ Those are the keyword verbs for almost everything you need to do. The language a
 
 By combining these simple keywords, you can create remarkably complex and specific queries. And the basic syntax still reads fairly clearly:
 <pre><code>SELECT last_name FROM contributors WHERE state = 'WY'; </code></pre>
-The SQL query above reads pretty much like the English sentence for the same request: "Select the last name from the contributors table for all contributors whose state is WY." If you're using a graphical interface for Access or another database, that interface is simply constructing queries like these behind the scenes. So, why not take command of your queries and write them yourself?
+The SQL query above reads pretty much like the English sentence for the same request: "Select the last name from the contributors table where the contributor's state is WY." If you're using a graphical interface interface such as a datagrid, that interface is simply constructing queries like these behind the scenes. So, why not take command of your queries and write them yourself?
 
 So, let's dive in. For this tutorial, we will be using SQLite, a free and open source database manager that's lightweight and portable.
 
@@ -38,7 +38,10 @@ To create our own databases using Firefox's SQLite installation, we'll use the f
 Go to https://addons.mozilla.org/en-US/firefox/addon/5817 and click "Add to Firefox".
 Click "Install Now." (You may need to upgrade Firefox if you're using an older version.)
 Restart Firefox.
-In the Tools menu, you should find the SQLite Manager: !http://github.com/tthibo/SQL-Tutorial/raw/master/tool_menu.jpg!
+In the Tools menu, you should find the SQLite Manager: 
+
+!http://github.com/tthibo/SQL-Tutorial/raw/master/tool_menu.jpg!
+
 Clicking that item should bring up the manager. It's a simple interface for creating and interacting with your SQLite databases.
 
 h4. Creating the First Database
