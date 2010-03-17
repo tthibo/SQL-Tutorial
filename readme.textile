@@ -33,12 +33,12 @@ So, let's dive in. For this tutorial, we will be using SQLite, a free and open s
 
 h3. Installing SQLite
 
-If you have the Firefox browser, you have SQLite. Firefox uses SQLite to manage its own data, so when you install Firefox, it brings SQLite along with it. (A growing number of software packages are using SQLite in this way.) So, if you don't have Firefox installed, install it now: http://www.mozilla.com/en-US/firefox/personal.html
+If you have the Firefox browser, you have SQLite. Firefox uses SQLite to manage its own data, so when you install Firefox, it brings SQLite along with it. (A growing number of software packages are using SQLite in this way.) So, if you don't have Firefox installed, "install it now":http://www.mozilla.com/en-US/firefox/personal.html
 
 h3. Install the SQLite Manager Firefox Add-on
 
 To create our own databases using Firefox's SQLite installation, we'll use the free SQLite Manager add-on.
-Go to https://addons.mozilla.org/en-US/firefox/addon/5817 and click "Add to Firefox".
+Go to "this page":https://addons.mozilla.org/en-US/firefox/addon/5817 and click "Add to Firefox".
 Click "Install Now." (You may need to upgrade Firefox if you're using an older version.)
 Restart Firefox.
 In the Tools menu, you should find the SQLite Manager: 
