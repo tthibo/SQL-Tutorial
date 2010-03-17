@@ -54,6 +54,7 @@ To create a database, simply click on the icon for "New Database" !http://github
 Name the database "test" and save it anywhere you like (the desktop will work, or your documents folder).
 
 h3. Creating a Table
+
 Click the "New Table" icon (!http://github.com/tthibo/SQL-Tutorial/raw/master/new_table.png!), and you'll get a form allowing you to create a new table. 
 To create a table, we have to define the attributes or columns it contains. For each column, we define the
 datatype of the data it will contain. Define the columns as follows:
