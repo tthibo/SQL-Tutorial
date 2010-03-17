@@ -77,12 +77,14 @@ The syntax should be fairly clear, since it just reflects the choices we made in
 You should now see a "contributors" table in the Tables list on the left panel of the manager. Clicking the arrow icon beside the table will show you the column list for the table.
 
 h3. Inserting Data
+
 Now that we have a table in the database, we can start inserting data. This task is accomplished with (oddly enough) using INSERT.
 
-Click the "Execute SQL" tab (it's in the second menu row, under the icons): !http://github.com/tthibo/SQL-Tutorial/raw/master/execute_sql!
+Click the "Execute SQL" tab (it's in the second menu row, under the icons): !http://github.com/tthibo/SQL-Tutorial/raw/master/execute_sql.png!
 
 You'll see that the "Enter SQL" box is already pre-populated with a SELECT statement. Since we don't have anything in the table yet, this won't really help. So,
 delete the "SELECT * from tablename" statement, and replace it with the following:
+
 <pre><code>INSERT INTO contributors (last_name, first_name, city, state, zip, amount) VALUES ('Buffet', 'Warren', 'Omaha', 'Nebraska', '68101', 1500);</pre></code>
 
 This is a little more obscure than the CREATE or SELECT syntax, but it still be fairly clear. To insert a row in the table, we execute the INSERT INTO statement with a table name, a list of columns to populate, and the VALUES for each of those columns. The order of the columns in the column list must match the order of values in the values list. 
@@ -125,6 +127,8 @@ Clicking "Run SQL" should give you a two-column table of cities and states.
 
 
 
+
+h2. Further References
 
 http://www.firstsql.com/tutor.htm
 http://www.sqlite.org/lang_keywords.html
