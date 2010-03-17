@@ -85,7 +85,7 @@ Click the "Execute SQL" tab (it's in the second menu row, under the icons): !htt
 You'll see that the "Enter SQL" box is already pre-populated with a SELECT statement. Since we don't have anything in the table yet, this won't really help. So,
 delete the "SELECT * from tablename" statement, and replace it with the following:
 
-<pre><code>INSERT INTO contributors (last_name, first_name, city, state, zip, amount) VALUES ('Buffet', 'Warren', 'Omaha', 'Nebraska', '68101', 1500);</pre></code>
+<pre><code>INSERT INTO contributors (last_name, first_name, city, state, zip, amount) VALUES ('Buffet', 'Warren', 'Omaha', 'Nebraska', '68101', 1500);</code></pre>
 
 This is a little more obscure than the CREATE or SELECT syntax, but it still be fairly clear. To insert a row in the table, we execute the INSERT INTO statement with a table name, a list of columns to populate, and the VALUES for each of those columns. The order of the columns in the column list must match the order of values in the values list. 
 
