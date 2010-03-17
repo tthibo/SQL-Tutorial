@@ -52,7 +52,8 @@ h3. Creating the First Database
 
 Mousing over each of the icons at the top of the SQLite Manager tool will show what the icon does.
 To create a database, simply click on the icon for "New Database" !http://github.com/tthibo/SQL-Tutorial/raw/master/new_database.png!
-Name the database "test" and save it anywhere you like (the desktop will work, or your documents folder).
+Name the database "test" and save it anywhere you like (the desktop will work, or your documents folder). This single file will contain
+the entire database you create.
 
 h3. Creating a Table
 
@@ -90,8 +91,8 @@ delete the "SELECT * from tablename" statement, and replace it with the followin
 This is a little more obscure than the CREATE or SELECT syntax, but it still be fairly clear. To insert a row in the table, we execute the INSERT INTO statement with a table name, a list of columns to populate, and the VALUES for each of those columns. The order of the columns in the column list must match the order of values in the values list. 
 
 It's very important to surround text values with single quotation marks. Two things to note:
-* SQL uses single quotation marks around text strings, never double.
 * The quotation marks indicate to SQL that this is a literal string (the word 'Buffet'), rather than a column name or other special usage. 
+* SQL uses single quotation marks around text strings. Some database systems will also accept double quotes, but some will throw an error.
 * The commas between values are place outside of the quote marks, not inside. 
 
 Notice that we didn't insert a value for id. Because we set that column to AUTOINCREMENT, SQLite will populate the id with the next integer in the sequence. So, we don't need to worry about choosing unique ids; SQLite takes care of it.
@@ -121,7 +122,67 @@ To define which columns of data you want to return, simply provide a comma-separ
 <pre><code>SELECT city, state FROM contributors;</code></pre>
 Clicking "Run SQL" should give you a two-column table of cities and states.
 
-TO BE CONTINUED . . .
+h2. Using DISTINCT to get a distinct set
+
+The SELECT query gives us a list of cities and states, but it includes duplicate rows for Atlanta, GA.
+Adding DISTINCT to the query eliminates the duplicates:
+
+<pre><code>SELECT DISTINCT city, state FROM contributors;</code></pre>
+
+Now you should have only three rows in your results, showing the distinct values for city and state in the table.
+Notice what happens if you add the <code>last_name</code> field to the DISTINCT query:
+
+<pre><code>SELECT DISTINCT last_name, city, state FROM contributors;</code></pre>
+
+!http://github.com/tthibo/SQL-Tutorial/raw/master/select_distinct.png!
+
+We're back to four rows. There are four distinct combinations of last_name, city and state in the table, so that's what we get from DISTINCT.
+
+h2. The WHERE Clause
+
+The WHERE clause is where your SQL queries really start to get interesting. A well-crafted WHERE clause can let you take exactly the slice
+of the data you want. It sets the conditions for the SELECT, and now your query only returns only those rows that match the conditions.
+
+Say, for example, we only wanted to see contributors from Atlanta:
+<pre><code>SELECT * from contributors WHERE state='GA';</code></pre>
+!http://github.com/tthibo/SQL-Tutorial/raw/master/where_clause1.png!
+
+Again, we're using single quotes around the string string ("GA").
+
+And you can test for more than equality in the WHERE clause:
+<pre><code>SELECT * from contributors WHERE amount > 1200;</code></pre>
+
+This query finds only the contributors who have donated more than $1200. Of course, donors who have given exactly $1200 won't be included
+in the results. To include them, use the >= operator:
+<pre><code>SELECT * from contributors WHERE amount >= 1200;</code></pre>
+
+Here are some other operators you can use:
+|_. operator|_. description|
+|=|Equal|
+|<>|Not equal|
+|>|Greater than|
+|<|Less than|
+|>=|Greater than or equal|
+|<=|Less than or equal|
+Many database systems also use != for "Not equal."
+
+h2. Combining conditions with AND and OR
+
+You can combine conditions using AND and OR. For example, let's find all contributors from Georgia
+who have given more than $1000:
+<pre><code>SELECT * from contributors WHERE state = 'GA' AND amount > 1000;</code></pre>
+
+Now let's find all contributors who either live in Georgia or who have given more than $1000:
+<pre><code>SELECT * from contributors WHERE state = 'GA' OR amount > 1000;</code></pre>
+!http://github.com/tthibo/SQL-Tutorial/raw/master/and_statement.png!
+
+h2. ORDER BY
+
+h2. UPDATE
+
+h2. DELETE
+
+h2. IMPORT
 
 h2. Further References
 
