@@ -1,4 +1,4 @@
-h2.A Gentle Introduction to SQL using SQLite
+h2. A Gentle Introduction to SQL using SQLite
 
 SQL or Structured Query language is the language used to communicate with relational databases. What are relational databases? Well, most of the popular database systems you may know, such as MS Access, MySQL or SQLite, are all relational. That is, they all use a relational model, which, it turns out, can be described much like a spreadsheet: 
 * Data is organized into tables (relations) that represent a collection of similar objects (e.g. contributors). 
@@ -15,8 +15,7 @@ DELETE</code></pre>
 
 I imagine you can guess what each of those verbs does, even if you've never written a database query.
 To create and change tables in the database, there are a few other verbs to use:
-<pre><code>
-CREATE
+<pre><code>CREATE
 DROP
 ALTER
 </code></pre>
@@ -32,11 +31,11 @@ A couple of things off the bat:
 
 So, let's dive in. For this tutorial, we will be using SQLite, a free and open source database manager that's lightweight and portable.
 
-h3.Installing SQLite
+h3. Installing SQLite
 
 If you have the Firefox browser, you have SQLite. Firefox uses SQLite to manage its own data, so when you install Firefox, it brings SQLite along with it. (A growing number of software packages are using SQLite in this way.) So, if you don't have Firefox installed, install it now: http://www.mozilla.com/en-US/firefox/personal.html
 
-h3.Install the SQLite Manager Firefox Add-on
+h3. Install the SQLite Manager Firefox Add-on
 
 To create our own databases using Firefox's SQLite installation, we'll use the free SQLite Manager add-on.
 Go to https://addons.mozilla.org/en-US/firefox/addon/5817 and click "Add to Firefox".
@@ -49,7 +48,7 @@ In the Tools menu, you should find the SQLite Manager:
 Clicking that item should bring up the manager. It's a simple interface for creating and interacting with your SQLite databases.
 !http://github.com/tthibo/SQL-Tutorial/raw/master/sqlite_manager_empty.png!
 
-h3.Creating the First Database
+h3. Creating the First Database
 Mousing over each of the icons at the top of the SQLite Manager tool will show what the icon does.
 To create a database, simply click on the icon for "New Database" !http://github.com/tthibo/SQL-Tutorial/raw/master/new_database.png!
 Name the database "test" and save it anywhere you like (the desktop will work, or your documents folder).
@@ -75,7 +74,7 @@ The syntax should be fairly clear, since it just reflects the choices we made in
 
 You should now see a "contributors" table in the Tables list on the left panel of the manager. Clicking the arrow icon beside the table will show you the column list for the table.
 
-h3.Inserting Data
+h3. Inserting Data
 Now that we have a table in the database, we can start inserting data. This task is accomplished with (oddly enough) using INSERT.
 
 Click the "Execute SQL" tab (it's in the second menu row, under the icons): !http://github.com/tthibo/SQL-Tutorial/raw/master/execute_sql!
