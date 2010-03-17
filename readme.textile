@@ -101,11 +101,10 @@ Finally, we didn't include dollar signs or commas in the "amount" column. We cre
 If you haven't done so already, click the "Run SQL" button. The "Last Error" field should show "not an error." Success! You've added data.
 
 Just so we'll have some data to play with, let's execute a couple of other INSERT statements:
-<pre><code>
-INSERT INTO contributors (last_name, first_name, city, state, zip, amount) VALUES ('Winfrey', 'Oprah', 'Chicago', 'IL', '60601', 500);
+<pre><code>INSERT INTO contributors (last_name, first_name, city, state, zip, amount) VALUES ('Winfrey', 'Oprah', 'Chicago', 'IL', '60601', 500);
 INSERT INTO contributors (last_name, first_name, city, state, zip, amount) VALUES ('Chambers', 'Anne Cox', 'Atlanta', 'GA', '30301', 200);
-INSERT INTO contributors (last_name, first_name, city, state, zip, amount) VALUES ('Cathy', 'S. Truett', 'Atlanta', 'GA', '30301', 1200);
-</pre></code>
+INSERT INTO contributors (last_name, first_name, city, state, zip, amount) VALUES ('Cathy', 'S. Truett', 'Atlanta', 'GA', '30301', 1200);</code></pre>
+
 You can paste these three lines into the 'Enter SQL' text box together. The semi-colons indicate the end of each statement.
 Click "Run SQL" 
 
