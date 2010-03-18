@@ -156,13 +156,13 @@ This query finds only the contributors who have donated more than $1200. Of cour
 <pre><code>SELECT * from contributors WHERE amount >= 1200;</code></pre>
 
 Here are some other operators you can use:
-| _. operator| _. description |
-| = | Equal |
-| <> | Not equal* |
-| > | Greater than |
-| < | Less than |
-| >= | Greater than or equal |
-| <= | Less than or equal |
+|*operator*|*description*|
+|=|Equal|
+|<>|Not equal*|
+|>|Greater than|
+|<|Less than|
+|>=|Greater than or equal|
+|<=|Less than or equal|
 
 (*Many database systems also use != for "Not equal.")
 
