@@ -8,7 +8,7 @@ SQL or Structured Query language is the language used to communicate with relati
 * Each row in the table represents an individual member of the collection (one contributor). 
 * And the values in the row represent the attributes of that individual (Smith, 1228 Laurel St., $250).
 
-Much of the power of a relational database lies in the ability to query these relations, both within a table (give me all contributors who donated at least $500 and who live in Wyoming) and among tables (from the contributors, judges, litigants and cases tables, give me all contributors who donated at least $1000 to Judge Crawford and who also had legal cases over which Judge Crawford presided). SQL is the powerful and rather minimalist language we use to ask such questions of our data in a relational database. How minimalist is SQL? The basic vocabulary for querying data comes down to a few main verbs:
+Much of the power of a relational database lies in the ability to query these relations, both within a table (give me all contributors who donated at least $500 and who live in Wyoming) and among tables (from the contributors, judges and litigants tables, give me all contributors who donated at least $1000 to Judge Crawford and who also had legal cases over which Judge Crawford presided). SQL is the powerful and rather minimalist language we use to ask such questions of our data in a relational database. How minimalist is SQL? The basic vocabulary for querying data comes down to a few main verbs:
 
 <pre><code>SELECT
 INSERT
@@ -175,9 +175,11 @@ h3. Combining conditions with AND and OR
 You can combine conditions using AND and OR. For example, let's find all contributors from Georgia who have given more than $1000:
 <pre><code>SELECT * FROM contributors WHERE state = 'GA' AND amount > 1000;</code></pre>
 !http://github.com/tthibo/SQL-Tutorial/raw/master/first_and.png!
+
 Now let's find all contributors who either live in Georgia or who have given more than $1000:
 <pre><code>SELECT * FROM contributors WHERE state = 'GA' OR amount > 1000;</code></pre>
 !http://github.com/tthibo/SQL-Tutorial/raw/master/or_statement.png!
+
 And now let's try to get the big spenders from Chicago and Georgia:
 <pre><code>SELECT * FROM contributors WHERE city = 'Chicago' OR state = 'GA' AND amount > 1000;</code></pre>
 !http://github.com/tthibo/SQL-Tutorial/raw/master/and_or_sans_parens.png!
@@ -185,11 +187,12 @@ Hmm . . . Oprah is in the list, but she only donated $500. What gives?
 The problem here is that the AND operator has a higher precedence than the OR operator, which means it gets evaluated first. So, in effect, our query really looks like this:
 <pre><code>SELECT * FROM contributors WHERE city = 'Chicago' OR (state = 'GA' AND amount > 1000);</code></pre>
 Which selects all contributors from Chicago and only those contributors from Georgia who have also donated more than $1000.
-We can change parentheses to clarify the original query and actually get the high rollers we wanted:
+We can use parentheses to clarify the original query and actually get the high rollers we wanted:
 <pre><code>SELECT * FROM contributors WHERE (city = 'Chicago' OR state = 'GA') AND amount > 1000;</code></pre>
 Parentheses are often helpful when you need to disambiguate a query. Tehnically, you're changing the order of evaluation here, but you're also just making the intention of your statement clear.
 
-h3. ORDER BY
+h3. Sorting results with ORDER BY
+
 To order your result set by the values in a particular column, use ORDER BY:
 <pre><code>SELECT last_name, amount FROM contributors WHERE amount > 200 ORDER BY amount;</code></pre>
 !http://github.com/tthibo/SQL-Tutorial/raw/master/order_by.png!
@@ -198,40 +201,36 @@ The default direction for ORDER BY is ascending; results are ordered from smalle
 To specify the direction of the ORDER BY, use the <code>DESC</code> or <code>ASC</code> keyword:
 <pre><code>SELECT last_name, amount FROM contributors WHERE amount > 200 ORDER BY amount DESC;</code></pre>
 !http://github.com/tthibo/SQL-Tutorial/raw/master/order_by_desc.png!
-You can also order the results by more than one column. Rows with the same value for the first column of the ORDER BY are further
-ordered by the additional column(s):
+You can also order the results by more than one column. Rows with the same value for the first column of the ORDER BY are further ordered by the additional column(s):
 <pre><code>SELECT last_name, state, amount FROM contributors ORDER BY state, amount DESC;</code></pre>
 !http://github.com/tthibo/SQL-Tutorial/raw/master/order_by_multiple.png!
-Here we get the list of contributors ordered by state and then ordered by the amount of their contribution. This is one quick way to see who
-has contributed the most in each state.
+Here we get the list of contributors ordered by state and then ordered by the amount of their contribution. This is one quick way to see who has contributed the most in each state.
 
-h3. UPDATE
+h3. Changing values with UPDATE
 
-Now we have some basic skills for creating tables, inserting data into the table and querying the data we've inserted. But what about changing the values
-in existing rows? To change the value of existing rows, we use the UPDATE statement.
+Now we have some basic skills for creating tables, inserting data into the table and querying the data we've inserted. But what about changing the values in existing rows? To change the value of existing rows, we use the <code>UPDATE</code> statement.
 
 One thing that just looks wrong with our data set is that value "Nebraska" in the state column:
 <pre><code>SELECT state FROM contributors;</code></pre>
 !http://github.com/tthibo/SQL-Tutorial/raw/master/state_column.png!
 
-That should be the postal abbreviation like the other rows. To change that value, we need to use UPDATE to SET the value for a column.
-But we want to make sure we don't blow away the state values in our other columns. If we just used <code>UPDATE contributors SET state = 'NE'; //DON'T DO THIS!!</code>, we would end up replacing the <code>state</code> value in every row with "NE". Not exactly what we want.
+That should be the postal abbreviation, like the other rows. To change that value, we need to use <code>UPDATE</code> to <code>SET</code> the value for a column. But we want to make sure we don't blow away the state values in our other columns.
+If we just used <code>UPDATE contributors SET state = 'NE'; //DON'T DO THIS!!</code>, we would end up replacing the <code>state</code> value in every row with "NE". Not exactly what we want.
 
-So, we have to define a WHERE clause to determine which rows will be changed by the UPDATE:
+So, we have to define a WHERE clause to determine which rows will be changed by the <code>UPDATE</code>:
 <pre><code>UPDATE contributors SET state = 'NE' WHERE state = 'Nebraska';</code></pre>
-Now that's more like it:
 !http://github.com/tthibo/SQL-Tutorial/raw/master/state_after_update.png!
+Now that's more like it.
 
 h3. DELETE
-The remaining keyword from the original list is <code>DELETE</code>, which unsurprisingly deletes rows from the table.
-As when using <code>UPDATE</code>, it's important to specify a <code>WHERE</code> clause with <code>DELETE</code>. Running <code>DELETE</code> without
-a <code>WHERE</code> clause will blow away your precious data and can seriously ruin your day.
+
+The remaining keyword from the original list is <code>DELETE</code>, which unsurprisingly deletes rows from the table. As when using <code>UPDATE</code>, it's important to specify a <code>WHERE</code> clause with <code>DELETE</code>. Running <code>DELETE</code> without a <code>WHERE</code> clause will blow away your precious data and can seriously ruin your day.
 
 Before executing a <code>DELETE</code> or <code>UPDATE</code>, it's always a good idea to run a <code>SELECT</code> with the same <code>WHERE</code> clause, just to see which rows your changes will affect. 
 
 So, let's get rid of one of our rows. How about deleting Warren Buffet?
 
-We could use match on any column or combination or columns in the <code>WHERE</code> clause, but if we know the PRIMARY KEY value of the row, that's our safest bet. Because it's a unique identifier, we can be certain we're not accidentally deleting other rows. First let's make sure we have the row we want:
+For our <code>WHERE</code> clause, we could match on any column or combination of columns, but if we know the <code>PRIMARY KEY</code> value of the row, that's our safest bet. Because it's a unique identifier, we can be certain we're not accidentally deleting other rows. First let's make sure we have the row we want:
 <pre><code>SELECT * FROM contributors WHERE id = 1;</code></pre>
 !http://github.com/tthibo/SQL-Tutorial/raw/master/state_after_update.png!
 Looks like the one we want, so let's delete it:
@@ -239,9 +238,10 @@ Looks like the one we want, so let's delete it:
 Notice that we don't need to specify columns or use <code>*</code> with <code>DELETE</code>, since we're deleting the entire row.
 
 h3. IMPORT
+
 Finally let's move on to a topic that goes a bit beyond the basic SQL syntax. One common task we all face in data management is importing a data set into the database. Often, we receive a file in some other format such as MS Excel, CSV (comma-separated values) or tab-delimited and we want to get those values into a database table in order to run SQL queries on them. 
 
-Each database management system handles importing values from a file a bit differently. The SQLite Manager provides a nice interface for doing data imports from text files (save your MS Excel file as a CSV before importing it).
+Each database management system handles importing values from a file a bit differently. The SQLite Manager provides a nice interface for doing data imports from text files ("export":http://office.microsoft.com/en-us/excel/HP100997251033.aspx#export your MS Excel file as a CSV before importing it).
 
 !http://github.com/tthibo/SQL-Tutorial/raw/master/import.png!
 !http://github.com/tthibo/SQL-Tutorial/raw/master/import_confirm.png!
@@ -256,6 +256,12 @@ http://www.firstsql.com/tutor.htm
 h2. Part II TK
 
 h3. LIKE
+
+h3. BETWEEN, NOT and IN
+
+h3. Functions
+
+h3. Joins
 
 http://www.dbbm.fiocruz.br/class/Lecture/d17/sql/jhoffman/sqltut.html
 http://zetcode.com/databases/sqlitetutorial/
