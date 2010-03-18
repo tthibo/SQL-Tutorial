@@ -232,10 +232,14 @@ So, let's get rid of one of our rows. How about deleting Warren Buffet?
 
 For our <code>WHERE</code> clause, we could match on any column or combination of columns, but if we know the <code>PRIMARY KEY</code> value of the row, that's our safest bet. Because it's a unique identifier, we can be certain we're not accidentally deleting other rows. First let's make sure we have the row we want:
 <pre><code>SELECT * FROM contributors WHERE id = 1;</code></pre>
-!http://github.com/tthibo/SQL-Tutorial/raw/master/state_after_update.png!
+!http://github.com/tthibo/SQL-Tutorial/raw/master/buffet_by_id.png!
+
 Looks like the one we want, so let's delete it:
 <pre><code>DELETE FROM contributors WHERE id = 1;</code></pre>
 Notice that we don't need to specify columns or use <code>*</code> with <code>DELETE</code>, since we're deleting the entire row.
+
+Now the row should be gone:
+<pre><code>SELECT * FROM contributors;</code></pre>
 
 h3. IMPORT
 
