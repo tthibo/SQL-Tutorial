@@ -1,0 +1,101 @@
+id|last_name|first_name|city|state|zip|amount
+|Helen||Washington|DC|200122649|15
+|Vespa|Anthony|Franklin Lakes|NJ|074172831|50
+|Cohen|Jared|Sandwich|MA|02563|50
+|Albrecht|Robert|woodbridge|VA|22192|10
+|Vespa|Anthony|Franklin Lakes|NJ|074172831|11
+|Varley|Allyson|birmingham|AL|35242|25
+|Norton|Billy|Denton|TX|762012519|5
+|Barley|Shannon|Hermosa Beach|CA|90254|10
+|Lermitte|A.|Bryn Athyn|PA|19009|25
+|Letalik|Adam|Beverly Hills|CA|90210|50
+|Welch|Mark|Columbia Falls|MT|599120206|2300
+|Welch|Sheila|Columbia Falls|MT|599120206|2300
+|See|Alvin B.|Southwick|MA|010770444|500
+|Taylor|Richard D.|Shreveport|LA|711013114|250
+|Trammell|Joel T.|Austin|TX|787351509|2300
+|Whitfield|George R.|Seoul         Kore|ZZ|11070|1600
+|Young|Craig|Kyle|TX|786400099|500
+|Golobek|Donald|Wellsboro|PA|169011837|2100
+|Golobek|Mona|Wellsboro|PA|169011837|2100
+|Cutter|Kerry E.|Sacramento|CA|958643013|2100
+|Miller|James R.|Burtonsville|MD|208661043|2100
+|Muldoon|Andrew|Westfield|NJ|070903022|2100
+|Muldoon|Joanne|Westfield|NJ|070903022|2100
+|Howard|Patrick G.|Concord|NH|033022219|2100
+|Shudlick|Jon L.|N Ft Myers|FL|33917|500
+|Furber|Donna P.|Downey|CA|902402634|2100
+|Furber|James E.|Downey|CA|902402634|2100
+|Baumgardner|David|Wellington|TX|790954836|1000
+|Cowles|Donald K.|Los Angeles|CA|900461410|500
+|Young|Robert S.|Rancho Palos Verde|CA|902756342|1000
+|Brown|Robert J.|Shawnee Mission|KS|662243709|2100
+|Bucciarelli|Joseph C.|Norwalk|CT|068551110|500
+|Wrenn|Edgar|Las Vegas|NV|891213950|2100
+|Jacknow|Gerald|Austin|TX|787461638|1000
+|Low|John|Mountain View|CA|940434237|1000
+|Hommel|Jason E.|Penn Valley|CA|959469705|2300
+|Hallam|Robert W.|Tracy|CA|953779020|500
+|Geisick|Shanna|Penn Valley|CA|959469705|2300
+|Teasley|Harry E.|Tampa|FL|336112814|1000
+|Hull|Robert P.|Grafton|NH|032403439|2300
+|Ham|George E.|Independence|MO|640555135|2100
+|Messenger|Andrew L.|San Antonio|FL|335767965|2100
+|Messenger|Catherine|San Antonio|FL|335767965|2100
+|Dermer|Jeffrey D.|Atlanta|GA|303097662|500
+|Que|Simon|San Jose|CA|951173027|1000
+|Book|Everard|Englewood|FL|342244503|2100
+|Speicher|John M.|Geyserville|CA|954419687|1000
+|Coker|Ed|Edwardsville|AL|362610128|2100
+|Koszyk|Francis J.|Prospect Heights|IL|600701117|250
+|||Rocky Mount|VA|24151|500
+|Rodney|James M.|Southfield|MI|480755726|2100
+|Borst|Laura Jane|Houston|TX|770421411|1000
+|Bailey|Donald T.|Springfield|CO|810731420|2100
+|Giannone|Nick F.|Lake Jackson|TX|775661497|250
+|Bailey|Lloyd W.|Rocky Mount|NC|278043319|1000
+|Hays|Leslie C.|Alamogordo|NM|883110161|1000
+|Nigro|Robert S.J.|New Ringgold|PA|179609069|500
+|Costin|Brian M.|Schaumburg|IL|60193|250
+|Whitfield|George R.|Seoul         Kore|ZZ|11070|500
+|Harrington|Eric J.|Suffield|CT|060781624|300
+|Willmann|Marie E.|Port Lavaca|TX|779795166|1000
+|Burden|Steven J|Lutz|FL|335585313|250
+|Hamilton|Dirk|Bryant|AR|720223949|500
+|Davis|Jeremy S.|Houston|TX|770252267|2300
+|McClellan|James M.|Sikeston|MO|63801|2100
+|Burrows|Donald|Zephyrhills|FL|335405728|400
+|Chang|Chung K.|Santa Clara|CA|950513534|1000
+|Whitfield|George R.|Seoul         Kore|ZZ|11070|200
+|Offerdahl|Richard E.|Incline Village|NV|894527899|2400
+|Royalty|James W.|Lake Jackson|TX|775666036|500
+|Bullard|Darrell E.|Houston|TX|770195726|250
+|Cowan|Daniel F.|Galveston|TX|775515861|250
+|Franklin|William J.|Mesa|AZ|852057444|250
+|Pearlman|Howard B.|FPO AE|ZZ|096360001|250
+|Lengel|Thomas E.|Bastrop|TX|78602|250
+|Barth|George R.|Cape Coral|FL|339044462|2000
+|Martin|John I.|Graham|TX|764504420|250
+|Williams|James|Sebring|FL|338721443|250
+|Brueggemann|Bernard|Walton|KY|41094|250
+|Hansen|Donald P.|Medina|WA|980395321|250
+|Siemens|Abe|Rancho Mirage|CA|922703116|500
+|Weymer|Richard A.|George West|TX|780223587|2300
+|Weymer|Jean Dea|George West|TX|780223587|2300
+|Ellinwood|John C.|Tubac|AZ|856461445|2100
+|Solcher|Albert Kennedy|Katy|TX|774941824|500
+|Euvall|Arland|Brigham City|UT|843023721|500
+|Rosenlund|Jack C.|Ennis|MT|597290891|1000
+|Buckman|Robert F.|Elkton|MD|219217617|500
+|Sturdevant|William E.|Brazoria|TX|77422|1000
+|Scudder|Stuart B.|Lomita|CA|907173213|500
+|Green|Adam T.|Salt Lake City|UT|841204092|114
+|Reynolds|Lois C.|Bellaire|TX|774013402|1150
+|Cole|Joshua David|Sarasota|FL|342381508|1000
+|Keyston|David H.|Carmel|CA|939217066|500
+|Getz|Clarence D.|Helena|MT|596026535|1000
+|Abbott|Robert L.|Greenville|NC|278585416|250
+|Antosh|Jim|Shawnee|OK|748010506|250
+|Lewis|Donald S.|Virginia Beach|VA|234513838|250
+|Oden|Ray P.|Shreveport|LA|711061824|2300
+|Verster|Jeanette M.|Miami|FL|331431807|2300
