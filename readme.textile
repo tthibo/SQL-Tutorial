@@ -43,7 +43,7 @@ h3. Install the SQLite Manager Firefox Add-on
 
 To create our own databases using Firefox's SQLite installation, we'll use the free SQLite Manager add-on.
 Go to "this page":https://addons.mozilla.org/en-US/firefox/addon/5817 and click "Add to Firefox".
-Click "Install Now." (You may need to upgrade Firefox if you're using an older version.)
+Click "Install Now." (You may need to upgrade Firefox if you're using a version older than 3.5.)
 Restart Firefox.
 In the Tools menu, you should find the SQLite Manager: 
 
@@ -61,7 +61,7 @@ the entire database you create.
 
 h3. Creating a Table
 
-Click the "New Table" icon (!http://github.com/tthibo/SQL-Tutorial/raw/master/new_table.png!), and you'll get a form allowing you to create a new table. 
+Click the "Create Table" icon (!http://github.com/tthibo/SQL-Tutorial/raw/master/new_table.png!), and you'll get a form allowing you to create a new table. 
 To create a table, we have to define the attributes or columns that make it up. For each column, we define the datatype of the data it will contain. Define the columns as follows:
 
 !http://github.com/tthibo/SQL-Tutorial/raw/master/create_table.png!
@@ -78,7 +78,7 @@ Click OK, and you will see a dialogue box with the full SQL statement that the m
 
 The syntax should be fairly clear, since it just reflects the choices we made in the form. It's creating a table in the "main" database (not in the separate "temporary" space) called "contributors" with the fields and data types we've defined. Click OK to create the table.
 
-You should now see a "contributors" table in the Tables list on the left panel of the manager. Clicking the arrow icon beside the table will show you the column list for the table.
+You should now see a "contributors" table in the Tables list on the left panel of the manager. Clicking the icon (arrow or + sign) beside the listing for "contributors" will show you the column list for the table.
 
 h3. Inserting Data
 
@@ -103,13 +103,17 @@ Finally, we didn't include dollar signs or commas in the "amount" column. We cre
 
 If you haven't done so already, click the "Run SQL" button. The "Last Error" field should show "not an error." Success! You've added data.
 
-Just so we'll have some data to play with, let's execute a couple of other INSERT statements:
+You can view the data by going to the "Browse and Search" tab:
+!http://github.com/tthibo/SQL-Tutorial/raw/master/browse_and_search.png!
+
+Just so we'll have some data to play with, let's execute a couple of other <code>INSERT</code> statements. Go back to the "Execute SQL" tab and paste in these lines:
 <pre><code>INSERT INTO contributors (last_name, first_name, city, state, zip, amount) VALUES ('Winfrey', 'Oprah', 'Chicago', 'IL', '60601', 500);
 INSERT INTO contributors (last_name, first_name, city, state, zip, amount) VALUES ('Chambers', 'Anne Cox', 'Atlanta', 'GA', '30301', 200);
 INSERT INTO contributors (last_name, first_name, city, state, zip, amount) VALUES ('Cathy', 'S. Truett', 'Atlanta', 'GA', '30301', 1200);</code></pre>
 
 You can paste these three lines into the 'Enter SQL' text box together. The semi-colons indicate the end of each statement.
 Click "Run SQL" 
+Again, you can view the results in the "Browse and Search" tab.
 
 h3. Selecting Data
 
@@ -219,6 +223,8 @@ If we just used <code>UPDATE contributors SET state = 'NE'; //DON'T DO THIS!!</c
 
 So, we have to define a WHERE clause to determine which rows will be changed by the <code>UPDATE</code>:
 <pre><code>UPDATE contributors SET state = 'NE' WHERE state = 'Nebraska';</code></pre>
+Ok, let's see how the state list looks:
+<pre><code>SELECT DISTINCT state FROM contributors;</code></pre>
 !http://github.com/tthibo/SQL-Tutorial/raw/master/state_after_update.png!
 Now that's more like it.
 
@@ -269,20 +275,38 @@ And now you have 103 rows of data to play with. The FEC data is dirty: there are
 
 We'll pick up with some more advanced queries and functions in Part II.
 
-h2. Further References
+h3. Further References
 
 http://www.w3schools.com/sql/sql_intro.asp
 http://www.firstsql.com/tutor.htm
 
-h2. Part II TK
+h2. Part II (TK)
+
+h3. IS NULL
 
 h3. LIKE
 
-h3. BETWEEN, NOT and IN
+h3. String Functions: CONCAT, SUBSTRING, TRIM
 
-h3. Functions
+h3. BETWEEN, IN and NOT
 
-h3. Joins
+h3. GROUP BY
+
+h3. Aggregate Functions: COUNT, MAX, MIN, SUM, AVERAGE
+
+h3. HAVING
+
+h3. JOIN
+
+h3. OUTER JOIN
+
+h3. self joins
+
+h3. UNION
+
+h3. SELECT INTO
+
+
 
 http://www.dbbm.fiocruz.br/class/Lecture/d17/sql/jhoffman/sqltut.html
 http://zetcode.com/databases/sqlitetutorial/
