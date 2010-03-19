@@ -269,9 +269,6 @@ And now you have 103 rows of data to play with. The FEC data is dirty: there are
 
 We'll pick up with some more advanced queries and functions in Part II.
 
-!http://github.com/tthibo/SQL-Tutorial/raw/master/import_confirm.png!
-!http://github.com/tthibo/SQL-Tutorial/raw/master/import_confirm_rows.png!
-
 h2. Further References
 
 http://www.w3schools.com/sql/sql_intro.asp
