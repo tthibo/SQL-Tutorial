@@ -1,0 +1,38 @@
+h2. Part II (TK)
+
+h3. IS NULL
+
+h3. LIKE
+
+h3. String Functions: SUBSTR, TRIM, UPPER, LOWER, CONCAT
+
+h3. BETWEEN, IN and NOT
+
+h3. GROUP BY
+
+h3. Aggregate Functions: COUNT, MAX, MIN, SUM, AVERAGE
+
+h3. HAVING
+
+h3. JOIN
+
+h3. OUTER JOIN
+
+h3. self joins
+
+h3. UNION
+
+h3. CREATE INDEX
+
+h3. SELECT INTO
+
+h3. ALTER
+
+h3. DROP
+
+
+http://www.dbbm.fiocruz.br/class/Lecture/d17/sql/jhoffman/sqltut.html
+http://zetcode.com/databases/sqlitetutorial/
+http://www.sqlite.org/lang.html
+http://www.sqlite.org/lang_keywords.html
+http://en.wikipedia.org/wiki/SQL

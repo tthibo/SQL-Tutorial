@@ -279,35 +279,3 @@ h3. Further References
 http://www.w3schools.com/sql/sql_intro.asp
 http://www.firstsql.com/tutor.htm
 
-h2. Part II (TK)
-
-h3. IS NULL
-
-h3. LIKE
-
-h3. String Functions: CONCAT, SUBSTRING, TRIM
-
-h3. BETWEEN, IN and NOT
-
-h3. GROUP BY
-
-h3. Aggregate Functions: COUNT, MAX, MIN, SUM, AVERAGE
-
-h3. HAVING
-
-h3. JOIN
-
-h3. OUTER JOIN
-
-h3. self joins
-
-h3. UNION
-
-h3. SELECT INTO
-
-
-
-http://www.dbbm.fiocruz.br/class/Lecture/d17/sql/jhoffman/sqltut.html
-http://zetcode.com/databases/sqlitetutorial/
-http://www.sqlite.org/lang_keywords.html
-
