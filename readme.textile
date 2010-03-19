@@ -241,13 +241,34 @@ Notice that we don't need to specify columns or use <code>*</code> with <code>DE
 Now the row should be gone:
 <pre><code>SELECT * FROM contributors;</code></pre>
 
-h3. IMPORT
+h3. Importing data from a file
 
-Finally let's move on to a topic that goes a bit beyond the basic SQL syntax. One common task we all face in data management is importing a data set into the database. Often, we receive a file in some other format such as MS Excel, CSV (comma-separated values) or tab-delimited and we want to get those values into a database table in order to run SQL queries on them. 
+Finally let's move on to a topic that takes us a bit outside the basic SQL syntax. One common task we all face in data management is importing a data set into the database. Often, we receive a file in some other format such as MS Excel, CSV (comma-separated values) or tab-delimited and we want to get those values into a database table in order to run SQL queries on them. 
 
-Each database management system handles importing values from a file a bit differently. The SQLite Manager provides a nice interface for doing data imports from text files ("export":http://office.microsoft.com/en-us/excel/HP100997251033.aspx#export your MS Excel file as a CSV before importing it).
+Each database management system handles importing values from a file a bit differently. The SQLite Manager provides a nice interface for doing data imports from text files (you'll have to "export":http://office.microsoft.com/en-us/excel/HP100997251033.aspx#export an Excel file as a CSV before importing it).
+
+First, let's grab a plain text file full of contributors from the FEC database. Go to http://github.com/tthibo/SQL-Tutorial/raw/master/contributors.txt:http://github.com/tthibo/SQL-Tutorial/raw/master/contributors.txt and save the file as "contributors.txt" somewhere you can find it (your desktop is a good place).
+
+Notice that this file is pipe-delimited (the columns are separated by the **|** character). I find this delimiter easy to use because it's so unlikely to appear within a value in the import data. But using comma or tab characters to separate the values will work as well. Also notice that there is an **id** column here with no values in it. SQLite will populate that attribute for each row using auto-increment, much as it did for our earlier <code>INSERT</code> example.
+
+Now that we know what we're importing, go back to the SQLite Manager (you may need to select it from the Window menu), and click the Import icon (!http://github.com/tthibo/SQL-Tutorial/raw/master/import_icon.png!).
+
+The Import Wizard should appear, which you can use to define your import.
 
 !http://github.com/tthibo/SQL-Tutorial/raw/master/import.png!
+
+* Using the **Select File** button, browse for the **contributors.txt** file you just saved.
+* Check the "First row contains column names check box.
+
+For everything else, you can keep the default selections.
+
+Click OK, and you'll get a couple of confirmation pop-ups, one asking if you're sure you want to import, and another asking if you want to import
+100 rows. Click OK for both.
+
+And now you have 103 rows of data to play with. The FEC data is dirty: there are missing fields, first names include middle names, there are weird values for some columns. Play around with it using the SQL you know, and see what you can find out. If you get surprising results from a query or are wondering how to do something, add a comment to the blog post. 
+
+We'll pick up with some more advanced queries and functions in Part II.
+
 !http://github.com/tthibo/SQL-Tutorial/raw/master/import_confirm.png!
 !http://github.com/tthibo/SQL-Tutorial/raw/master/import_confirm_rows.png!
 
@@ -255,7 +276,6 @@ h2. Further References
 
 http://www.w3schools.com/sql/sql_intro.asp
 http://www.firstsql.com/tutor.htm
-
 
 h2. Part II TK
 
