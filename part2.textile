@@ -1,12 +1,13 @@
 h2. Part II (TK)
+Now that we have some data to use, let's 
 
-h3. IS NULL
+h3. Nothing comes of nothing: using IS NULL
 
-h3. LIKE
-
-h3. String Functions: SUBSTR, TRIM, UPPER, LOWER, CONCAT
+h3. Casting a wider net with LIKE
 
 h3. BETWEEN, IN and NOT
+
+h3. Playing with Words: Using String Functions (SUBSTR, TRIM, UPPER, LOWER, CONCAT)
 
 h3. GROUP BY
 
