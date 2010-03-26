@@ -5,16 +5,16 @@ Now that we have some dirty data and a few keywords, we can start to write some 
 To get started, click on the SQLite Manager tool in your FireFox toolbar:
 !http://github.com/tthibo/SQL-Tutorial/raw/master/tool_menu.jpg!
 
-It should ask you if you want to use the last used database *test.sql*. Click OK.
+It should ask you if you want to open the last used database (*test.sql*). Click OK.
 If you do not get this option, click on the "Connect Database" icon (!http://github.com/tthibo/SQL-Tutorial/raw/master/connect_db.png!) and browse to the file you saved last time. (If you can't find the file, you can recreate it by following the final step in "Part I":http://github.com/tthibo/SQL-Tutorial#readme of this tutorial.
 
 h3. Nothing comes of nothing: using IS NULL
 
 Let's take a look back at our original CREATE statement for the contributors table:
-<pre><code>CREATE TABLE "contributors" ("id" INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL , "last_name" VARCHAR, "first_name" VARCHAR, "city" VARCHAR, "state" VARCHAR, "zip" VARCHAR, "amount" INTEGER);</code></pre>
-Notice that we defined the <code>id</code> column as <code>NOT NULL</code>, which meant that it was a required field. Because that field is serving as our <code>PRIMARY KEY</key>, the unique identifier for the row, it couldn't be empty. 
+<pre><code>CREATE  TABLE "main"."contributors" ("id" INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL , "last_name" VARCHAR, "first_name" VARCHAR, "city" VARCHAR, "state" VARCHAR, "zip" VARCHAR, "amount" INTEGER)</code></pre>
+Notice that we defined the <code>id</code> column as <code>NOT NULL</code>, which meant that it was a required field. Because that field is serving as our unique identifier or <code>PRIMARY KEY</code> for the row, it can't be empty. 
 
-The keyword <code>NULL</code> is a special value in SQL. It's a placeholder for an empty field. If a field is <code>NULL</code>, it's really empty: that means it's not 0, it's not an empty string (""). If you're of a philosophical mind, you might call <code>NULL</code> the "nothing that is". If you're of a pragmatic mind, you might just think of it as a placeholder where no value has been entered.
+The keyword <code>NULL</code> is a special value in SQL. It's a placeholder for an empty field. If a field is <code>NULL</code>, it's really empty. That means it's not 0. It's not an empty string (""). If you're of a philosophical mind, you might call <code>NULL</code> the "nothing that is". If you're of a pragmatic mind, you might just think of it as a placeholder where no value has been entered.
 
 But being nothing (or a placeholder for on empty value) comes with a cost. <code>NULL</code> can't be compared with other data types such as strings. And we can't use normal operators to match it, either. So =, <> and friends don't work with <code>NULL</code>. Don't believe me? Try it out:
 <pre><code>SELECT * FROM contributors WHERE last_name = NULL;</code></pre>
@@ -24,8 +24,7 @@ To query for null values, we use the keywords <code>IS NULL</code>:
 !http://github.com/tthibo/SQL-Tutorial/raw/master/last_name_NULL.png!
 
 <code>NULL</code>'s refusal to respond to normal operators can lead to some unforeseen effects. Take a look at this query, and guess what it should return:
-<pre><code>SELECT * FROM contributors WHERE state = 'VA' AND last_name <> 'Lewis';</pre></code>
-(Remember that <code><></code> means the same thing that <code>!=</code> does: "is not equal.")
+<pre><code>SELECT * FROM contributors WHERE state = 'VA' AND last_name <> 'Lewis';</pre></code> (Remember that <code><></code> means the same thing that <code>!=</code> does: "is not equal.")
 There are three contributors from VA in the table, Robert Albrecht, Donald S. Lewis, and someone from Rocky Mount whose name fields are empty. (Yes, the data did come in like this from the FEC.) You can see the list by using "Browse & Search" or by running this query: <code>SELECT * FROM contributors WHERE state = 'VA';</code>.
 So, the first query above looks like it should return both Albrecht and the Rocky Mount contributor, but in fact, we only get Albrecht:
 !http://github.com/tthibo/SQL-Tutorial/raw/master/not_lewis.png!
