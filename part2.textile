@@ -1,13 +1,120 @@
-h2. Part II (TK)
-Now that we have some data to use, let's 
+h2. A Gentle Introduction to SQL Using SQLite Part II
+
+Now that we have some dirty data and a few keywords, we can start to write some more interesting queries. In the process, we'll learn a few of the idiosyncracies of SQL.
+
+To get started, click on the SQLite Manager tool in your FireFox toolbar:
+!http://github.com/tthibo/SQL-Tutorial/raw/master/tool_menu.jpg!
+
+It should ask you if you want to use the last used database *test.sql*. Click OK.
+If you do not get this option, click on the "Connect Database" icon (!http://github.com/tthibo/SQL-Tutorial/raw/master/connect_db.png!) and browse to the file you saved last time. (If you can't find the file, you can recreate it by following the final step in "Part I":http://github.com/tthibo/SQL-Tutorial#readme of this tutorial.
 
 h3. Nothing comes of nothing: using IS NULL
 
+Let's take a look back at our original CREATE statement for the contributors table:
+<pre><code>CREATE TABLE "contributors" ("id" INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL , "last_name" VARCHAR, "first_name" VARCHAR, "city" VARCHAR, "state" VARCHAR, "zip" VARCHAR, "amount" INTEGER);</code></pre>
+Notice that we defined the <code>id</code> column as <code>NOT NULL</code>, which meant that it was a required field. Because that field is serving as our <code>PRIMARY KEY</key>, the unique identifier for the row, it couldn't be empty. 
+
+The keyword <code>NULL</code> is a special value in SQL. It's a placeholder for an empty field. If a field is <code>NULL</code>, it's really empty: that means it's not 0, it's not an empty string (""). If you're of a philosophical mind, you might call <code>NULL</code> the "nothing that is". If you're of a pragmatic mind, you might just think of it as a placeholder where no value has been entered.
+
+But being nothing (or a placeholder for on empty value) comes with a cost. <code>NULL</code> can't be compared with other data types such as strings. And we can't use normal operators to match it, either. So =, <> and friends don't work with <code>NULL</code>. Don't believe me? Try it out:
+<pre><code>SELECT * FROM contributors WHERE last_name = NULL;</code></pre>
+
+To query for null values, we use the keywords <code>IS NULL</code>:
+<pre><code>SELECT * FROM contributors WHERE last_name IS NULL;</code></pre>
+!http://github.com/tthibo/SQL-Tutorial/raw/master/last_name_NULL.png!
+
+<code>NULL</code>'s refusal to respond to normal operators can lead to some unforeseen effects. Take a look at this query, and guess what it should return:
+<pre><code>SELECT * FROM contributors WHERE state = 'VA' AND last_name <> 'Lewis';</pre></code>
+(Remember that <code><></code> means the same thing that <code>!=</code> does: "is not equal.")
+There are three contributors from VA in the table, Robert Albrecht, Donald S. Lewis, and someone from Rocky Mount whose name fields are empty. (Yes, the data did come in like this from the FEC.) You can see the list by using "Browse & Search" or by running this query: <code>SELECT * FROM contributors WHERE state = 'VA';</code>.
+So, the first query above looks like it should return both Albrecht and the Rocky Mount contributor, but in fact, we only get Albrecht:
+!http://github.com/tthibo/SQL-Tutorial/raw/master/not_lewis.png!
+
+"Curiouser and curiouser," you might say. This makes strict logical sense when we say say that the <code>NULL</code> datatype can't be compared with any other datatype, but really it does seem a bit of a pain (even to some of the SQL gurus). The solution is to use <code>IS NULL</code>.  Here's one way to write the query to get the results we intended:
+<pre><code>SELECT * FROM contributors WHERE state = 'VA' AND (last_name <> 'Lewis' OR last_name IS NULL);</code></pre>
+(The parentheses are optional here, but they do help express our intentions.)
+And now we get the two expected result rows:
+!http://github.com/tthibo/SQL-Tutorial/raw/master/lewis_or_null.png!
+
+The opposite of <code>IS NULL</code> is . . . <code>IS NOT NULL</code>. And it works pretty much as we'd expect:
+<pre><code>SELECT * FROM contributors WHERE state = 'VA' AND last_name IS NOT NULL;</code></pre>
+!http://github.com/tthibo/SQL-Tutorial/raw/master/is_not_null.png!
+
+This negative form is pretty handy for filtering null values from the results set.
+
 h3. Casting a wider net with LIKE
 
-h3. BETWEEN, IN and NOT
+While it's helpful to be able to write queries that look for equality (<code>last_name = 'Smith'</code>) or inequality (<code>last_name != 'Smith</code>), sometimes you want to do something a little messier, such as looking for everyone whose last name starts with 'T'. Or maybe you want to look for matches to a five-digit ZIP code, but some of your rows use ZIP+4. For these kinds of expressions, you can use the <code>LIKE</code> operator, which will perform a partial match.
 
-h3. Playing with Words: Using String Functions (SUBSTR, TRIM, UPPER, LOWER, CONCAT)
+To perform a partial match using <code>LIKE</code>, you can use both normal characters and special wildcard characters to construct a pattern. For example, the percent sign (<code>%</code>) will match any sequence of zero or more characters. So to match any zip that begins with 77566, we can use this statement:
+<pre><code>SELECT zip FROM contributors WHERE zip LIKE '77566%';</code></pre>
+!http://github.com/tthibo/SQL-Tutorial/raw/master/is_not_null.png!
+Notice that it matches both 775661497 and 77566036. It would also match 77566, because the <code>%</code> will match zero characters, too.
+
+The <code>%</code> is probably the most common special character used in pattern matching with <code>LIKE</code>. Another less commonly used pattern matcher is the underscore ("_"), which matches any single character in the string. Say, for example, we wanted to start cleaning our data, and we wanted to remove the middle initials from the <code>first_name</code> field and into a new <code>middle_name</code> column. (This sort of thing can get tricky very quickly, but for now we'll trip along happily assuming everything goes smoothly.) As a first step, we want simply to examine all of the rows that appear to contain middle initials in <code>first_name</code>. Here's a query that will get us at least part of the way there:
+<pre><code>SELECT * FROM contributors WHERE first_name LIKE '% _.';</code></pre>
+Reading patterns like this one may prove a little tricky at first, but in time . . . who am I kidding, it's still pretty tricky, but you can figure it out. Let's break it down:
+
+* The pattern starts with <code>%</code>, which we know means "match any series of zero or more characters," which is pretty much anything. 
+* Next we have a space (it's hard to see, but it's between the <code>%</code> and the <code>_</code>). So we're matching anything plus a space.
+* Then we have the magic underscore (<code>_</code>), meaning any single character.
+* And finally, we have a period (<code>.</code>), which is just a literal period here.
+
+And here's the result:
+!http://github.com/tthibo/SQL-Tutorial/raw/master/like_initial.png!
+
+So, in English, the pattern says to match "any series of characters followed by a space, a single character, and a period."
+This pattern will match things like "John Q." as well as "1234 5." and "#$%^ !." and " B." and "J. B." It won't, however, 
+match the string "J. Quincy" because the period isn't the last character in the field. Neither will it match "Alfred E. " because we've left
+a space after the period. To also match patterns like these, we would need to add a final <code>%</code> to the pattern, to match any characters that come after the period:
+<pre><code>SELECT * FROM contributors WHERE first_name LIKE '% _.%';</code></pre>
+
+Of course, we could just match any <code>first_name</code> that contains a period like this:
+<pre><code>SELECT * FROM contributors WHERE first_name LIKE '%.%';</code></pre>
+But then we also get names like "S. Truett," which may or may not be what we intended.
+
+h3. Words Games: Using String Functions (SUBSTR, TRIM, UPPER, LOWER, CONCAT)
+
+
+Using <code>LIKE</code> for partial matches can be pretty powerful, but as we've seen, patterns aren't exactly beach reading. Another way to do partial matching is to use string functions to manipulate the values in question. String functions usually take the form of a keyword followed by parentheses, and in the parentheses we pass any arguments for the function: <code>KEYWORD(ARG1, ARG2, ARG2)</code>. Usually the first argument is the string we want to manipulate. 
+
+h4. SUBSTR()
+Take, for example, the ZIP Code matcher we created above. Another way of expressing the same thing is to use the <code>SUBSTR</code> (substring) function. <code>SUBSTR</code> takes the string we hand it in the parentheses and returns a part of the string (ergo, substring). (Note: some database systems use SUBSTRING, rather than SUBSTR.)
+
+To determine what part of the string to return, <code>SUBSTR</code> accepts either one or two additional arguments: starting character and number of characters to grab. So the full function call looks like this: <code>SUBSTR(STRING, START, LENGTH)</code>. (The third argument, which defines the length of the substring, is optional. If we leave it off, <code>SUBSTR</code> returns all characters from START to the end of the string.)
+
+So, here is the ZIP query from above rewritten to use a substring match:
+<pre><code>SELECT zip FROM contributors WHERE SUBSTR(zip, 1, 5) = '77566';</code></pre>
+Which should return the same result set: 775661497 and 77566036.
+
+And functions can be used in the <code>SELECT</code> clause, as well, so we can do something like this:
+<pre><code>SELECT SUBSTR(zip, 1, 5) FROM contributors;</code></pre>
+!http://github.com/tthibo/SQL-Tutorial/raw/master/select_substr.png!
+
+h4. TRIM()
+
+The <code>TRIM</code> function is most frequently used to trim white space from either side of a string. Often strings are inserted with leading or trailing whitespace. To simulate this case, let's mess up the data even more:
+<pre><code>UPDATE contributors SET state = ' GA ' WHERE last_name = 'Cathy';</code></pre>
+!http://github.com/tthibo/SQL-Tutorial/raw/master/state_ga.png!
+
+So, now Cathy isn't appearing in our list of Georgians. Even worse, we've created a new state:
+<pre><code>SELECT DISTINCT state FROM contributors;</code></pre>
+!http://github.com/tthibo/SQL-Tutorial/raw/master/state_ga.png!
+
+We can use TRIM to clean things up:
+<pre><code>UPDATE contributors SET state = TRIM(state);</code></pre>
+
+Notice here that we're not using a <code>WHERE</code> clause on the <code>UPDATE</code> statement. This means that all rows will be updated, which is usually not what you want at all. Consider if we had used <code>SET state = 'GA'</code> in the statement above; we'd now have a table full of Georgians and a mess to clean up. Because we're using a function, rather than a literal string here, we can update everything at once, trimming the white space from the front and end of every state value. The function operates on the value in the <code>state</code> column for each row in turn.
+
+The <code>TRIM</code> function can also be used to strip characters other than spaces from the front and end of a string, although this usage is probably less common. To tell <code>TRIM</code> which characters to remove, pass a second argument which contains all the characters. For example, <code>TRIM(state, '.,')</code> would remove any periods or commas appearing at the beginning or end of the state name (i.e. "GA." would become "GA").
+
+h4. UPPER() and LOWER()
+
+Note: by default <code>LIKE</code> is not case-sensitive in SQLite, but that is not true of all database management systems. Also, in other database systems, such as MySQL, the basic equality operator (<code>=</code>) is case insensitive, but that's not true in SQLite, and it isn't true in other systems. When in doubt, it's safer to use <code>LOWER</code> or <code>UPPER</code> to ensure case insensitivity.
+
+h4. CONCAT
+
+h3. BETWEEN, IN and NOT
 
 h3. GROUP BY
 
@@ -15,25 +122,3 @@ h3. Aggregate Functions: COUNT, MAX, MIN, SUM, AVERAGE
 
 h3. HAVING
 
-h3. JOIN
-
-h3. OUTER JOIN
-
-h3. self joins
-
-h3. UNION
-
-h3. CREATE INDEX
-
-h3. SELECT INTO
-
-h3. ALTER
-
-h3. DROP
-
-
-http://www.dbbm.fiocruz.br/class/Lecture/d17/sql/jhoffman/sqltut.html
-http://zetcode.com/databases/sqlitetutorial/
-http://www.sqlite.org/lang.html
-http://www.sqlite.org/lang_keywords.html
-http://en.wikipedia.org/wiki/SQL
