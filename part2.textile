@@ -48,7 +48,8 @@ While it's helpful to be able to write queries that look for equality (<code>las
 
 To perform a partial match using <code>LIKE</code>, you can use both normal characters and special wildcard characters to construct a pattern. For example, the percent sign (<code>%</code>) will match any sequence of zero or more characters. So to match any zip that begins with 77566, we can use this statement:
 <pre><code>SELECT zip FROM contributors WHERE zip LIKE '77566%';</code></pre>
-!http://github.com/tthibo/SQL-Tutorial/raw/master/is_not_null.png!
+!http://github.com/tthibo/SQL-Tutorial/raw/master/zip_LIKE.png!
+
 Notice that it matches both 775661497 and 77566036. It would also match 77566, because the <code>%</code> will match zero characters, too.
 
 The <code>%</code> is probably the most common special character used in pattern matching with <code>LIKE</code>. Another less commonly used pattern matcher is the underscore ("_"), which matches any single character in the string. Say, for example, we wanted to start cleaning our data, and we wanted to remove the middle initials from the <code>first_name</code> field and into a new <code>middle_name</code> column. (This sort of thing can get tricky very quickly, but for now we'll trip along happily assuming everything goes smoothly.) As a first step, we want simply to examine all of the rows that appear to contain middle initials in <code>first_name</code>. Here's a query that will get us at least part of the way there:
@@ -99,7 +100,7 @@ The <code>TRIM</code> function is most frequently used to trim white space from 
 
 So, now Cathy isn't appearing in our list of Georgians. Even worse, we've created a new state:
 <pre><code>SELECT DISTINCT state FROM contributors;</code></pre>
-!http://github.com/tthibo/SQL-Tutorial/raw/master/state_ga.png!
+!http://github.com/tthibo/SQL-Tutorial/raw/master/distinct_state_space.png!
 
 We can use TRIM to clean things up:
 <pre><code>UPDATE contributors SET state = TRIM(state);</code></pre>
