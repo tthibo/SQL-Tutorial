@@ -6,7 +6,7 @@ To get started, click on the SQLite Manager tool in your FireFox toolbar:
 !http://github.com/tthibo/SQL-Tutorial/raw/master/tool_menu.jpg!
 
 It should ask you if you want to open the last used database (*test.sql*). Click OK.
-If you do not get this option, click on the "Connect Database" icon (!http://github.com/tthibo/SQL-Tutorial/raw/master/connect_db.png!) and browse to the file you saved last time. (If you can't find the file, you can recreate it by following the final step in "Part I":http://github.com/tthibo/SQL-Tutorial#readme of this tutorial.
+If you do not get this option, click on the "Connect Database" icon (!http://github.com/tthibo/SQL-Tutorial/raw/master/connect_db.png!) and browse to the file you saved last time. (If you can't find the file, you can recreate it by following the final step in "Part I":http://github.com/tthibo/SQL-Tutorial#readme of this tutorial.)
 
 h3. Nothing comes of nothing: using IS NULL
 
@@ -19,22 +19,25 @@ The keyword <code>NULL</code> is a special value in SQL. It's a placeholder for 
 But being nothing (or a placeholder for on empty value) comes with a cost. <code>NULL</code> can't be compared with other data types such as strings. And we can't use normal operators to match it, either. So =, <> and friends don't work with <code>NULL</code>. Don't believe me? Try it out:
 <pre><code>SELECT * FROM contributors WHERE last_name = NULL;</code></pre>
 
-To query for null values, we use the keywords <code>IS NULL</code>:
+Instead, to query for null values, we use the keywords <code>IS NULL</code>:
 <pre><code>SELECT * FROM contributors WHERE last_name IS NULL;</code></pre>
 !http://github.com/tthibo/SQL-Tutorial/raw/master/last_name_NULL.png!
 
 <code>NULL</code>'s refusal to respond to normal operators can lead to some unforeseen effects. Take a look at this query, and guess what it should return:
 <pre><code>SELECT * FROM contributors WHERE state = 'VA' AND last_name <> 'Lewis';</pre></code> (Remember that <code><></code> means the same thing that <code>!=</code> does: "is not equal.")
-There are three contributors from VA in the table, Robert Albrecht, Donald S. Lewis, and someone from Rocky Mount whose name fields are empty. (Yes, the data did come in like this from the FEC.) You can see the list by using "Browse & Search" or by running this query: <code>SELECT * FROM contributors WHERE state = 'VA';</code>.
-So, the first query above looks like it should return both Albrecht and the Rocky Mount contributor, but in fact, we only get Albrecht:
+There are three contributors from VA in the table, Robert Albrecht, Donald S. Lewis, and someone from Rocky Mount whose name fields are empty. (Yes, the data did come in like this from the FEC.) You can see the list by using "Browse & Search" or by running this query: 
+<code>SELECT * FROM contributors WHERE state = 'VA';</code>.
+
+So, the first query above looks like it's asking for all contributors from Virginia whose last name is not Lewis. And it looks like it  should return both Albrecht and the Rocky Mount contributor. But when we run it (cue "Price Is Right" sad horn sound), we only get Albrecht:
 !http://github.com/tthibo/SQL-Tutorial/raw/master/not_lewis.png!
 
 "Curiouser and curiouser," you might say. This makes strict logical sense when we say say that the <code>NULL</code> datatype can't be compared with any other datatype, but really it does seem a bit of a pain (even to some of the SQL gurus). The solution is to use <code>IS NULL</code>.  Here's one way to write the query to get the results we intended:
-<pre><code>SELECT * FROM contributors WHERE state = 'VA' AND (last_name <> 'Lewis' OR last_name IS NULL);</code></pre>
-(The parentheses are optional here, but they do help express our intentions.)
+<pre><code>SELECT * FROM contributors WHERE state = 'VA' AND (last_name <> 'Lewis' OR last_name IS NULL);</code></pre>(The parentheses are optional here, but they do help express our intentions.)
+
 And now we get the two expected result rows:
 !http://github.com/tthibo/SQL-Tutorial/raw/master/lewis_or_null.png!
 
+h4. IS NOT NULL
 The opposite of <code>IS NULL</code> is . . . <code>IS NOT NULL</code>. And it works pretty much as we'd expect:
 <pre><code>SELECT * FROM contributors WHERE state = 'VA' AND last_name IS NOT NULL;</code></pre>
 !http://github.com/tthibo/SQL-Tutorial/raw/master/is_not_null.png!
@@ -43,7 +46,7 @@ This negative form is pretty handy for filtering null values from the results se
 
 h3. Casting a wider net with LIKE
 
-While it's helpful to be able to write queries that look for equality (<code>last_name = 'Smith'</code>) or inequality (<code>last_name != 'Smith</code>), sometimes you want to do something a little messier, such as looking for everyone whose last name starts with 'T'. Or maybe you want to look for matches to a five-digit ZIP code, but some of your rows use ZIP+4. For these kinds of expressions, you can use the <code>LIKE</code> operator, which will perform a partial match.
+While it's helpful to be able to write queries that look for equality (<code>last_name = 'Smith'</code>) or inequality (<code>last_name != 'Smith'</code>), sometimes you want to do something a little messier, such as looking for everyone whose last name starts with 'T'. Or maybe you want to look for matches to a five-digit ZIP code, but some of your rows use ZIP+4. For these kinds of expressions, you can use the <code>LIKE</code> operator, which will perform a partial match.
 
 To perform a partial match using <code>LIKE</code>, you can use both normal characters and special wildcard characters to construct a pattern. For example, the percent sign (<code>%</code>) will match any sequence of zero or more characters. So to match any zip that begins with 77566, we can use this statement:
 <pre><code>SELECT zip FROM contributors WHERE zip LIKE '77566%';</code></pre>
@@ -51,7 +54,7 @@ To perform a partial match using <code>LIKE</code>, you can use both normal char
 
 Notice that it matches both 775661497 and 77566036. It would also match 77566, because the <code>%</code> will match zero characters, too.
 
-The <code>%</code> is probably the most common special character used in pattern matching with <code>LIKE</code>. Another less commonly used pattern matcher is the underscore ("_"), which matches any single character in the string. Say, for example, we wanted to start cleaning our data, and we wanted to remove the middle initials from the <code>first_name</code> field and into a new <code>middle_name</code> column. (This sort of thing can get tricky very quickly, but for now we'll trip along happily assuming everything goes smoothly.) As a first step, we want simply to examine all of the rows that appear to contain middle initials in <code>first_name</code>. Here's a query that will get us at least part of the way there:
+The <code>%</code> is probably the most common special character used in pattern matching with <code>LIKE</code>. Another less commonly used pattern matcher is the underscore ("_"), which matches any single character in the string. Say, for example, we wanted to start cleaning our data, and we wanted to remove the middle initials from the <code>first_name</code> field and put them into a new <code>middle_name</code> column. (This sort of thing can get tricky very quickly, but for now we'll trip along happily assuming everything goes smoothly.) As a first step, we want simply to examine all of the rows that appear to contain middle initials in <code>first_name</code>. Here's a query that will get us at least part of the way there:
 <pre><code>SELECT * FROM contributors WHERE first_name LIKE '% _.';</code></pre>
 Reading patterns like this one may prove a little tricky at first, but in time . . . who am I kidding, it's still pretty tricky, but you can figure it out. Let's break it down:
 
@@ -66,29 +69,33 @@ And here's the result:
 So, in English, the pattern says to match "any series of characters followed by a space, a single character, and a period."
 This pattern will match things like "John Q." as well as "1234 5." and "#$%^ !." and " B." and "J. B." It won't, however, 
 match the string "J. Quincy" because the period isn't the last character in the field. Neither will it match "Alfred E. " because we've left
-a space after the period. To also match patterns like these, we would need to add a final <code>%</code> to the pattern, to match any characters that come after the period:
+a space after the period. 
+
+To also match patterns that contain characters after the period, we would need to add a final <code>%</code> to the pattern:
 <pre><code>SELECT * FROM contributors WHERE first_name LIKE '% _.%';</code></pre>
 
-Of course, we could just match any <code>first_name</code> that contains a period like this:
-<pre><code>SELECT * FROM contributors WHERE first_name LIKE '%.%';</code></pre>
-But then we also get names like "S. Truett," which may or may not be what we intended.
+Now we're matching the pattern "any series of zero or more characters, followed by a space, followed by a single character, followed by a period, followed by any series of zero or more characters." (So, our little pattern expresses a pretty complex thought.)
+
+Of course, we could just match any <code>first_name</code> that contains a period, like this:
+<pre><code>SELECT * FROM contributors WHERE first_name LIKE '%.%';</code></pre> But then we also get names like "S. Truett," which may or may not be what we intended.
 
 h3. Words Games: Using String Functions (SUBSTR, TRIM, UPPER, LOWER, CONCAT)
 
-
-Using <code>LIKE</code> for partial matches can be pretty powerful, but as we've seen, patterns aren't exactly beach reading. Another way to do partial matching is to use string functions to manipulate the values in question. String functions usually take the form of a keyword followed by parentheses, and in the parentheses we pass any arguments for the function: <code>KEYWORD(ARG1, ARG2, ARG2)</code>. Usually the first argument is the string we want to manipulate. 
+Using <code>LIKE</code> for partial matches can be pretty powerful, but as we've seen, patterns aren't exactly beach reading. Another way to do partial matching is to use string functions to manipulate the values. String functions usually take the form of a keyword followed by parentheses, and in the parentheses we pass any arguments for the function: <code>KEYWORD(ARG1, ARG2, ARG3)</code>. Usually the first argument is the string we want to manipulate. 
 
 h4. SUBSTR()
-Take, for example, the ZIP Code matcher we created above. Another way of expressing the same thing is to use the <code>SUBSTR</code> (substring) function. <code>SUBSTR</code> takes the string we hand it in the parentheses and returns a part of the string (ergo, substring). (Note: some database systems use SUBSTRING, rather than SUBSTR.)
 
-To determine what part of the string to return, <code>SUBSTR</code> accepts either one or two additional arguments: starting character and number of characters to grab. So the full function call looks like this: <code>SUBSTR(STRING, START, LENGTH)</code>. (The third argument, which defines the length of the substring, is optional. If we leave it off, <code>SUBSTR</code> returns all characters from START to the end of the string.)
+The <code>SUBSTR</code> function takes the string we hand it in the parentheses and returns a part of the string we define (ergo, substring). (Note: some database systems use <code>SUBSTRING</code>, rather than <code>SUBSTR</code>.)
 
-So, here is the ZIP query from above rewritten to use a substring match:
+To determine which part of the string to return, <code>SUBSTR</code> accepts additional arguments: the number of characters into the string where we want to start grabbing, and the number of characters to grab from that point. So the full function call looks like this: <code>SUBSTR(STRING, START, LENGTH)</code>. The third argument is optional. If we leave it off, <code>SUBSTR</code> returns all characters from START to the end of the string.
+
+An example is probably more helpful. So, here is the ZIP query from above rewritten to use a substring match:
 <pre><code>SELECT zip FROM contributors WHERE SUBSTR(zip, 1, 5) = '77566';</code></pre>
-Which should return the same result set: 775661497 and 77566036.
+We're asking for all ZIP codes in the table whose first five characters match '77566'. This query will return the same result set we saw above: 775661497 and 77566036.
 
-And functions can be used in the <code>SELECT</code> clause, as well, so we can do something like this:
+Functions can also be used in the <code>SELECT</code> clause of the query, so we can do something like this:
 <pre><code>SELECT SUBSTR(zip, 1, 5) FROM contributors;</code></pre>
+Now we're getting the five-digit representation of all ZIPs in the table (and dropping the +4 from the ZIP+4s)
 !http://github.com/tthibo/SQL-Tutorial/raw/master/select_substr.png!
 
 h4. TRIM()
