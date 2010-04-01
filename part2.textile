@@ -8,6 +8,10 @@ To get started, click on the SQLite Manager tool in your FireFox toolbar:
 It should ask you if you want to open the last used database (*test.sql*). Click OK.
 If you do not get this option, click on the "Connect Database" icon (!http://github.com/tthibo/SQL-Tutorial/raw/master/connect_db.png!) and browse to the file you saved last time. (If you can't find the file, you can recreate it by following the final step in "Part I":http://github.com/tthibo/SQL-Tutorial#readme of this tutorial.)
 
+
+
+h3. Knowing your limitations: using <code>LIMIT</code>
+
 h3. Nothing comes of nothing: using IS NULL
 
 Let's take a look back at our original CREATE statement for the contributors table:
@@ -25,20 +29,20 @@ Instead, to query for null values, we use the keywords <code>IS NULL</code>:
 
 <code>NULL</code>'s refusal to respond to normal operators can lead to some unforeseen effects. Take a look at this query, and guess what it should return:
 <pre><code>SELECT * FROM contributors WHERE state = 'VA' AND last_name <> 'Lewis';</pre></code> (Remember that <code><></code> means the same thing that <code>!=</code> does: "is not equal.")
-There are three contributors from VA in the table, Robert Albrecht, Donald S. Lewis, and someone from Rocky Mount whose name fields are empty. (Yes, the data did come in like this from the FEC.) You can see the list by using "Browse & Search" or by running this query: 
-<code>SELECT * FROM contributors WHERE state = 'VA';</code>.
+There are three contributors from VA in the table, Robert Albrecht, Donald S. Lewis, and someone from Rocky Mount whose name fields are empty. (Yes, the data did come in like this from the FEC.) You can see the list by using "Browse & Search" or by running this query: <code>SELECT * FROM contributors WHERE state = 'VA';</code>.
 
-So, the first query above looks like it's asking for all contributors from Virginia whose last name is not Lewis. And it looks like it  should return both Albrecht and the Rocky Mount contributor. But when we run it (cue "Price Is Right" sad horn sound), we only get Albrecht:
+So, the clause <code>WHERE state = 'VA' AND last_name <> Lewis</code> looks like it's asking for all contributors from Virginia whose last name is not Lewis. And it looks like it  should return both Albrecht and the Rocky Mount contributor. But when we run it (cue "Price Is Right" sad horn sound), we only get Albrecht:
 !http://github.com/tthibo/SQL-Tutorial/raw/master/not_lewis.png!
 
-"Curiouser and curiouser," you might say. This makes strict logical sense when we say say that the <code>NULL</code> datatype can't be compared with any other datatype, but really it does seem a bit of a pain (even to some of the SQL gurus). The solution is to use <code>IS NULL</code>.  Here's one way to write the query to get the results we intended:
+"Curiouser and curiouser," you might say. This makes strict logical sense when we say consider that the <code>NULL</code> data type can't be compared with any other data type, but really it does seem a bit of a pain (even to some of the SQL gurus). The solution is to use <code>IS NULL</code>.  Here's one way to write the query to get the results we intended:
 <pre><code>SELECT * FROM contributors WHERE state = 'VA' AND (last_name <> 'Lewis' OR last_name IS NULL);</code></pre>(The parentheses are optional here, but they do help express our intentions.)
 
 And now we get the two expected result rows:
 !http://github.com/tthibo/SQL-Tutorial/raw/master/lewis_or_null.png!
 
 h4. IS NOT NULL
-The opposite of <code>IS NULL</code> is . . . <code>IS NOT NULL</code>. And it works pretty much as we'd expect:
+
+The opposite of <code>IS NULL</code> is (drumroll) . . .  <code>IS NOT NULL</code>. And it works pretty much as we'd expect:
 <pre><code>SELECT * FROM contributors WHERE state = 'VA' AND last_name IS NOT NULL;</code></pre>
 !http://github.com/tthibo/SQL-Tutorial/raw/master/is_not_null.png!
 
@@ -79,15 +83,15 @@ Now we're matching the pattern "any series of zero or more characters, followed 
 Of course, we could just match any <code>first_name</code> that contains a period, like this:
 <pre><code>SELECT * FROM contributors WHERE first_name LIKE '%.%';</code></pre> But then we also get names like "S. Truett," which may or may not be what we intended.
 
-h3. Words Games: Using String Functions (SUBSTR, TRIM, UPPER, LOWER, CONCAT)
+h3. Words Games: Using String Functions (SUBSTR, TRIM, UPPER, LOWER)
 
-Using <code>LIKE</code> for partial matches can be pretty powerful, but as we've seen, patterns aren't exactly beach reading. Another way to do partial matching is to use string functions to manipulate the values. String functions usually take the form of a keyword followed by parentheses, and in the parentheses we pass any arguments for the function: <code>KEYWORD(ARG1, ARG2, ARG3)</code>. Usually the first argument is the string we want to manipulate. 
+Using <code>LIKE</code> for partial matches can be pretty powerful, but as we've seen, patterns aren't exactly beach reading. Another way to do partial matching is to use string functions to manipulate the values. String functions usually take the form of a keyword followed by parentheses, and in the parentheses we pass any arguments for the function: <code>KEYWORD(ARG1, ARG2, ARG3)</code>. Usually the first argument is the string we want to manipulate. Here are the most interesting string functions for our purposes:
 
 h4. SUBSTR()
 
-The <code>SUBSTR</code> function takes the string we hand it in the parentheses and returns a part of the string we define (ergo, substring). (Note: some database systems use <code>SUBSTRING</code>, rather than <code>SUBSTR</code>.)
+The <code>SUBSTR()</code> function takes the string we hand it in the parentheses and returns a part of the string we define (ergo, substring). (Note: some database systems use <code>SUBSTRING()</code>, rather than <code>SUBSTR()</code>.)
 
-To determine which part of the string to return, <code>SUBSTR</code> accepts additional arguments: the number of characters into the string where we want to start grabbing, and the number of characters to grab from that point. So the full function call looks like this: <code>SUBSTR(STRING, START, LENGTH)</code>. The third argument is optional. If we leave it off, <code>SUBSTR</code> returns all characters from START to the end of the string.
+To determine which part of the string to return, <code>SUBSTR()</code> accepts additional arguments: the starting point of the desired substring (counting characters from the left), and the number of characters to grab from that starting point. The full function call takes this form: <code>SUBSTR(STRING, START_POINT, LENGTH)</code>. The third argument is optional. If we leave it off, <code>SUBSTR()</code> returns all characters from the given starting point to the end of the string.
 
 An example is probably more helpful. So, here is the ZIP query from above rewritten to use a substring match:
 <pre><code>SELECT zip FROM contributors WHERE SUBSTR(zip, 1, 5) = '77566';</code></pre>
@@ -95,12 +99,12 @@ We're asking for all ZIP codes in the table whose first five characters match '7
 
 Functions can also be used in the <code>SELECT</code> clause of the query, so we can do something like this:
 <pre><code>SELECT SUBSTR(zip, 1, 5) FROM contributors;</code></pre>
-Now we're getting the five-digit representation of all ZIPs in the table (and dropping the +4 from the ZIP+4s)
+Now we're getting the five-digit representation of all ZIPs in the table (and dropping the extra four digits from the ZIP+4s)
 !http://github.com/tthibo/SQL-Tutorial/raw/master/select_substr.png!
 
 h4. TRIM()
 
-The <code>TRIM</code> function is most frequently used to trim white space from either side of a string. Often strings are inserted with leading or trailing whitespace. To simulate this case, let's mess up the data even more:
+The <code>TRIM()</code> function is most frequently used to trim white space from either side of a string. Often during data entry, strings are accidentally inserted with leading or trailing whitespace. To simulate this case, let's mess up the data even more:
 <pre><code>UPDATE contributors SET state = ' GA ' WHERE last_name = 'Cathy';</code></pre>
 !http://github.com/tthibo/SQL-Tutorial/raw/master/state_ga.png!
 
@@ -108,24 +112,110 @@ So, now Cathy isn't appearing in our list of Georgians. Even worse, we've create
 <pre><code>SELECT DISTINCT state FROM contributors;</code></pre>
 !http://github.com/tthibo/SQL-Tutorial/raw/master/distinct_state_space.png!
 
-We can use TRIM to clean things up:
+We can use <code>TRIM()</code> to clean things up:
 <pre><code>UPDATE contributors SET state = TRIM(state);</code></pre>
 
 Notice here that we're not using a <code>WHERE</code> clause on the <code>UPDATE</code> statement. This means that all rows will be updated, which is usually not what you want at all. Consider if we had used <code>SET state = 'GA'</code> in the statement above; we'd now have a table full of Georgians and a mess to clean up. Because we're using a function, rather than a literal string here, we can update everything at once, trimming the white space from the front and end of every state value. The function operates on the value in the <code>state</code> column for each row in turn.
 
-The <code>TRIM</code> function can also be used to strip characters other than spaces from the front and end of a string, although this usage is probably less common. To tell <code>TRIM</code> which characters to remove, pass a second argument which contains all the characters. For example, <code>TRIM(state, '.,')</code> would remove any periods or commas appearing at the beginning or end of the state name (i.e. "GA." would become "GA").
+And now we're back to normal:
+<pre><code>SELECT DISTINCT state FROM contributors;</code></pre>
+!http://github.com/tthibo/SQL-Tutorial/raw/master/select_distinct_state_normal.png!
+
+The <code>TRIM()</code> function can also be used to strip characters other than spaces from the front and end of a string, although this usage is probably less common. To tell <code>TRIM</code> which characters to remove, pass a second argument which contains all the characters to remove. For example, <code>TRIM(state, '.,')</code> would remove any periods or commas appearing at the beginning or end of the state name (i.e. "GA." would become "GA").
 
 h4. UPPER() and LOWER()
 
-Note: by default <code>LIKE</code> is not case-sensitive in SQLite, but that is not true of all database management systems. Also, in other database systems, such as MySQL, the basic equality operator (<code>=</code>) is case insensitive, but that's not true in SQLite, and it isn't true in other systems. When in doubt, it's safer to use <code>LOWER</code> or <code>UPPER</code> to ensure case insensitivity.
+Another common problem in dirty data is inconsistencies in capitalization. For example, let's find all of the contributors from Birmingham, Alabama:
+<pre><code>SELECT * FROM contributors WHERE state = 'AL' AND city = 'Birmingham';</code></pre>
+Hmm . . . apparently there aren't any.
 
-h4. CONCAT
+But then when we check on all contributors from Alabama, we get a different story:
+<pre><code>SELECT * FROM contributors WHERE state = 'AL';</code></pre>
+!http://github.com/tthibo/SQL-Tutorial/raw/master/alabama.png!
 
-h3. BETWEEN, IN and NOT
+So, the problem is that Birmingham isn't properly capitalized. Now, we could do a <code>SELECT</code> using <code>city = 'birmingham'</code>, but then we'd miss any rows that properly capitalize the city name. And what about rows that use ALL CAPS? 
+
+An easy way to get around these issues of case-sensitivity is to use the <code>UPPER</code> or <code>LOWER</code> string functions to standardize capitalization on the values:
+<pre><code>SELECT * from contributors WHERE UPPER(city) = 'BIRMINGHAM';</code></pre>
+
+This query will give us the lower-case version, but it will also match "Birmingham" and "BIRMINGHAM" (not to mention "BIRMingham").
+
+Note: by default <code>LIKE</code> is not case-sensitive in SQLite, but that is not true of all database management systems. Also, in other database systems, such as MySQL, the basic equality operator (<code>=</code>) is case insensitive, but that's not true in SQLite, and it isn't true in other systems. When in doubt, it's safer to use <code>LOWER</code> or <code>UPPER</code> to ensure case insensitivity. (Also, some databases use <code>UCASE()</code> and <code>LCASE()</code> rather than <code>UPPER()</code> and <code>LOWER()</code>.)
+
+h3. Pull yourself together: The Concatenate Operator (<code>||</code>)
+
+Sometimes we want to combine values from different columns, either in the <code>WHERE</code> clause or for the results. SQLite uses the concatenation operator (<code>||</code>) to combine strings. You combine both literal strings (in quotation marks) with your values, as well.
+
+Say, for instance, we want a nicely formatted list of cities and states for contributors:
+<pre><code>SELECT city || ',' || state FROM contributors ORDER BY state, city;</code></pre>
+We insert the comma and space as a literal string concatenated with the values from the city and state columns.
+!http://github.com/tthibo/SQL-Tutorial/raw/master/concat_city_state.png!
+
+Note: Some other database management systems, such as MySQL use the <code>CONCAT()</code> function to perform concatenation: <code>SELECT CONCAT('A', 'B', 'C') FROM table_name_;</code> would return "ABC" for each row in the table.
+
+h3. Pick One: Using <code>BETWEEN</code> and <code>IN</code>
+
+Often you'll want to get a value from within a range. The <code>BETWEEN</code> operator can do exactly that. Let's see which of our contributors has given between 500 and 1000 dollars:
+<pre><code>SELECT * FROM contributors WHERE amount BETWEEN 500 AND 1000;</pre></code>
+!http://github.com/tthibo/SQL-Tutorial/raw/master/between.png!
+(Note: this query returns the same result as <code>SELECT * FROM contributors WHERE amount >= 500 AND amount <= 1000;</code>, but it's much more readable.)
+
+At other times, you may need to match values from within a set of choices. This is where the <code>IN</code> operator comes in handy. Let's find all contributors from a few southern states:
+<pre><code>SELECT * FROM contributors WHERE state IN ('AL', 'GA', 'FL');</code></pre>
+!http://github.com/tthibo/SQL-Tutorial/raw/master/in.png!
+(Again, you could have used a compound statement with <code>state = 'AL' OR state = 'GA' OR state = 'FL'</code> to achieve the same result, but <code>IN</code> syntax makes things much clearer.
+
+h3. Aggregate Functions: COUNT(), MAX(), MIN(), SUM(), AVG()
+
+Aggregate functions allow us to perform calculations on values across rows. Using them, we can start to do some interesting data analysis. Pass in the column name you want to aggregate as the argument in parentheses.
+Here's a quick run through some useful ones:
+
+h4. COUNT()
+
+How many contributors do we have from California?
+<pre><code>SELECT COUNT(id) FROM contributors WHERE state = 'CA';<code></pre>
+!http://github.com/tthibo/SQL-Tutorial/raw/master/count_ca.png!
+	
+The <code>COUNT(id)</code> function counts the number of unique ids. We could also have used <code>COUNT(*)</code>, which will count the number of rows. The result will be the same.
+<code>COUNT()</code> can also be used with <code>DISTINCT</code> to return the number of distinct instances. For example, how many distinct ZIP Codes are there in the table?
+<pre><code>SELECT COUNT(DISTINCT zip)  FROM contributors ;</code></pre>
+(Note that the the DISTINCT keyword 
+
+h4. MIN() and MAX()
+
+What is the maximum any of our contributors has given?
+<pre><code>SELECT MAX(amount) FROM contributors;</code></pre>
+!http://github.com/tthibo/SQL-Tutorial/raw/master/max_amount.png!
+
+h4. SUM()
+
+What is the total amount of contributions from Georgia?
+<pre><code>SELECT SUM(amount) FROM contributors WHERE state = 'GA';</code></pre>
+!http://github.com/tthibo/SQL-Tutorial/raw/master/sum_ga.png!
+
+h4. AVG()
+
+What is the average amount contributed?
+<pre><code>SELECT AVG(amount) FROM contributors;</code></pre>
+!http://github.com/tthibo/SQL-Tutorial/raw/master/avg_amt.png!
+
+(Of course, the usual caveats about using averages apply. I heard a nice example recently: "Which major at UNC produces graduates with the highest average salary?" Apparently, it was Geography, Michael Jordan's major. Even if it isn't true, it's a nice illustration of the way outliers can skew averages.)
+
+h3. Subqueries
+
+When doing analysis, we often want to base one query on the results of another query. For example, we used the <code>MAX()</code> function to determine the maximum amount contributed. But what if we want to know 
+who actually gave that maximum amount? We could try something like this:
+<pre><code>SELECT * FROM contributors WHERE amount = MAX(amount);</code></pre>
+But we won't like the results:
+!http://github.com/tthibo/SQL-Tutorial/raw/master/alert_aggregate.png!
+
+
+
+
 
 h3. GROUP BY
 
-h3. Aggregate Functions: COUNT, MAX, MIN, SUM, AVERAGE
+The real power o
 
 h3. HAVING
 
