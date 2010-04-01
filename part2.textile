@@ -1,6 +1,6 @@
 h2. A Gentle Introduction to SQL Using SQLite Part II
 
-Now that we have some dirty data and a few keywords, we can start to write some more interesting queries. In the process, we'll learn a few of the idiosyncracies of SQL.
+Now that we have some dirty data and a few keywords, we can start to write some more interesting queries. In the process, we'll learn a few of the idiosyncrasies of SQL.
 
 To get started, click on the SQLite Manager tool in your FireFox toolbar:
 !http://github.com/tthibo/SQL-Tutorial/raw/master/tool_menu.jpg!
@@ -10,9 +10,7 @@ If you do not get this option, click on the "Connect Database" icon (!http://git
 
 
 
-h3. Knowing your limitations: using <code>LIMIT</code>
-
-h3. Nothing comes of nothing: using IS NULL
+h3. Nothing can come of nothing: using IS NULL
 
 Let's take a look back at our original CREATE statement for the contributors table:
 <pre><code>CREATE  TABLE "main"."contributors" ("id" INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL , "last_name" VARCHAR, "first_name" VARCHAR, "city" VARCHAR, "state" VARCHAR, "zip" VARCHAR, "amount" INTEGER)</code></pre>
@@ -48,6 +46,17 @@ The opposite of <code>IS NULL</code> is (drumroll) . . .  <code>IS NOT NULL</cod
 
 This negative form is pretty handy for filtering null values from the results set.
 
+h3. Knowing your limitations: using <code>LIMIT</code>
+
+So far, all of our queries have returned the full result set of rows matching the <code>WHERE</code> clause. But sometimes you only want a subset of the results. Let's use the <code>LIMIT</code> keyword to get the top 20 contributors by contribution:
+<pre><code>SELECT * FROM CONTRIBUTORS ORDER BY amount DESC LIMIT 20;</code></pre>
+First we order the results by amount (in descending order), and then we limit the results to only the first 20 rows.
+!http://github.com/tthibo/SQL-Tutorial/raw/master/top_twenty_contributors.png!
+
+And if there aren't enough matching rows to reach the specified limit, the limit is simply ignored:
+<pre><code>SELECT * FROM contributors WHERE amount > 2100 LIMIT 20;</code></pre>
+
+
 h3. Casting a wider net with LIKE
 
 While it's helpful to be able to write queries that look for equality (<code>last_name = 'Smith'</code>) or inequality (<code>last_name != 'Smith'</code>), sometimes you want to do something a little messier, such as looking for everyone whose last name starts with 'T'. Or maybe you want to look for matches to a five-digit ZIP code, but some of your rows use ZIP+4. For these kinds of expressions, you can use the <code>LIKE</code> operator, which will perform a partial match.
@@ -82,6 +91,8 @@ Now we're matching the pattern "any series of zero or more characters, followed 
 
 Of course, we could just match any <code>first_name</code> that contains a period, like this:
 <pre><code>SELECT * FROM contributors WHERE first_name LIKE '%.%';</code></pre> But then we also get names like "S. Truett," which may or may not be what we intended.
+
+Note: Some database systems include other wildcard characters to be used in patterns, such as [xy]
 
 h3. Words Games: Using String Functions (SUBSTR, TRIM, UPPER, LOWER)
 
@@ -146,19 +157,19 @@ h3. Pull yourself together: The Concatenate Operator (<code>||</code>)
 
 Sometimes we want to combine values from different columns, either in the <code>WHERE</code> clause or for the results. SQLite uses the concatenation operator (<code>||</code>) to combine strings. You combine both literal strings (in quotation marks) with your values, as well.
 
-Say, for instance, we want a nicely formatted list of cities and states for contributors:
+Say, for instance, we want a nicely formatted list of cities and states for contributors. To create a single result column that contains the city and state separated by a comma, we can use this query:
 <pre><code>SELECT city || ',' || state FROM contributors ORDER BY state, city;</code></pre>
 We insert the comma and space as a literal string concatenated with the values from the city and state columns.
 !http://github.com/tthibo/SQL-Tutorial/raw/master/concat_city_state.png!
 
-Note: Some other database management systems, such as MySQL use the <code>CONCAT()</code> function to perform concatenation: <code>SELECT CONCAT('A', 'B', 'C') FROM table_name_;</code> would return "ABC" for each row in the table.
+Note: Some other database management systems, such as MySQL use the <code>CONCAT()</code> function to perform concatenation: e.g. <code>SELECT CONCAT('A', 'B', 'C') FROM table_name_;</code> would return "ABC" for each row in the table.
 
 h3. Pick One: Using <code>BETWEEN</code> and <code>IN</code>
 
 Often you'll want to get a value from within a range. The <code>BETWEEN</code> operator can do exactly that. Let's see which of our contributors has given between 500 and 1000 dollars:
-<pre><code>SELECT * FROM contributors WHERE amount BETWEEN 500 AND 1000;</pre></code>
+<pre><code>SELECT * FROM contributors WHERE amount BETWEEN 500 AND 1000;</code></pre>
 !http://github.com/tthibo/SQL-Tutorial/raw/master/between.png!
-(Note: this query returns the same result as <code>SELECT * FROM contributors WHERE amount >= 500 AND amount <= 1000;</code>, but it's much more readable.)
+(Note: this query returns the same result as <code>SELECT * FROM contributors WHERE amount >= 500 AND amount <= 1000;</code> -- but it's much more readable.)
 
 At other times, you may need to match values from within a set of choices. This is where the <code>IN</code> operator comes in handy. Let's find all contributors from a few southern states:
 <pre><code>SELECT * FROM contributors WHERE state IN ('AL', 'GA', 'FL');</code></pre>
