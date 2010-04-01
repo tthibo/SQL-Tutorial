@@ -32,7 +32,7 @@ There are three contributors from VA in the table, Robert Albrecht, Donald S. Le
 So, the clause <code>WHERE state = 'VA' AND last_name <> Lewis</code> looks like it's asking for all contributors from Virginia whose last name is not Lewis. And it looks like it  should return both Albrecht and the Rocky Mount contributor. But when we run it (cue "Price Is Right" sad horn sound), we only get Albrecht:
 !http://github.com/tthibo/SQL-Tutorial/raw/master/not_lewis.png!
 
-"Curiouser and curiouser," you might say. This makes strict logical sense when we say consider that the <code>NULL</code> data type can't be compared with any other data type, but really it does seem a bit of a pain (even to some of the SQL gurus). The solution is to use <code>IS NULL</code>.  Here's one way to write the query to get the results we intended:
+"Curiouser and curiouser," you might say. This makes strict logical sense when we consider that the <code>NULL</code> data type can't be compared with any other data type, but really it does seem a bit of a pain (even to some of the SQL gurus). The solution is to use <code>IS NULL</code>.  Here's one way to write the query to get the results we intended:
 <pre><code>SELECT * FROM contributors WHERE state = 'VA' AND (last_name <> 'Lewis' OR last_name IS NULL);</code></pre>(The parentheses are optional here, but they do help express our intentions.)
 
 And now we get the two expected result rows:
@@ -48,9 +48,10 @@ This negative form is pretty handy for filtering null values from the results se
 
 h3. Knowing your limitations: using <code>LIMIT</code>
 
-So far, all of our queries have returned the full result set of rows matching the <code>WHERE</code> clause. But sometimes you only want a subset of the results. Let's use the <code>LIMIT</code> keyword to get the top 20 contributors by contribution:
+So far, all of our queries have returned the full result set of rows matching the <code>WHERE</code> clause. But sometimes you only want a subset of the results. Let's use the <code>LIMIT</code> keyword to get the top 20 contributors by contribution.
+
+First we order the results by amount (in descending order), and then we limit the results to only the first 20 rows:
 <pre><code>SELECT * FROM CONTRIBUTORS ORDER BY amount DESC LIMIT 20;</code></pre>
-First we order the results by amount (in descending order), and then we limit the results to only the first 20 rows.
 !http://github.com/tthibo/SQL-Tutorial/raw/master/top_twenty_contributors.png!
 
 And if there aren't enough matching rows to reach the specified limit, the limit is simply ignored:
@@ -61,7 +62,7 @@ h3. Casting a wider net with LIKE
 
 While it's helpful to be able to write queries that look for equality (<code>last_name = 'Smith'</code>) or inequality (<code>last_name != 'Smith'</code>), sometimes you want to do something a little messier, such as looking for everyone whose last name starts with 'T'. Or maybe you want to look for matches to a five-digit ZIP code, but some of your rows use ZIP+4. For these kinds of expressions, you can use the <code>LIKE</code> operator, which will perform a partial match.
 
-To perform a partial match using <code>LIKE</code>, you can use both normal characters and special wildcard characters to construct a pattern. For example, the percent sign (<code>%</code>) will match any sequence of zero or more characters. So to match any zip that begins with 77566, we can use this statement:
+To perform a partial match using <code>LIKE</code>, you can combine normal characters and special wildcard characters to construct a pattern. For example, the percent sign (<code>%</code>) will match any sequence of zero or more characters. So to match any zip that begins with 77566, we can use this statement:
 <pre><code>SELECT zip FROM contributors WHERE zip LIKE '77566%';</code></pre>
 !http://github.com/tthibo/SQL-Tutorial/raw/master/zip_LIKE.png!
 
@@ -92,17 +93,17 @@ Now we're matching the pattern "any series of zero or more characters, followed 
 Of course, we could just match any <code>first_name</code> that contains a period, like this:
 <pre><code>SELECT * FROM contributors WHERE first_name LIKE '%.%';</code></pre> But then we also get names like "S. Truett," which may or may not be what we intended.
 
-Note: Some database systems include other wildcard characters to be used in patterns, such as [xy]
+Note: Some database systems include other wildcard characters to be used in patterns. For example, in some systems the pattern [xyz] will match one of the characters "x," "y" or "z." And the pattern [^xyz] will match any character that is not an "x," "y" or "z." SQLite does not, by default, support this wildcard.
 
 h3. Words Games: Using String Functions (SUBSTR, TRIM, UPPER, LOWER)
 
-Using <code>LIKE</code> for partial matches can be pretty powerful, but as we've seen, patterns aren't exactly beach reading. Another way to do partial matching is to use string functions to manipulate the values. String functions usually take the form of a keyword followed by parentheses, and in the parentheses we pass any arguments for the function: <code>KEYWORD(ARG1, ARG2, ARG3)</code>. Usually the first argument is the string we want to manipulate. Here are the most interesting string functions for our purposes:
+Using <code>LIKE</code> for partial matches can be pretty powerful, but as we've seen, patterns aren't exactly beach reading. Another way to do partial matching is to use string functions to manipulate the values. String functions usually take the form of a keyword followed by parentheses. The parentheses contain any arguments we want to pass to the function. The general format looks like this: <code>KEYWORD(ARG1, ARG2, ARG3)</code>. Usually the first argument is the string we want to manipulate. Here are some commonly used string functions:
 
 h4. SUBSTR()
 
-The <code>SUBSTR()</code> function takes the string we hand it in the parentheses and returns a part of the string we define (ergo, substring). (Note: some database systems use <code>SUBSTRING()</code>, rather than <code>SUBSTR()</code>.)
+The <code>SUBSTR()</code> function takes the string we hand it in the parentheses and returns a part of the string that we define (ergo, substring). (Note: some database systems use <code>SUBSTRING()</code>, rather than <code>SUBSTR()</code>.)
 
-To determine which part of the string to return, <code>SUBSTR()</code> accepts additional arguments: the starting point of the desired substring (counting characters from the left), and the number of characters to grab from that starting point. The full function call takes this form: <code>SUBSTR(STRING, START_POINT, LENGTH)</code>. The third argument is optional. If we leave it off, <code>SUBSTR()</code> returns all characters from the given starting point to the end of the string.
+To determine which part of the string to return, <code>SUBSTR()</code> accepts additional arguments: first, the starting point of the desired substring (counting characters from the left), and then the number of characters to grab from that starting point. The full function call takes this form: <code>SUBSTR(STRING, START_POINT, LENGTH)</code>. The third argument is optional. If we leave it off, <code>SUBSTR()</code> returns all characters from the given starting point to the end of the string.
 
 An example is probably more helpful. So, here is the ZIP query from above rewritten to use a substring match:
 <pre><code>SELECT zip FROM contributors WHERE SUBSTR(zip, 1, 5) = '77566';</code></pre>
@@ -115,7 +116,7 @@ Now we're getting the five-digit representation of all ZIPs in the table (and dr
 
 h4. TRIM()
 
-The <code>TRIM()</code> function is most frequently used to trim white space from either side of a string. Often during data entry, strings are accidentally inserted with leading or trailing whitespace. To simulate this case, let's mess up the data even more:
+The <code>TRIM()</code> function is most frequently used to trim white space from either side of a string. During data entry, strings are often accidentally inserted with leading or trailing whitespace. To simulate this case, let's mess up the data even more:
 <pre><code>UPDATE contributors SET state = ' GA ' WHERE last_name = 'Cathy';</code></pre>
 !http://github.com/tthibo/SQL-Tutorial/raw/master/state_ga.png!
 
@@ -132,7 +133,7 @@ And now we're back to normal:
 <pre><code>SELECT DISTINCT state FROM contributors;</code></pre>
 !http://github.com/tthibo/SQL-Tutorial/raw/master/select_distinct_state_normal.png!
 
-The <code>TRIM()</code> function can also be used to strip characters other than spaces from the front and end of a string, although this usage is probably less common. To tell <code>TRIM</code> which characters to remove, pass a second argument which contains all the characters to remove. For example, <code>TRIM(state, '.,')</code> would remove any periods or commas appearing at the beginning or end of the state name (i.e. "GA." would become "GA").
+The <code>TRIM()</code> function can also be used to strip characters other than spaces from the front and end of a string, although this usage is probably less common. To tell <code>TRIM()</code> which characters to remove, pass a second argument which contains any characters to be removed. For example, <code>TRIM(state, '.,')</code> would remove any periods or commas appearing at the beginning or end of the state name (i.e. "GA." would become "GA").
 
 h4. UPPER() and LOWER()
 
@@ -146,55 +147,57 @@ But then when we check on all contributors from Alabama, we get a different stor
 
 So, the problem is that Birmingham isn't properly capitalized. Now, we could do a <code>SELECT</code> using <code>city = 'birmingham'</code>, but then we'd miss any rows that properly capitalize the city name. And what about rows that use ALL CAPS? 
 
-An easy way to get around these issues of case-sensitivity is to use the <code>UPPER</code> or <code>LOWER</code> string functions to standardize capitalization on the values:
+An easy way to get around these issues of case-sensitivity is to use the <code>UPPER()</code> or <code>LOWER()</code> string functions to standardize capitalization on the values:
 <pre><code>SELECT * from contributors WHERE UPPER(city) = 'BIRMINGHAM';</code></pre>
 
-This query will give us the lower-case version, but it will also match "Birmingham" and "BIRMINGHAM" (not to mention "BIRMingham").
+The <code>UPPER()</code> function translates each letter in the <code>city</code> value to upper case. As a result, this query will give us the lower-case version, but it will also match "Birmingham" and "BIRMINGHAM" (not to mention "BIRMingham"), as they will all be rendered as "BIRMINGHAM" by <code>UPPER()<code>.
 
-Note: by default <code>LIKE</code> is not case-sensitive in SQLite, but that is not true of all database management systems. Also, in other database systems, such as MySQL, the basic equality operator (<code>=</code>) is case insensitive, but that's not true in SQLite, and it isn't true in other systems. When in doubt, it's safer to use <code>LOWER</code> or <code>UPPER</code> to ensure case insensitivity. (Also, some databases use <code>UCASE()</code> and <code>LCASE()</code> rather than <code>UPPER()</code> and <code>LOWER()</code>.)
+Note: by default <code>LIKE</code> is not case-sensitive in SQLite, but that is not true of all database management systems. Also, in some other database systems, such as MySQL, the basic equality operator (<code>=</code>) is case insensitive, but that's not true in SQLite, and it isn't true in other systems. When in doubt, it's safer to use <code>LOWER()</code> or <code>UPPER()</code> to ensure case insensitivity. (Also, some databases use <code>UCASE()</code> and <code>LCASE()</code> rather than <code>UPPER()</code> and <code>LOWER()</code>.)
 
 h3. Pull yourself together: The Concatenate Operator (<code>||</code>)
 
-Sometimes we want to combine values from different columns, either in the <code>WHERE</code> clause or for the results. SQLite uses the concatenation operator (<code>||</code>) to combine strings. You combine both literal strings (in quotation marks) with your values, as well.
+Sometimes we want to combine values from different columns, either in the <code>WHERE</code> clause or for the results. SQLite uses the concatenation operator (<code>||</code>) to combine strings. You can combine both literal strings (in quotation marks) and column values using this operator.
 
 Say, for instance, we want a nicely formatted list of cities and states for contributors. To create a single result column that contains the city and state separated by a comma, we can use this query:
 <pre><code>SELECT city || ',' || state FROM contributors ORDER BY state, city;</code></pre>
 We insert the comma and space as a literal string concatenated with the values from the city and state columns.
 !http://github.com/tthibo/SQL-Tutorial/raw/master/concat_city_state.png!
 
-Note: Some other database management systems, such as MySQL use the <code>CONCAT()</code> function to perform concatenation: e.g. <code>SELECT CONCAT('A', 'B', 'C') FROM table_name_;</code> would return "ABC" for each row in the table.
+Note: Some other database management systems, such as MySQL use the <code>CONCAT()</code> function to perform concatenation: e.g. <code>SELECT CONCAT(city, ', ', state) FROM contributors; //WON'T WORK IN SQLITE</code>.
 
 h3. Pick One: Using <code>BETWEEN</code> and <code>IN</code>
 
 Often you'll want to get a value from within a range. The <code>BETWEEN</code> operator can do exactly that. Let's see which of our contributors has given between 500 and 1000 dollars:
 <pre><code>SELECT * FROM contributors WHERE amount BETWEEN 500 AND 1000;</code></pre>
 !http://github.com/tthibo/SQL-Tutorial/raw/master/between.png!
-(Note: this query returns the same result as <code>SELECT * FROM contributors WHERE amount >= 500 AND amount <= 1000;</code> -- but it's much more readable.)
+(Note: this query returns the same results as <code>SELECT * FROM contributors WHERE amount >= 500 AND amount <= 1000;</code> -- but it's much more readable.)
 
 At other times, you may need to match values from within a set of choices. This is where the <code>IN</code> operator comes in handy. Let's find all contributors from a few southern states:
 <pre><code>SELECT * FROM contributors WHERE state IN ('AL', 'GA', 'FL');</code></pre>
+The choices are surrounded by parentheses and separated by commas. And don't forget the quote marks around literal strings. here's the result: 
 !http://github.com/tthibo/SQL-Tutorial/raw/master/in.png!
-(Again, you could have used a compound statement with <code>state = 'AL' OR state = 'GA' OR state = 'FL'</code> to achieve the same result, but <code>IN</code> syntax makes things much clearer.
+(Again, you could have used a compound statement with <code>state = 'AL' OR state = 'GA' OR state = 'FL'</code> to achieve the same result, but the <code>IN</code> syntax makes things much clearer, and it's easier to write.)
 
 h3. Aggregate Functions: COUNT(), MAX(), MIN(), SUM(), AVG()
 
-Aggregate functions allow us to perform calculations on values across rows. Using them, we can start to do some interesting data analysis. Pass in the column name you want to aggregate as the argument in parentheses.
-Here's a quick run through some useful ones:
+Aggregate functions allow us to perform calculations on values across rows. Using them, we can start to do some pretty interesting data analysis. To tell SQLite which column to use for the aggregate, pass the column name in parentheses: e.g. <code>COUNT(counted_column)</code>. Here's a quick run through some useful aggregate functions:
 
 h4. COUNT()
 
 How many contributors do we have from California?
-<pre><code>SELECT COUNT(id) FROM contributors WHERE state = 'CA';<code></pre>
+<pre><code>SELECT COUNT(id) FROM contributors WHERE state = 'CA';</code></pre>
 !http://github.com/tthibo/SQL-Tutorial/raw/master/count_ca.png!
 	
 The <code>COUNT(id)</code> function counts the number of unique ids. We could also have used <code>COUNT(*)</code>, which will count the number of rows. The result will be the same.
+
 <code>COUNT()</code> can also be used with <code>DISTINCT</code> to return the number of distinct instances. For example, how many distinct ZIP Codes are there in the table?
-<pre><code>SELECT COUNT(DISTINCT zip)  FROM contributors ;</code></pre>
-(Note that the the DISTINCT keyword 
+<pre><code>SELECT COUNT(DISTINCT zip)  FROM contributors;</code></pre>
+(Note that the the DISTINCT keyword comes inside the parentheses. It is part of the argument passed to <code>COUNT()</code>.
+!http://github.com/tthibo/SQL-Tutorial/raw/master/distinct_zip.png!
 
 h4. MIN() and MAX()
 
-What is the maximum any of our contributors has given?
+What is the maximum amount that any of our contributors has given?
 <pre><code>SELECT MAX(amount) FROM contributors;</code></pre>
 !http://github.com/tthibo/SQL-Tutorial/raw/master/max_amount.png!
 
@@ -210,7 +213,7 @@ What is the average amount contributed?
 <pre><code>SELECT AVG(amount) FROM contributors;</code></pre>
 !http://github.com/tthibo/SQL-Tutorial/raw/master/avg_amt.png!
 
-(Of course, the usual caveats about using averages apply. I heard a nice example recently: "Which major at UNC produces graduates with the highest average salary?" Apparently, it was Geography, Michael Jordan's major. Even if it isn't true, it's a nice illustration of the way outliers can skew averages.)
+(Of course, the usual caveats about using averages apply. I heard a nice example recently: "Which major at UNC produces graduates with the highest average salary?" Apparently, it was Geography, Michael Jordan's major. Even if it isn't true, it's a nice warning about the way outliers can skew averages.)
 
 h3. Subqueries
 
@@ -220,13 +223,33 @@ who actually gave that maximum amount? We could try something like this:
 But we won't like the results:
 !http://github.com/tthibo/SQL-Tutorial/raw/master/alert_aggregate.png!
 
+We could also simply run two different queries, one to get the maximum amount, and another to find rows matching that amount:
+<pre><code>SELECT MAX(amount) FROM contributors;</code></pre>
+<pre><code>SELECT * FROM contributors WHERE amount = 2400;</code></pre>
 
+While that would work, it's a little clunky and brittle. (If the database is being updated often, we'd always have to run the lookup for MAX() first, in case the maximum amount changed between queries.)
 
+Wouldn't it be nice to combine those into one statement? Well, you're in luck: a subquery is up to that task:
+<pre><code>SELECT * FROM contributors WHERE amount = (SELECT MAX(amount) FROM contributors);</code></pre>
+!http://github.com/tthibo/SQL-Tutorial/raw/master/subquery_max_.png!
 
+This statement works because our subquery only returns a single value (the value of <code>MAX(amount)</code>). It's also possible to use a subquery that returns multiple results, but in that case, we can't use the <code>=</code> operator.
+
+If we wanted, for example, to get the total contributions from the top 20 contributors, we have a list of 20 result rows we want to match against. That's where our old friend <code>IN</code> comes to the rescue:
+
+<pre><code>SELECT SUM(amount) FROM contributors WHERE id IN (SELECT id FROM contributors ORDER BY amount DESC LIMIT 20);</code></pre>
+
+Notice that we're asking for the sum of all amounts where the unique identifier for our contributor is in the results of our subquery. So, we'll match against unique identifiers for the top 20 donors (those whose amount is in the top 20).
+!http://github.com/tthibo/SQL-Tutorial/raw/master/sum_top_20.png!
 
 h3. GROUP BY
 
-The real power o
+With some aggregate functions in our tool belt, we're ready to take advantage of one of SQL's more powerful features: <code>GROUP BY</code>.
+
+The <code>GROUP BY</code>
+
+
+
 
 h3. HAVING
 
