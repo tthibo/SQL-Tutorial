@@ -165,7 +165,7 @@ We insert the comma and space as a literal string concatenated with the values f
 
 Note: Some other database management systems, such as MySQL use the <code>CONCAT()</code> function to perform concatenation: e.g. <code>SELECT CONCAT(city, ', ', state) FROM contributors; //WON'T WORK IN SQLITE</code>.
 
-h3. Pick One: Using <code>BETWEEN</code> and <code>IN</code>
+h3. Pick One: Using <code>BETWEEN</code> and <code>IN</code> (<code>NOT IN</code>)
 
 Often you'll want to get a value from within a range. The <code>BETWEEN</code> operator can do exactly that. Let's see which of our contributors has given between 500 and 1000 dollars:
 <pre><code>SELECT * FROM contributors WHERE amount BETWEEN 500 AND 1000;</code></pre>
@@ -177,6 +177,9 @@ At other times, you may need to match values from within a set of choices. This 
 The choices are surrounded by parentheses and separated by commas. And don't forget the quote marks around literal strings. here's the result: 
 !http://github.com/tthibo/SQL-Tutorial/raw/master/in.png!
 (Again, you could have used a compound statement with <code>state = 'AL' OR state = 'GA' OR state = 'FL'</code> to achieve the same result, but the <code>IN</code> syntax makes things much clearer, and it's easier to write.)
+
+You can also use <code>NOT IN</code> to find results where a value is not included in the given set:
+<pre><code>SELECT * FROM contributors WHERE state NOT IN ('CA', 'OR', 'AZ');</code></pre>
 
 h3. Aggregate Functions: COUNT(), MAX(), MIN(), SUM(), AVG()
 
@@ -224,7 +227,7 @@ But we won't like the results:
 !http://github.com/tthibo/SQL-Tutorial/raw/master/alert_aggregate.png!
 
 We could also simply run two different queries, one to get the maximum amount, and another to find rows matching that amount:
-<pre><code>SELECT MAX(amount) FROM contributors;</code></pre>
+<pre><code>SELECT MAX(amount) FROM contributors;</code></pre> (Which returns 2400.)
 <pre><code>SELECT * FROM contributors WHERE amount = 2400;</code></pre>
 
 While that would work, it's a little clunky and brittle. (If the database is being updated often, we'd always have to run the lookup for MAX() first, in case the maximum amount changed between queries.)
@@ -232,6 +235,8 @@ While that would work, it's a little clunky and brittle. (If the database is bei
 Wouldn't it be nice to combine those into one statement? Well, you're in luck: a subquery is up to that task:
 <pre><code>SELECT * FROM contributors WHERE amount = (SELECT MAX(amount) FROM contributors);</code></pre>
 !http://github.com/tthibo/SQL-Tutorial/raw/master/subquery_max_.png!
+
+The subquery appears in parentheses, and it stands in for the value we want to test against <code>amount</code>. The result is the same as <code>amount = 2400</code> because the result of that nested query is 2400.
 
 This statement works because our subquery only returns a single value (the value of <code>MAX(amount)</code>). It's also possible to use a subquery that returns multiple results, but in that case, we can't use the <code>=</code> operator.
 
@@ -241,6 +246,10 @@ If we wanted, for example, to get the total contributions from the top 20 contri
 
 Notice that we're asking for the sum of all amounts where the unique identifier for our contributor is in the results of our subquery. So, we'll match against unique identifiers for the top 20 donors (those whose amount is in the top 20).
 !http://github.com/tthibo/SQL-Tutorial/raw/master/sum_top_20.png!
+
+Subqueries can also be used in the predicates (or <code>WHERE</code> clauses) of <code>DELETE</code> <code>UPDATE</code> and <code>INSERT INTO</code>.
+
+
 
 h3. GROUP BY
 
