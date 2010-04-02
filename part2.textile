@@ -9,7 +9,7 @@ To get started, click on the SQLite Manager tool in your FireFox toolbar:
 It should ask you if you want to open the last used database (*test.sql*). Click OK.
 If you do not get this option, click on the "Connect Database" icon (!http://github.com/tthibo/SQL-Tutorial/raw/master/connect_db.png!) and browse to the file you saved last time. (If you can't find the file, you can recreate it by following the final step in "Part I":http://github.com/tthibo/SQL-Tutorial#readme of this tutorial.)
 
-h3. Nothing can come of nothing: using IS NULL
+h3. Nothing can come of nothing: Using IS NULL
 
 Let's take a look back at our original CREATE statement for the contributors table:
 <pre><code>CREATE  TABLE "main"."contributors" ("id" INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL , "last_name" VARCHAR, "first_name" VARCHAR, "city" VARCHAR, "state" VARCHAR, "zip" VARCHAR, "amount" INTEGER)</code></pre>
@@ -51,7 +51,7 @@ The opposite of <code>IS NULL</code> is (drumroll) . . .  <code>IS NOT NULL</cod
 
 This negative form is pretty handy for filtering null values from the results set.
 
-h3. Knowing your limitations: using <code>LIMIT</code>
+h3. Knowing your limitations: Using <code>LIMIT</code>
 
 So far, all of our queries have returned the full result set of rows matching the <code>WHERE</code> clause. But sometimes you only want a subset of the results. Let's use the <code>LIMIT</code> keyword to get the top 20 contributors by contribution.
 
@@ -107,7 +107,7 @@ Of course, we could just match any <code>first_name</code> that contains a perio
 
 Note: Some database systems include other wildcard characters to be used in patterns. For example, in some systems the pattern [xyz] will match one of the characters "x," "y" or "z." And the pattern [^xyz] will match any character that is not an "x," "y" or "z." SQLite does not, by default, support this wildcard.
 
-h3. Words Games: Using String Functions (SUBSTR(), TRIM(), UPPER(), LOWER())
+h3. Word games: Using string functions (SUBSTR(), TRIM(), UPPER(), LOWER())
 
 Using <code>LIKE</code> for partial matches can be pretty powerful, but as we've seen, patterns aren't exactly beach reading. Another way to do partial matching is to use string functions to manipulate the values. String functions usually take the form of a keyword followed by parentheses. The parentheses contain any arguments we want to pass to the function. The general format looks like this: <code>KEYWORD(ARG1, ARG2, ARG3)</code>. Usually the first argument is the string we want to manipulate. Here are some commonly used string functions:
 
@@ -172,7 +172,7 @@ The <code>UPPER()</code> function translates each letter in the <code>city</code
 
 Note: by default <code>LIKE</code> is not case-sensitive in SQLite, but that is not true of all database management systems. Also, in some other database systems, such as MySQL, the basic equality operator (<code>=</code>) is case insensitive, but that's not true in SQLite, and it isn't true in other systems. When in doubt, it's safer to use <code>LOWER()</code> or <code>UPPER()</code> to ensure case insensitivity. (Also, some databases use <code>UCASE()</code> and <code>LCASE()</code> rather than <code>UPPER()</code> and <code>LOWER()</code>.)
 
-h3. Pull yourself together: The Concatenate Operator (<code>||</code>)
+h3. Pull yourself together: The concatenate operator (<code>||</code>)
 
 Sometimes we want to combine values from different columns, either in the <code>WHERE</code> clause or for the results. SQLite uses the concatenation operator (<code>||</code>) to combine strings. You can combine both literal strings (in quotation marks) and column values using this operator.
 
@@ -199,10 +199,11 @@ The choices are surrounded by parentheses and separated by commas. And don't for
 
 You can also use <code>NOT IN</code> to find results where a value is not included in the given set:
 <pre><code>SELECT * FROM contributors WHERE state NOT IN ('CA', 'OR', 'AZ');</code></pre>
+But beware that <code>NOT IN</code> won't work with null fields. So, if one of the rows has a null value for state, it would not be returned by the query above.
 
-h3. Aggregate Functions: COUNT(), MAX(), MIN(), SUM(), AVG()
+h3. Aggregate Functions: COUNT, MAX, MIN, SUM, AVG
 
-Aggregate functions allow us to perform calculations on values across rows. Using them, we can start to do some pretty interesting data analysis. To tell SQLite which column to use for the aggregate, pass the column name in parentheses: e.g. <code>COUNT(counted_column)</code>. Here's a quick run through some useful aggregate functions:
+Aggregate functions allow us to perform calculations on values across rows. Using them, we can start to do some pretty interesting data analysis. To specify a column to use for the aggregate, pass the column name as the argument in parentheses: e.g. <code>COUNT(counted_column)</code>. Here's a quick run through some useful aggregate functions:
 
 h4. COUNT()
 
@@ -241,10 +242,9 @@ What is the average amount contributed?
 
 (Of course, the usual caveats about using averages apply. I heard a nice example recently: "Which major at UNC produces graduates with the highest average salary?" Apparently, it was Geography, Michael Jordan's major. Even if it isn't true, it's a nice warning about the way outliers can skew averages.)
 
-h3. Subqueries
+h3. Subqueries, the Russian dolls of SQL
 
-When doing analysis, we often want to base one query on the results of another query. For example, we used the <code>MAX()</code> function to determine the maximum amount contributed. But what if we want to know 
-who actually gave that maximum amount? We could try something like this:
+When doing analysis, we often want to base one query on the results of another query. For example, we used the <code>MAX()</code> function to determine the maximum amount contributed. But what if we want to know who actually gave that maximum amount? We could try something like this:
 <pre><code>SELECT * FROM contributors WHERE amount = MAX(amount);</code></pre>
 But we won't like the results:
 
@@ -254,7 +254,7 @@ We could also simply run two different queries, one to get the maximum amount, a
 <pre><code>SELECT MAX(amount) FROM contributors;</code></pre> (Which returns 2400.)
 <pre><code>SELECT * FROM contributors WHERE amount = 2400;</code></pre>
 
-While that would work, it's a little clunky and brittle. (If the database is being updated often, we'd always have to run the lookup for MAX() first, in case the maximum amount changed between queries.)
+While that would work, it's a little clunky and brittle. (If the database is being updated often, we'd always have to run the lookup for <code>MAX()</code> first, in case the maximum amount changed between queries.)
 
 Wouldn't it be nice to be able to combine those into one statement? Well, we're in luck: a subquery is up to that task:
 <pre><code>SELECT * FROM contributors WHERE amount = (SELECT MAX(amount) FROM contributors);</code></pre>
@@ -265,7 +265,7 @@ The subquery appears in parentheses, and it stands in for the value we want to t
 
 This statement works because our subquery only returns a single value (the value of <code>MAX(amount)</code>). It's also possible to use a subquery that returns multiple results, but in that case, we can't use the <code>=</code> operator.
 
-If we wanted, for example, to get the total contributions from the top 20 contributors, we would have a list of 20 rows we want to match against. That's where our old friend <code>IN</code> comes to the rescue:
+If we wanted, for example, to get the total contributions from the top 20 contributors, we would have a list of 20 rows we want to match against. That's where our new friend <code>IN</code> comes to the rescue:
 
 <pre><code>SELECT SUM(amount) FROM contributors WHERE id IN (SELECT id FROM contributors ORDER BY amount DESC LIMIT 20);</code></pre>
 
@@ -299,7 +299,7 @@ And we can use the aggregate function in an <code>ORDER BY</code> statement to s
 
 The syntax of this last statement is a little tricky. The columns to group by are separated by commas, but there is no comma before <code>ORDER BY</code> or <code>DESC</code>. 
 
-Most relational database management systems require that every non-aggregate field in the <code>SELECT</code> statement also be included in the <code>GROUP BY</code> statement. Because <code>SUM(amount)</code> is an aggregate, we can include it in the <code>SELECT</code> statement even though it isn't included in the <code>GROUP BY</code> list. But if we want to include <code>city</code> in the <code>SELECT</code>, we generally need to include it in the <code>GROUP BY</code> as well.
+Most relational database management systems require that every non-aggregate field in the <code>SELECT</code> statement also be included in the <code>GROUP BY</code> statement. Because <code>SUM(amount)</code> is an aggregate, we can include it in the <code>SELECT</code> statement, even though it isn't included in the <code>GROUP BY</code> list. But if we want to include <code>city</code> in the <code>SELECT</code>, we generally need to include it in the <code>GROUP BY</code> as well.
 
 SQLite doesn't enforce this standard SQL restriction, which in some cases makes writing the query much simpler but in most cases can lead to unexpected results. Here's what happens when we leave the <code>city</code> column out of the <code>GROUP BY</code> but include it in the <code>SELECT</code>:
 
@@ -309,8 +309,7 @@ That's not at all what we wanted. We're getting only one row per state (because 
 
 h3. HAVING
 
-Now that we understand grouping and aggregates, let's try filtering the results based on an aggregate. To start, let's find all cities for which the total contributions is greater than $3,000. Here's a first
-stab at the query:
+Now that we understand grouping and aggregates, let's try filtering the results based on an aggregate. To start, let's find all cities for which the total contributions is greater than $3,000. Here's a first stab at the query:
 
 <pre><code>SELECT city, state, SUM(amount) FROM contributors WHERE SUM(amount) >= 3000  GROUP BY city, state  ORDER BY SUM(amount) DESC;</code></pre>
 
@@ -337,7 +336,7 @@ Now let's make this into an aggregate query by adding a <code>GROUP BY</code> an
 	
 We have the same nine cities that we had in the first query (those cities in which someone donated at least $2,300). But now, rather than having one row per contributor, we have one row per city. The <code>GROUP BY</code> eliminates the duplicate entries for cities in which more than one person contributed at least $2,300. And by using the aggregate function for <code>SUM(amount)</code>, we're adding up all contributions of at least $2,300 for each city.
 
-Now let's further filter this list of cities. We want to look only at cities in which these large contributions ($2,300 or greater) made a big difference. Let's call $4000 a big difference, for the sake of argument. So, we want only those where the total of contributions at this size exceeds $4000. (Looking at the results from the last query, we know to expect 3 rows, but it's not always so easy to see.) Here goes:
+Now let's further filter this list of cities. We want to look only at cities in which these large contributions ($2,300 or greater) made a big difference. Let's call $4000 a big difference, for the sake of argument. So, we want only those cities for which the total amount of contributions at this size exceeds $4000. (Looking at the results from the last query, we know to expect 3 rows, but it's not always so easy to see.) Here goes:
 <pre><code>SELECT city, state, SUM(amount) FROM contributors WHERE amount >= 2300 GROUP BY city, state HAVING SUM(amount) > 4000;</code></pre>
 
 And bam!
