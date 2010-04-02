@@ -112,6 +112,7 @@ We're asking for all ZIP codes in the table whose first five characters match '7
 Functions can also be used in the <code>SELECT</code> clause of the query, so we can do something like this:
 <pre><code>SELECT SUBSTR(zip, 1, 5) FROM contributors;</code></pre>
 Now we're getting the five-digit representation of all ZIPs in the table (and dropping the extra four digits from the ZIP+4s)
+
 !http://github.com/tthibo/SQL-Tutorial/raw/master/select_substr.png!
 
 h4. TRIM()
@@ -125,12 +126,14 @@ So, now Cathy isn't appearing in our list of Georgians. Even worse, we've create
 !http://github.com/tthibo/SQL-Tutorial/raw/master/distinct_state_space.png!
 
 We can use <code>TRIM()</code> to clean things up:
+
 <pre><code>UPDATE contributors SET state = TRIM(state);</code></pre>
 
 Notice here that we're not using a <code>WHERE</code> clause on the <code>UPDATE</code> statement. This means that all rows will be updated, which is usually not what you want at all. Consider if we had used <code>SET state = 'GA'</code> in the statement above; we'd now have a table full of Georgians and a mess to clean up. Because we're using a function, rather than a literal string here, we can update everything at once, trimming the white space from the front and end of every state value. The function operates on the value in the <code>state</code> column for each row in turn.
 
 And now we're back to normal:
 <pre><code>SELECT DISTINCT state FROM contributors;</code></pre>
+
 !http://github.com/tthibo/SQL-Tutorial/raw/master/select_distinct_state_normal.png!
 
 The <code>TRIM()</code> function can also be used to strip characters other than spaces from the front and end of a string, although this usage is probably less common. To tell <code>TRIM()</code> which characters to remove, pass a second argument which contains any characters to be removed. For example, <code>TRIM(state, '.,')</code> would remove any periods or commas appearing at the beginning or end of the state name (i.e. "GA." would become "GA").
@@ -150,7 +153,7 @@ So, the problem is that Birmingham isn't properly capitalized. Now, we could do 
 An easy way to get around these issues of case-sensitivity is to use the <code>UPPER()</code> or <code>LOWER()</code> string functions to standardize capitalization on the values:
 <pre><code>SELECT * from contributors WHERE UPPER(city) = 'BIRMINGHAM';</code></pre>
 
-The <code>UPPER()</code> function translates each letter in the <code>city</code> value to upper case. As a result, this query will give us the lower-case version, but it will also match "Birmingham" and "BIRMINGHAM" (not to mention "BIRMingham"), as they will all be rendered as "BIRMINGHAM" by <code>UPPER()<code>.
+The <code>UPPER()</code> function translates each letter in the <code>city</code> value to upper case. As a result, this query will give us the lower-case version, but it will also match "Birmingham" and "BIRMINGHAM" (not to mention "BIRMingham"), as they will all be rendered as "BIRMINGHAM" by <code>UPPER()</code>.
 
 Note: by default <code>LIKE</code> is not case-sensitive in SQLite, but that is not true of all database management systems. Also, in some other database systems, such as MySQL, the basic equality operator (<code>=</code>) is case insensitive, but that's not true in SQLite, and it isn't true in other systems. When in doubt, it's safer to use <code>LOWER()</code> or <code>UPPER()</code> to ensure case insensitivity. (Also, some databases use <code>UCASE()</code> and <code>LCASE()</code> rather than <code>UPPER()</code> and <code>LOWER()</code>.)
 
@@ -161,6 +164,7 @@ Sometimes we want to combine values from different columns, either in the <code>
 Say, for instance, we want a nicely formatted list of cities and states for contributors. To create a single result column that contains the city and state separated by a comma, we can use this query:
 <pre><code>SELECT city || ',' || state FROM contributors ORDER BY state, city;</code></pre>
 We insert the comma and space as a literal string concatenated with the values from the city and state columns.
+
 !http://github.com/tthibo/SQL-Tutorial/raw/master/concat_city_state.png!
 
 Note: Some other database management systems, such as MySQL use the <code>CONCAT()</code> function to perform concatenation: e.g. <code>SELECT CONCAT(city, ', ', state) FROM contributors; //WON'T WORK IN SQLITE</code>.
