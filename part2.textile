@@ -249,8 +249,6 @@ Notice that we're asking for the sum of all amounts where the unique identifier 
 
 Subqueries can also be used in the predicates (or <code>WHERE</code> clauses) of <code>DELETE</code> <code>UPDATE</code> and <code>INSERT INTO</code>.
 
-
-
 h3. GROUP BY
 
 With some aggregate functions in our tool belt, we're ready to take advantage of one of SQL's more powerful features: <code>GROUP BY</code>.
