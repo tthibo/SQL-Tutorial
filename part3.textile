@@ -21,3 +21,6 @@ http://www.sqlite.org/lang.html
 http://www.sqlite.org/lang_keywords.html
 http://www.sqlite.org/lang_expr.html
 http://en.wikipedia.org/wiki/SQL
+http://www.w3schools.com/sql/default.asp
+http://www.sql-tutorial.com/
+http://searchoracle.techtarget.com/answer/Calculating-percentiles-in-SQL

@@ -3,12 +3,11 @@ h2. A Gentle Introduction to SQL Using SQLite Part II
 Now that we have some dirty data and a few keywords, we can start to write some more interesting queries. In the process, we'll learn a few of the idiosyncrasies of SQL.
 
 To get started, click on the SQLite Manager tool in your FireFox toolbar:
+
 !http://github.com/tthibo/SQL-Tutorial/raw/master/tool_menu.jpg!
 
 It should ask you if you want to open the last used database (*test.sql*). Click OK.
 If you do not get this option, click on the "Connect Database" icon (!http://github.com/tthibo/SQL-Tutorial/raw/master/connect_db.png!) and browse to the file you saved last time. (If you can't find the file, you can recreate it by following the final step in "Part I":http://github.com/tthibo/SQL-Tutorial#readme of this tutorial.)
-
-
 
 h3. Nothing can come of nothing: using IS NULL
 
@@ -26,22 +25,28 @@ Instead, to query for null values, we use the keywords <code>IS NULL</code>:
 !http://github.com/tthibo/SQL-Tutorial/raw/master/last_name_NULL.png!
 
 <code>NULL</code>'s refusal to respond to normal operators can lead to some unforeseen effects. Take a look at this query, and guess what it should return:
+
 <pre><code>SELECT * FROM contributors WHERE state = 'VA' AND last_name <> 'Lewis';</pre></code> (Remember that <code><></code> means the same thing that <code>!=</code> does: "is not equal.")
+
 There are three contributors from VA in the table, Robert Albrecht, Donald S. Lewis, and someone from Rocky Mount whose name fields are empty. (Yes, the data did come in like this from the FEC.) You can see the list by using "Browse & Search" or by running this query: <code>SELECT * FROM contributors WHERE state = 'VA';</code>.
 
 So, the clause <code>WHERE state = 'VA' AND last_name <> Lewis</code> looks like it's asking for all contributors from Virginia whose last name is not Lewis. And it looks like it  should return both Albrecht and the Rocky Mount contributor. But when we run it (cue "Price Is Right" sad horn sound), we only get Albrecht:
+
 !http://github.com/tthibo/SQL-Tutorial/raw/master/not_lewis.png!
 
 "Curiouser and curiouser," you might say. This makes strict logical sense when we consider that the <code>NULL</code> data type can't be compared with any other data type, but really it does seem a bit of a pain (even to some of the SQL gurus). The solution is to use <code>IS NULL</code>.  Here's one way to write the query to get the results we intended:
+
 <pre><code>SELECT * FROM contributors WHERE state = 'VA' AND (last_name <> 'Lewis' OR last_name IS NULL);</code></pre>(The parentheses are optional here, but they do help express our intentions.)
 
 And now we get the two expected result rows:
+
 !http://github.com/tthibo/SQL-Tutorial/raw/master/lewis_or_null.png!
 
 h4. IS NOT NULL
 
 The opposite of <code>IS NULL</code> is (drumroll) . . .  <code>IS NOT NULL</code>. And it works pretty much as we'd expect:
 <pre><code>SELECT * FROM contributors WHERE state = 'VA' AND last_name IS NOT NULL;</code></pre>
+
 !http://github.com/tthibo/SQL-Tutorial/raw/master/is_not_null.png!
 
 This negative form is pretty handy for filtering null values from the results set.
@@ -51,10 +56,13 @@ h3. Knowing your limitations: using <code>LIMIT</code>
 So far, all of our queries have returned the full result set of rows matching the <code>WHERE</code> clause. But sometimes you only want a subset of the results. Let's use the <code>LIMIT</code> keyword to get the top 20 contributors by contribution.
 
 First we order the results by amount (in descending order), and then we limit the results to only the first 20 rows:
+
 <pre><code>SELECT * FROM CONTRIBUTORS ORDER BY amount DESC LIMIT 20;</code></pre>
+
 !http://github.com/tthibo/SQL-Tutorial/raw/master/top_twenty_contributors.png!
 
 And if there aren't enough matching rows to reach the specified limit, the limit is simply ignored:
+
 <pre><code>SELECT * FROM contributors WHERE amount > 2100 LIMIT 20;</code></pre>
 
 
@@ -63,13 +71,16 @@ h3. Casting a wider net with LIKE
 While it's helpful to be able to write queries that look for equality (<code>last_name = 'Smith'</code>) or inequality (<code>last_name != 'Smith'</code>), sometimes you want to do something a little messier, such as looking for everyone whose last name starts with 'T'. Or maybe you want to look for matches to a five-digit ZIP code, but some of your rows use ZIP+4. For these kinds of expressions, you can use the <code>LIKE</code> operator, which will perform a partial match.
 
 To perform a partial match using <code>LIKE</code>, you can combine normal characters and special wildcard characters to construct a pattern. For example, the percent sign (<code>%</code>) will match any sequence of zero or more characters. So to match any zip that begins with 77566, we can use this statement:
+
 <pre><code>SELECT zip FROM contributors WHERE zip LIKE '77566%';</code></pre>
+
 !http://github.com/tthibo/SQL-Tutorial/raw/master/zip_LIKE.png!
 
 Notice that it matches both 775661497 and 77566036. It would also match 77566, because the <code>%</code> will match zero characters, too.
 
 The <code>%</code> is probably the most common special character used in pattern matching with <code>LIKE</code>. Another less commonly used pattern matcher is the underscore ("_"), which matches any single character in the string. Say, for example, we wanted to start cleaning our data, and we wanted to remove the middle initials from the <code>first_name</code> field and put them into a new <code>middle_name</code> column. (This sort of thing can get tricky very quickly, but for now we'll trip along happily assuming everything goes smoothly.) As a first step, we want simply to examine all of the rows that appear to contain middle initials in <code>first_name</code>. Here's a query that will get us at least part of the way there:
 <pre><code>SELECT * FROM contributors WHERE first_name LIKE '% _.';</code></pre>
+
 Reading patterns like this one may prove a little tricky at first, but in time . . . who am I kidding, it's still pretty tricky, but you can figure it out. Let's break it down:
 
 * The pattern starts with <code>%</code>, which we know means "match any series of zero or more characters," which is pretty much anything. 
@@ -78,6 +89,7 @@ Reading patterns like this one may prove a little tricky at first, but in time .
 * And finally, we have a period (<code>.</code>), which is just a literal period here.
 
 And here's the result:
+
 !http://github.com/tthibo/SQL-Tutorial/raw/master/like_initial.png!
 
 So, in English, the pattern says to match "any series of characters followed by a space, a single character, and a period."
@@ -95,7 +107,7 @@ Of course, we could just match any <code>first_name</code> that contains a perio
 
 Note: Some database systems include other wildcard characters to be used in patterns. For example, in some systems the pattern [xyz] will match one of the characters "x," "y" or "z." And the pattern [^xyz] will match any character that is not an "x," "y" or "z." SQLite does not, by default, support this wildcard.
 
-h3. Words Games: Using String Functions (SUBSTR, TRIM, UPPER, LOWER)
+h3. Words Games: Using String Functions (SUBSTR(), TRIM(), UPPER(), LOWER())
 
 Using <code>LIKE</code> for partial matches can be pretty powerful, but as we've seen, patterns aren't exactly beach reading. Another way to do partial matching is to use string functions to manipulate the values. String functions usually take the form of a keyword followed by parentheses. The parentheses contain any arguments we want to pass to the function. The general format looks like this: <code>KEYWORD(ARG1, ARG2, ARG3)</code>. Usually the first argument is the string we want to manipulate. Here are some commonly used string functions:
 
@@ -119,10 +131,12 @@ h4. TRIM()
 
 The <code>TRIM()</code> function is most frequently used to trim white space from either side of a string. During data entry, strings are often accidentally inserted with leading or trailing whitespace. To simulate this case, let's mess up the data even more:
 <pre><code>UPDATE contributors SET state = ' GA ' WHERE last_name = 'Cathy';</code></pre>
+
 !http://github.com/tthibo/SQL-Tutorial/raw/master/state_ga.png!
 
 So, now Cathy isn't appearing in our list of Georgians. Even worse, we've created a new state:
 <pre><code>SELECT DISTINCT state FROM contributors;</code></pre>
+
 !http://github.com/tthibo/SQL-Tutorial/raw/master/distinct_state_space.png!
 
 We can use <code>TRIM()</code> to clean things up:
@@ -146,6 +160,7 @@ Hmm . . . apparently there aren't any.
 
 But then when we check on all contributors from Alabama, we get a different story:
 <pre><code>SELECT * FROM contributors WHERE state = 'AL';</code></pre>
+
 !http://github.com/tthibo/SQL-Tutorial/raw/master/alabama.png!
 
 So, the problem is that Birmingham isn't properly capitalized. Now, we could do a <code>SELECT</code> using <code>city = 'birmingham'</code>, but then we'd miss any rows that properly capitalize the city name. And what about rows that use ALL CAPS? 
@@ -193,6 +208,7 @@ h4. COUNT()
 
 How many contributors do we have from California?
 <pre><code>SELECT COUNT(id) FROM contributors WHERE state = 'CA';</code></pre>
+
 !http://github.com/tthibo/SQL-Tutorial/raw/master/count_ca.png!
 	
 The <code>COUNT(id)</code> function counts the number of unique ids. We could also have used <code>COUNT(*)</code>, which will count the number of rows. The result will be the same.
@@ -206,18 +222,21 @@ h4. MIN() and MAX()
 
 What is the maximum amount that any of our contributors has given?
 <pre><code>SELECT MAX(amount) FROM contributors;</code></pre>
+
 !http://github.com/tthibo/SQL-Tutorial/raw/master/max_amount.png!
 
 h4. SUM()
 
 What is the total amount of contributions from Georgia?
 <pre><code>SELECT SUM(amount) FROM contributors WHERE state = 'GA';</code></pre>
+
 !http://github.com/tthibo/SQL-Tutorial/raw/master/sum_ga.png!
 
 h4. AVG()
 
 What is the average amount contributed?
 <pre><code>SELECT AVG(amount) FROM contributors;</code></pre>
+
 !http://github.com/tthibo/SQL-Tutorial/raw/master/avg_amt.png!
 
 (Of course, the usual caveats about using averages apply. I heard a nice example recently: "Which major at UNC produces graduates with the highest average salary?" Apparently, it was Geography, Michael Jordan's major. Even if it isn't true, it's a nice warning about the way outliers can skew averages.)
@@ -228,6 +247,7 @@ When doing analysis, we often want to base one query on the results of another q
 who actually gave that maximum amount? We could try something like this:
 <pre><code>SELECT * FROM contributors WHERE amount = MAX(amount);</code></pre>
 But we won't like the results:
+
 !http://github.com/tthibo/SQL-Tutorial/raw/master/alert_aggregate.png!
 
 We could also simply run two different queries, one to get the maximum amount, and another to find rows matching that amount:
@@ -236,31 +256,96 @@ We could also simply run two different queries, one to get the maximum amount, a
 
 While that would work, it's a little clunky and brittle. (If the database is being updated often, we'd always have to run the lookup for MAX() first, in case the maximum amount changed between queries.)
 
-Wouldn't it be nice to combine those into one statement? Well, you're in luck: a subquery is up to that task:
+Wouldn't it be nice to be able to combine those into one statement? Well, we're in luck: a subquery is up to that task:
 <pre><code>SELECT * FROM contributors WHERE amount = (SELECT MAX(amount) FROM contributors);</code></pre>
+
 !http://github.com/tthibo/SQL-Tutorial/raw/master/subquery_max_.png!
 
-The subquery appears in parentheses, and it stands in for the value we want to test against <code>amount</code>. The result is the same as <code>amount = 2400</code> because the result of that nested query is 2400.
+The subquery appears in parentheses, and it stands in for the value we want to test against <code>amount</code>. The subquery is executed first, and its result is used in the outer query. Because the subquery returns 2400, the query above gives the same result as a query for <code>amount = 2400</code>.
 
 This statement works because our subquery only returns a single value (the value of <code>MAX(amount)</code>). It's also possible to use a subquery that returns multiple results, but in that case, we can't use the <code>=</code> operator.
 
-If we wanted, for example, to get the total contributions from the top 20 contributors, we have a list of 20 result rows we want to match against. That's where our old friend <code>IN</code> comes to the rescue:
+If we wanted, for example, to get the total contributions from the top 20 contributors, we would have a list of 20 rows we want to match against. That's where our old friend <code>IN</code> comes to the rescue:
 
 <pre><code>SELECT SUM(amount) FROM contributors WHERE id IN (SELECT id FROM contributors ORDER BY amount DESC LIMIT 20);</code></pre>
 
-Notice that we're asking for the sum of all amounts where the unique identifier for our contributor is in the results of our subquery. So, we'll match against unique identifiers for the top 20 donors (those whose amount is in the top 20).
+The subquery returns the ids of the first 20 rows ordered by amount. The outer query asks for the sum of all amounts where the unique identifier for our contributor is in the results of our subquery. When we put them together, we get the sum of the amounts for the top 20 contributors:
+
 !http://github.com/tthibo/SQL-Tutorial/raw/master/sum_top_20.png!
 
-Subqueries can also be used in the predicates (or <code>WHERE</code> clauses) of <code>DELETE</code> <code>UPDATE</code> and <code>INSERT INTO</code>.
+Note that there are other contributors in the list who have also donated 2100 (the smallest amount in the top 20), so the cut-off point is arbitrary. Depending on the story, we might want to do something more sophisticated with this query, such as looking for the sum of all amounts less than 500, or something even more ambitious, such as looking for the sum of all amounts within a certain percentile.
+
+Subqueries can also be used with <code>DELETE</code>, <code>UPDATE</code> and <code>INSERT INTO</code> statements.
 
 h3. GROUP BY
 
-With some aggregate functions in our tool belt, we're ready to take advantage of one of SQL's more powerful features: <code>GROUP BY</code>.
+With some aggregate functions in our tool belt, we're ready to take advantage of one of SQL's more powerful features: <code>GROUP BY</code>. The <code>GROUP BY</code> statement is used in conjunction with aggregate functions to group the results by a given column. Doing so allows us to write queries that return counts, sums, averages, minimums and maximums per group.
 
-The <code>GROUP BY</code>
+So, what is the total amount of contributions per state:
+<pre><code>SELECT state, SUM(amount) FROM contributors GROUP BY state;</code></pre>
+
+!http://github.com/tthibo/SQL-Tutorial/raw/master/amount_by_state.png!
+
+It's also possible to group by a combination of columns. So, we can get totals by city and state, as well:
+<pre><code>SELECT city, state, SUM(amount) FROM contributors GROUP BY city, state;</code></pre>
+
+!http://github.com/tthibo/SQL-Tutorial/raw/master/amount_by_city_state.png!
 
 
+And we can use the aggregate function in an <code>ORDER BY</code> statement to sort the results by total amount:
+<pre><code>SELECT city, state, SUM(amount) FROM contributors GROUP BY city, state ORDER BY SUM(amount) DESC;</code></pre>
 
+!http://github.com/tthibo/SQL-Tutorial/raw/master/city_state_by_amount_desc.png!
+
+The syntax of this last statement is a little tricky. The columns to group by are separated by commas, but there is no comma before <code>ORDER BY</code> or <code>DESC</code>. 
+
+Most relational database management systems require that every non-aggregate field in the <code>SELECT</code> statement also be included in the <code>GROUP BY</code> statement. Because <code>SUM(amount)</code> is an aggregate, we can include it in the <code>SELECT</code> statement even though it isn't included in the <code>GROUP BY</code> list. But if we want to include <code>city</code> in the <code>SELECT</code>, we generally need to include it in the <code>GROUP BY</code> as well.
+
+SQLite doesn't enforce this standard SQL restriction, which in some cases makes writing the query much simpler but in most cases can lead to unexpected results. Here's what happens when we leave the <code>city</code> column out of the <code>GROUP BY</code> but include it in the <code>SELECT</code>:
+
+!http://github.com/tthibo/SQL-Tutorial/raw/master/group_by_without_city.png!
+
+That's not at all what we wanted. We're getting only one row per state (because we only grouped by state), and we're getting an apparently arbitrary city name for each state. (It's actually the city name from the row with the highest id, but that's no help.) So, there's a good reason for the standard SQL restriction against this kind of query. If you're certain that there is a unique relationship between the column for <code>SELECT</code> and the columns in the <code>GROUP BY</code> (for example, if we were grouping by zip and wanted to display the state in the results and we were certain that there was only one state per zip), then SQLite's flouting of this restriction can be seen as a feature and not a bug. But as a general practice and to make your queries portable to other systems, you should always include all columns for the <code>SELECT</code> in the <code>GROUP BY</code> list. If including that column in the <code>GROUP BY</code> isn't possible, then you'll probably need to use a subquery to create the desired result. 
 
 h3. HAVING
+
+Now that we understand grouping and aggregates, let's try filtering the results based on an aggregate. To start, let's find all cities for which the total contributions is greater than $3,000. Here's a first
+stab at the query:
+
+<pre><code>SELECT city, state, SUM(amount) FROM contributors WHERE SUM(amount) >= 3000  GROUP BY city, state  ORDER BY SUM(amount) DESC;</code></pre>
+
+And . . . no.
+
+!http://github.com/tthibo/SQL-Tutorial/raw/master/warning_aggregate_where.png!
+
+The error message isn't exactly friendly, but you can see "misuse of aggregate: SUM()" if you look closely enough (it also appears in the "Last Error" field of the SQLite manager once you close the alert box). Turns out that aggregate functions can't be used in a <code>WHERE</code> clause. The <code>WHERE</code> clause acts as a filter on each row in turn, but here we want to test an expression against a value for a group of rows (<code>SUM(amount)</code>). The equivalent of a <code>WHERE</code> clause for aggregates is <code>HAVING</code>. It appears after the <code>GROUP BY</code>:
+
+<pre><code>SELECT city, state, SUM(amount) FROM contributors GROUP BY city, state HAVING SUM(amount) >= 3000 ORDER BY SUM(amount) DESC;</code></pre>
+
+!http://github.com/tthibo/SQL-Tutorial/raw/master/having_amount_greater.png!
+
+To get a better sense of the difference between <code>WHERE</code> and <code>HAVING</code>, let's first look at a fairly simple query using <code>WHERE</code>:
+<pre><code>SELECT city, state, amount FROM contributors WHERE amount >= 2300;</code></pre>
+This query looks for individual contributors who have given at least $2,300, and it returns their city, state and amount.
+
+!http://github.com/tthibo/SQL-Tutorial/raw/master/where_gt_2300.png!
+
+Now let's make this into an aggregate query by adding a <code>GROUP BY</code> and an aggregate function:
+<pre><code>SELECT city, state, SUM(amount) FROM contributors WHERE amount >= 2300 GROUP BY city, state;</code></pre>
+
+!http://github.com/tthibo/SQL-Tutorial/raw/master/where_gt_2300_with_group.png!
+	
+We have the same nine cities that we had in the first query (those cities in which someone donated at least $2,300). But now, rather than having one row per contributor, we have one row per city. The <code>GROUP BY</code> eliminates the duplicate entries for cities in which more than one person contributed at least $2,300. And by using the aggregate function for <code>SUM(amount)</code>, we're adding up all contributions of at least $2,300 for each city.
+
+Now let's further filter this list of cities. We want to look only at cities in which these large contributions ($2,300 or greater) made a big difference. Let's call $4000 a big difference, for the sake of argument. So, we want only those where the total of contributions at this size exceeds $4000. (Looking at the results from the last query, we know to expect 3 rows, but it's not always so easy to see.) Here goes:
+<pre><code>SELECT city, state, SUM(amount) FROM contributors WHERE amount >= 2300 GROUP BY city, state HAVING SUM(amount) > 4000;</code></pre>
+
+And bam!
+
+!http://github.com/tthibo/SQL-Tutorial/raw/master/where_plus_having.png!
+
+h3. Conclusion
+
+So, now you can construct a vast array of query types using SQL. Using subqueries and aggregates, you should be able to ask nearly anything of a single data set that you need.
+Next time, we'll move on to exploring relationships between data sets, and you'll be able to amaze your friends and colleagues with your raw SQL power.
 
