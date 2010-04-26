@@ -1,3 +1,23 @@
+h2. A Gentle Introduction to SQL Using SQLite Part III
+
+h3. Spreading the data around: Data Normalization
+
+The techniques we've learned so far work well when the data is all contained in a single table. If all you ever do is import data from a spreadsheet, then that may be fine, but most significant data projects soon involve multiples tables.
+
+Why would you want to separate the data into different tables? Well let's think back for a moment to the description of relational databases from Part I:
+* Data is organized into tables (relations) that represent a collection of similar objects (e.g. contributors). 
+* The columns of the table represent the attributes that members of the collection share (last name, home address, amount of contribution). 
+* Each row in the table represents an individual member of the collection (one contributor). 
+* And the values in the row represent the attributes of that individual (Smith, 1228 Laurel St., $250).
+
+So, the concept of a table is that it contains sets of similar objects and the attributes they share. But we could stretch that definition quite a bit: Contributors all have addresses, but they also have recipients (the candidate who received the contribution). Should we include in our *contributors* table the candidate name, the campaign address and phone number, the office for which he or she is a candidate, the state in which the candidate is running, etc? What about the candidate's treasurer's name? Committee positions held? Previous offices?
+
+If you think of it as a spreadsheet row, all of this information would begin to stretch out to an unmanageable length. And we'd be getting pretty far afield of the original relation (Contributor). We would also be storing a lot of redundant data (all of the candidate data would be repeated for each contribution). And it may become increasingly difficult to spot any data entry errors (each misspelling of a candidate's name would be like adding a new candidate, and it would be difficult to see with all the repetition). Finally, all of this redundancy means we're taking up more disk space than needed. This isn't as big a concern as it once was (when disk space was more expensive), but it can present problems. 
+
+So, in order to help ensure data integrity, to keep logical consistency in the tables and to reduce disk usage, most database designers implement some degree of database normalization. Normalization:http://databases.about.com/od/specificproducts/a/normalization.htm is simply the process of putting this order in place. There are varying degrees of normalization, known as the "normal forms," but for practical purposes the goal is to remove repetition and to keep only clearly related data in the same table.
+
+
+
 h3. JOIN
 
 h3. OUTER JOIN
@@ -14,13 +34,10 @@ h3. ALTER
 
 h3. DROP
 
-
+h3. Further Resources:
 http://www.dbbm.fiocruz.br/class/Lecture/d17/sql/jhoffman/sqltut.html
 http://zetcode.com/databases/sqlitetutorial/
 http://www.sqlite.org/lang.html
 http://www.sqlite.org/lang_keywords.html
 http://www.sqlite.org/lang_expr.html
 http://en.wikipedia.org/wiki/SQL
-http://www.w3schools.com/sql/default.asp
-http://www.sql-tutorial.com/
-http://searchoracle.techtarget.com/answer/Calculating-percentiles-in-SQL
