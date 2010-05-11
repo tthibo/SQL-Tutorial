@@ -51,7 +51,8 @@ So, now we have the candidates table, but we also have a problem. The contributo
 Simply creating this foreign key column in the referencing table would be enough let us run queries across both tables, but SQL also allows us to explicitly declare the foreign key and thus enforce this reference at the database level.
 
 So, let's create a new *contributors* table, but in addition to the data about the contributor, let's add a *candidate_id* field and let SQLite know that it is a foreign key referencing the *id* column in the *candidates* table:
-<pre><code>CREATE TABLE "contributors" (
+<pre><code>
+	CREATE TABLE "contributors" (
 	"id" INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL, 
 	"last_name" VARCHAR, 
 	"first_name" VARCHAR, 
@@ -65,19 +66,115 @@ So, let's create a new *contributors* table, but in addition to the data about t
 	"date" DATETIME, 
 	"candidate_id" INTEGER NOT NULL,
 	FOREIGN KEY(candidate_id) REFERENCES candidates(id)
-	)</code></pre>
+	);</code></pre>
 	
 Notice the last two lines of that <code>CREATE</code> statement. The penultimate line adds the *candidate_id* column, defines it as an integer, and makes it a required field (it cannot be null). The final line defines *candidate_id* as a foreign key referencing the *id* column in the *candidates* table.
 
-Now SQLite will enforce this reference, and if we try to enter a row in the *contributors* table using a *candidate_id* that doesn't actually appear in the *candidates* table, we'll get an error. In other words, every contributor must now have a candidate, and that candidate must already exist in the *candidates* table.
+Now SQLite will enforce this reference, and if we try to enter a row in the *contributors* table without a *candidate_id* or using a *candidate_id* that doesn't actually appear in the *candidates* table, we'll get an error. In other words, every contributor must now have a candidate, and that candidate must already exist in the *candidates* table.
 
-h3. JOIN
+Now let's add some contributor data to the table. Dowload the text file  [http://github.com/tthibo/SQL-Tutorial/raw/master/contributors_with_candidate_id.txt:http://github.com/tthibo/SQL-Tutorial/raw/master/contributors_with_candidate_id.txt] and import it into the *contributors* table:
+!http://github.com/tthibo/SQL-Tutorial/raw/master/import_contributors.png! 
+
+NOTE: You'll have to set the table name to *contributors*. Otherwise, SQLite will create a new table called *contributors_with_candidate_id*, based on the name of the text file.
+Also, you'll have to check the "First row contains column names" box and set the separator to "Pipe(|)."
+
+You should now have 175 rows in the *contributors* table:
+!http://github.com/tthibo/SQL-Tutorial/raw/master/browse_contributors.png! 
+
+(A quick aside about the text file: it includes an empty "id" column. SQLite will insert an autoincremented id into this field when importing the data, so we'll have unique *Primary Key* values. For the *candidates* table, we specified the *id* field in each row so that they would match the *candidate_id* values in this data. In a real project, we would probably use autoincrementing values for the ids in the *candidates* table, and populating the *candidate_id* field in the *contributors* table with the appropriate value would be a separate step.)
+
+h3. JOINS
+
+Perhaps the most straightforward way to run a query that joins data from the two tables is to perform a subquery on the referred table. So, let's look for all contributors to Barack Obama:
+<pre><code>SELECT * from contributors where candidate_id = (SELECT id from candidates WHERE last_name = 'Obama' AND first_name = 'Barack');</code></pre>
+
+This syntax works well for this kind of query, but often we want to write a single query that treats the two tables as a combined data set. For these cases, we perform a *join* on the two tables. It is possible to do an *implicit* join by simply defining the relationship between the two tables in the <code>WHERE</code> clause:
+
+<pre><code>SELECT contributors.last_name, contributors.first_name, candidates.last_name FROM contributors, candidates WHERE contributors.candidate_id = candidates.id;</code></pre>
+
+!http://github.com/tthibo/SQL-Tutorial/raw/master/select_contributors_candidates_names.png! 
+
+* Notice that we're including both of the tables in the <code>FROM</code> clause.
+* Also notice that we're using a fully-qualified version of the column names: <code>contributors.last_name</code>, <code>candidates.last_name</code>. We're including the table name here because <code>last_name</code> appears in both tables. So, just using <code>last_name</code>, as we usually would, would be ambiguous (the last name of the contributor or the last name of the candidate?). Adding the table name and a dot (.) before the column name disambiguates the column.
+
+h4. Using Aliases
+
+Including the full table name with each column name can become a bit tedious. So, SQL allows you to define an alias for the table name that you can use instead:
+<pre><code>SELECT a.last_name, a.first_name, b.last_name FROM contributors a, candidates b WHERE a.candidate_id = b.id;</code></pre>
+
+This query returns the same results as the one above, but it saves some typing by making "a" an alias for "contributors" and "b" an alias for "candidates." The alias name can be any valid table name you
+like, but obviously shorter aliases will save more typing.
+
+h4. Explicit <code>JOIN</code> syntax
+
+In addition to this implicit *join* syntax, SQL includes an explicit <code>JOIN</code> keyword. So, we could write the above query using that syntax instead:
+<pre><code>SELECT contributors.last_name, contributors.first_name, candidates.last_name FROM contributors JOIN candidates ON contributors.candidate_id = candidates.id;</code></pre>
+
+The query results should be the same as above.
+
+Aliases work with <code>JOIN</code> as well:
+<pre><code>SELECT a.last_name, a.first_name, b.last_name FROM contributors a JOIN candidates b ON a.candidate_id = b.id;</code></pre>
+
+The <code>JOIN</code> keyword makes the intent of the query a bit more explicit.
+
+Now let's try something a bit more interesting:
+<pre><code>SELECT count(a.id), b.id, b.last_name FROM contributors a JOIN candidates b ON a.candidate_id = b.id GROUP BY b.id, b.last_name;</code></pre>
+
+!http://github.com/tthibo/SQL-Tutorial/raw/master/group_by_join.png! 
+
+Excellent, we now know that we have 25 contributors for each candidate. Very cool. But, hey, wait. Our list of candidates seems to be coming up short. Let's check:
+
+<pre><code>SELECT DISTINCT id, last_name FROM candidates;</code>
+	
+!http://github.com/tthibo/SQL-Tutorial/raw/master/group_by_join_results.png! 
+
+What the? Okay, there's a pretty logical explanation for this. We said above that performing the <code>JOIN</code> would return the same results as the query with <code>WHERE contributors.candidate_id = candidates.id</code>.
+What if a candidate has no contributors? Then that candidate's row is not returned by the query. 
+
+The <code>JOIN</code> acts just like the <code>WHERE</code> clause and filters out any rows that don't match the condition defined. Joins that return only rows in which there is a match in both tables are known as *INNER JOINs*. This is often exactly the behavior you want from the join (ignore any rows from either table that don't relate to a row in the other table). So by default, <code>JOIN</code> executes an <code>INNER JOIN</code>. You can also explicitly request an <code>INNER JOIN</code>:
+<pre><code>SELECT count(a.id), b.id, b.last_name FROM contributors a INNER JOIN candidates b ON a.candidate_id = b.id GROUP BY b.id, b.last_name;</code></pre>
+
+The results will be the same.
 
 h3. OUTER JOIN
 
-h3. self joins
+But how do we get the full list of candidates along with the number of contributors for each, including those candidates who have no contributors in our data? SQL provides the <code>OUTER JOIN</code> syntax for doing just that. Outer joins are typically defined by the table from which we want to include non-matching rows, and we do so by referring to where that table appears in the <code>JOIN</code> statement.
+
+* A <code>LEFT OUTER JOIN</code> includes all rows from the table on the left side of the statement and only matching rows from the table on the right side of the statement.
+* A <code>RIGHT OUTER JOIN</code> includes all rows from the table on the right side of the statement and only matching rows from the left side of the statement.
+* A <code>FULL OUTER JOIN</code> includes all rows from both tables.
+
+Currently, SQLite only supports <code>LEFT OUTER JOIN</code> from the list above. It's easy to perform a <code>RIGHT OUTER JOIN</code> by simply reversing the order of tables and using <code>LEFT OUTER JOIN</code>. As yet, there is no way to do a <code>FULL OUTER JOIN</code> in SQLite, but other database management systems do support the full array of outer joins.
+
+This all probably makes more sense in an example. Let's rewrite the grouping query from above to include all candidates:
+<pre><code>SELECT count(contributors.id), candidates.id, candidates.last_name FROM candidates LEFT OUTER JOIN contributors ON candidates.id = contributors.candidate_id GROUP BY candidates.id, candidates.last_name;</code></pre>
+
+(Aliases would work here as well, but I've used the full table names to make the relationships clearer.)
+
+Notice the <code>JOIN</code> statement: <code>candidates LEFT OUTER JOIN contributors</code>. Because *candidates* is on the left side of that statement, we'll include all of the candidate rows, even those for which there are no matching *contributors*:
+
+!http://github.com/tthibo/SQL-Tutorial/raw/master/group_by_left_outer_join.png! 
+
+
+h3. Know thyself: Self Joins
+
+Occasionally, it's useful to perform a query that joins a table to itself. Consider, for example, if we had two tables of contributors, and we wanted to find contributors who appeared in both tables. Without an explicit reference defined via a foreign key, we could do a rough join on a combination of other fields, such as first and last names:
+<pre><code>SELECT a.last_name, a.first_name, a.amount, b.amount FROM a, b WHERE a.last_name = b.last_name AND a.first_name = b.first_name;</code></pre>
+
+Obviously, there are some limitations here (what if two people have  the same first and last names? What if someone appears twice in one of the tables?) But it would still give us a rough and ready picture of the overlap between the two tables.
+
+Now, what if all of the data is in a single table? For example, what if we want to know which contributors have 
+SELECT a.last_name, a.first_name, a.id as 'A ID', b.id AS 'B ID', a.amount, b.amount FROM contributors a, contributors b where a.last_name = b.last_name AND a.first_name=b.first_name AND a.id < b.id;
 
 h3. UNION
+
+h3. Why be normal? Denormalization as an informed choice.
+
+Looking at the
+
+
+
+
 
 h3. CREATE INDEX
 
@@ -93,4 +190,5 @@ http://zetcode.com/databases/sqlitetutorial/
 http://www.sqlite.org/lang.html
 http://www.sqlite.org/lang_keywords.html
 http://www.sqlite.org/lang_expr.html
+http://www.sqlite.org/foreignkeys.html
 http://en.wikipedia.org/wiki/SQL
