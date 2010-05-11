@@ -2,7 +2,7 @@ h2. A Gentle Introduction to SQL Using SQLite Part III
 
 h3. Spreading the data around: Data Normalization
 
-All of the queries we've run so far are limited to a single table. If all you ever do is import data from a spreadsheet, then could always limit your queries to a single table. But most data projects of any depth soon involve multiple database tables. 
+All of the queries we've run so far are limited to a single table. If all you ever do is import data from a spreadsheet, then you could always limit your queries to a single table. But most data projects of any depth soon involve multiple database tables. 
 
 Why would you want to separate the data into different tables? Well let's think back for a moment to the description of relational databases from Part I:
 * Data is organized into tables (relations) that represent a collection of similar objects (e.g. contributors). 
@@ -10,12 +10,29 @@ Why would you want to separate the data into different tables? Well let's think 
 * Each row in the table represents an individual member of the collection (one contributor). 
 * And the values in the row represent the attributes of that individual (Smith, 1228 Laurel St., $250).
 
-So, the concept of a table is that it contains a set of similar objects, and the objects all share certain attributes. But we could stretch that definition quite a bit: Contributors all have addresses, but they also have recipients (the candidates who received the contributions). Should we include in our *contributors* table the candidate name, the campaign address and phone number, the office for which he or she is a candidate, the state in which the candidate is running, etc? What about the candidate's treasurer's name? Committee positions the candidate holds? Previous offices held?
+So, a table contains a set of similar objects, and the objects all share certain attributes. But we could stretch that definition quite a bit: Contributors all have addresses, but they also have recipients (the candidates who received the contributions). Should we include in our *contributors* table the candidate name, the campaign address and phone number, the office sought, the state in which the candidate is running, etc? What about the candidate's treasurer's name? Committee positions the candidate holds? Previous offices held?
 
-Including all of this loosely related data in a single table would soon make the data structure unmanageable. And we'd be getting pretty far afield of the original relation (Contributor). We would also be storing a lot of redundant data (all of the candidate data would be repeated for each contribution). And it may become increasingly difficult to spot any data entry errors: each misspelling of a candidate's name would be like adding a new candidate, and it would easier to overlook the error amidst all the repeated data. Finally, all of this redundancy means we're taking up more disk space than needed. (This last isn't as big a concern as it once was when disk space was more expensive, but it can present problems.) 
+Including all of this loosely related data in a single table takes us pretty far afield of the original relation (Contributor). We would also be storing a lot of redundant data (all of the candidate data would be repeated for each contribution). As a result, it could become difficult to update the data: changing a candidate's address, for example, would require a change to each row containing a contributor to that candidate. In addition, it would become increasingly difficult to spot any data entry errors: each misspelling of a candidate's name would be like adding a new candidate, and it would easier to overlook the error amidst all the repeated data. Finally, all of this redundancy means we're taking up more disk space than needed. (This last isn't as big a concern as it once was when disk space was more expensive, but it can present problems.) 
 
-So, in order to help ensure "data integrity":http://en.wikipedia.org/wiki/Data_integrity, to keep tables logically coherent and to reduce disk usage, most database designers implement some degree of data normalization. Normalization:http://databases.about.com/od/specificproducts/a/normalization.htm is simply the process of putting this order in place. There are varying degrees of normalization, known as the "normal forms," but for practical purposes the goal is to remove repetition and to keep only clearly related data in the same table.
+So, in order to help ensure "data integrity":http://en.wikipedia.org/wiki/Data_integrity, to keep tables logically coherent and to reduce disk usage, most database designers implement some degree of data normalization:http://databases.about.com/od/specificproducts/a/normalization.htm. There are varying degrees of normalization, known as the "normal forms," but for practical purposes the goal is to remove repetition and to keep only clearly related data in the same table. 
 
+So, in the campaign contribution example, we would have at least two tables (a *contributors* table and a *candidates* table).
+To get started, let's create a fresh database. Start up Firefox and open the SQLite Manager:
+!http://github.com/tthibo/SQL-Tutorial/raw/master/open_sqlite.png!
+
+When asked if you want to open the last database, click "Cancel," so we can create a new database:
+!http://github.com/tthibo/SQL-Tutorial/raw/master/sqlite_open_last.png!
+
+
+Click the New Database icon (!http://github.com/tthibo/SQL-Tutorial/raw/master/new_database.png!) and create a database called *contributors_candidates*.
+Save it somewhere you can find it, such as the desktop.
+
+Then execute the following CREATE TABLE statement:
+<pre><code>CREATE TABLE "candidates" ("id" INTEGER PRIMARY KEY  NOT NULL , "first_name" VARCHAR NOT NULL , "last_name" VARCHAR NOT NULL , "middle_name" VARCHAR, "party" VARCHAR NOT NULL )</code></pre>
+
+This should all be old hat by now. We're just creating a table for the candidates, including some basic information (name and party), and adding a *PRIMARY KEY*, a unique identifier for each candidate.
+
+Now, let's add some data to that table. 
 
 
 h3. JOIN
