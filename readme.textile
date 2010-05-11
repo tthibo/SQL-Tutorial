@@ -263,7 +263,7 @@ The Import Wizard should appear, which you can use to define your import.
 !http://github.com/tthibo/SQL-Tutorial/raw/master/import.png!
 
 * Using the **Select File** button, browse for the **contributors.txt** file you just saved.
-* Check the "First row contains column names check box.
+* Check the "First row contains column names" check box.
 
 For everything else, you can keep the default selections.
 

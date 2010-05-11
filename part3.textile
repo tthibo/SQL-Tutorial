@@ -17,6 +17,7 @@ Including all of this loosely related data in a single table takes us pretty far
 So, in order to help ensure "data integrity":http://en.wikipedia.org/wiki/Data_integrity, to keep tables logically coherent and to reduce disk usage, most database designers implement some degree of data normalization:http://databases.about.com/od/specificproducts/a/normalization.htm. There are varying degrees of normalization, known as the "normal forms," but for practical purposes the goal is to remove repetition and to keep only clearly related data in the same table. 
 
 So, in the campaign contribution example, we would have at least two tables (a *contributors* table and a *candidates* table).
+
 To get started, let's create a fresh database. Start up Firefox and open the SQLite Manager:
 !http://github.com/tthibo/SQL-Tutorial/raw/master/open_sqlite.png!
 
@@ -32,8 +33,43 @@ Then execute the following CREATE TABLE statement:
 
 This should all be old hat by now. We're just creating a table for the candidates, including some basic information (name and party), and adding a *PRIMARY KEY*, a unique identifier for each candidate.
 
-Now, let's add some data to that table. 
+Now, let's add some data to that table. Grab the text file at ["http://github.com/tthibo/SQL-Tutorial/raw/master/candidates.txt":http://github.com/tthibo/SQL-Tutorial/raw/master/candidates.txt] and import
+it using the Import icon (!http://github.com/tthibo/SQL-Tutorial/raw/master/import_icon.png!) as we did in Part I. 
 
+* Remember to check the "First row contains column names" check box.
+* And set the "Fields separated by" value to "Pipe (|)."
+
+The import should add 17 rows to your *candidates* table:
+!http://github.com/tthibo/SQL-Tutorial/raw/master/browse_candidates.png!
+
+So now, rather than having candidate data included with each row of the contributor data, we have one row for each candidate. It's a much cleaner data structure.
+
+h3. Referentially speaking: Associating tables using Foreign Keys
+
+So, now we have the candidates table, but we also have a problem. The contributors data we used in Part I doesn't give us any way to link contributors to their candidates. We have no way of running queries that give, for example, total contributions per candidate. To create this reference between the two tables, we'll need a common field that the two tables share. The standard way of setting up this relationship is to include the *Primary Key* from the *referenced* table as a field in the *referencing* table. The new column in the referencing table is known as a [*Foreign Key*:http://en.wikipedia.org/wiki/Foreign_key].
+
+Simply creating this foreign key column in the referencing table would be enough let us run queries across both tables, but SQL also allows us to explicitly declare the foreign key and thus enforce this reference at the database level.
+
+So, let's create a new *contributors* table, but in addition to the data about the contributor, let's add a *candidate_id* field and let SQLite know that it is a foreign key referencing the *id* column in the *candidates* table:
+<pre><code>CREATE TABLE "contributors" (
+	"id" INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL, 
+	"last_name" VARCHAR, 
+	"first_name" VARCHAR, 
+	"middle_name" VARCHAR, 
+	"street_1" VARCHAR, 
+	"street_2" VARCHAR, 
+	"city" VARCHAR, 
+	"state" VARCHAR, 
+	"zip" VARCHAR, 
+	"amount" INTEGER, 
+	"date" DATETIME, 
+	"candidate_id" INTEGER NOT NULL,
+	FOREIGN KEY(candidate_id) REFERENCES candidates(id)
+	)</code></pre>
+	
+Notice the last two lines of that <code>CREATE</code> statement. The penultimate line adds the *candidate_id* column, defines it as an integer, and makes it a required field (it cannot be null). The final line defines *candidate_id* as a foreign key referencing the *id* column in the *candidates* table.
+
+Now SQLite will enforce this reference, and if we try to enter a row in the *contributors* table using a *candidate_id* that doesn't actually appear in the *candidates* table, we'll get an error. In other words, every contributor must now have a candidate, and that candidate must already exist in the *candidates* table.
 
 h3. JOIN
 
