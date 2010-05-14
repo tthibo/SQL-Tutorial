@@ -182,35 +182,38 @@ h3. Know thyself: Self Joins
 Occasionally, it's useful to perform a query that joins a table to itself. Consider, for example, if we had two tables of contributors and we wanted to find contributors who appeared in both tables. Even without an explicit reference defined via a foreign key, we could still do a rough join on a combination of other columns, such as first and last names:
 <pre><code>SELECT a.last_name, a.first_name, a.amount, b.amount FROM a, b WHERE a.last_name = b.last_name AND a.first_name = b.first_name;</code></pre>
 
-Obviously, there are some limitations here (what if two people have  the same first and last names? What if someone appears twice in one of the tables?) But it would still give us a rough and ready picture of the overlap between the two tables.
+Obviously, there are some limitations here (what if two people have the same first and last names? What if someone appears twice in one of the tables?) But it would still give us a rough and ready picture of the overlap between the two tables.
 
 Now, what if all of the data is in a single table? For example, what if we want to know which contributors have contributed on more than one occasion? There are a few different ways to perform this query, but one quick
 way is to join the table to itself and take the same approach we used to find the overlap between the two separate tables above:
 
 <pre><code>SELECT a.last_name, a.first_name, a.id as 'A ID', b.id AS 'B ID', a.amount, b.amount FROM contributors a, contributors b where a.last_name = b.last_name AND a.first_name=b.first_name AND a.id < b.id;</code></pre>
 
-Notice the final condition in the <code>WHERE</code> clause: <code>a.id < b.id</code>. So, we're asking for rows that have the same last_name and first_name but not the same id. By using <code><</code> rather than <code>!=</code>, we eliminate 
+Notice the final condition in the <code>WHERE</code> clause: <code>a.id < b.id</code>. So, we're asking for rows that have the same last_name and first_name but not the same id. By using <code><</code> rather than <code>!=</code>, we eliminate some duplicates (otherwise, we would get a result row for each side of the match).
 
 !http://github.com/tthibo/SQL-Tutorial/raw/master/group_by_left_outer_join.png! 
 
-
-h3. UNION
+This approach has the same limitations we would have if there were two tables involved; without a unique identifier that appears in both tables, we can't be sure that these are really the same people. Also, as you can see from the results, because there are some contributors who appear more than twice, we're getting some duplicates in the output. There are ways to eliminate these duplicates
 
 h3. Why be normal? Denormalization as an informed choice.
 
-Looking at the
+Looking at the candidates table, there is another column showing some repetition: party. Many database designers would extract this column into its own table and then include a <code>party_id<code> foreign key in the candidates table. It might be a good idea here to use that id rather than a text field; as it stands, if the data came in with "R," "Republican" and "GOP" all appearing in that column, we would have a real mess. If we had a *parties* table that included only "R," "D" and "I," then we'd know we have a nonstandard value coming in when we tried to look up the party_id for "GOP," for example.
 
+But normalization comes with a cost. Adding that <code>parties</code> table would mean that, any time we want to show candidate name and party, we'd have to do a join. And if we wanted contributor, candidate, and party, we'd have a query with two joins:
 
+<pre><code>SELECT contributors.last_name, candidates.last_name, parties.name FROM contributors JOIN candidates ON contributors.candidate_id = candidates.id JOIN parties ON candidates.party_id = parties.id;</code></pre>
 
+!http://github.com/tthibo/SQL-Tutorial/raw/master/multiple_joins.png! 
 
+Doing multiple joins can become rather expensive in terms of memory, so often developers will create summary tables from the output of a SELECT:
 
-h3. CREATE INDEX
+<pre><code>CREATE TABLE contributors_candidates AS SELECT contributors.last_name, candidates.last_name, parties.name FROM contributors JOIN candidates ON contributors.candidate_id = candidates.id JOIN parties ON candidates.party_id = parties.id;</code></pre>
 
-h3. SELECT INTO
+But any changes to the *contributors* or *candidates* tables would immediately make this summary table out of date, so you'd have to create a way to update the summary table with each change.
 
-h3. ALTER
+There is another approach: *denormalization*. That is, collapsing your normalized data into a single table. If you're interested, check out the blog post on "codinghorror":http://www.codinghorror.com/blog/2008/07/maybe-normalizing-isnt-normal.html and the spirited debate in the comments. I'll give Jeff Atwood the final comment here: "As the old adage goes, normalize until it hurts, denormalize until it works."
 
-h3. DROP
+h3. Next up: Changing the structure of the database once it's created and using INDEXES to improve performance.
 
 h3. Further Resources:
 http://www.dbbm.fiocruz.br/class/Lecture/d17/sql/jhoffman/sqltut.html
