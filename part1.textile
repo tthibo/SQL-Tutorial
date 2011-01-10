@@ -272,7 +272,7 @@ Click OK, and you'll get a couple of confirmation pop-ups, one asking if you're 
 
 And now you have 103 rows of data to play with. The FEC data is dirty: there are missing fields, first names include middle names, there are weird values for some columns. Play around with it using the SQL you know, and see what you can find out. If you get surprising results from a query or are wondering how to do something, add a comment to the blog post. 
 
-We'll pick up with some more advanced queries and functions in Part II.
+We'll pick up with some more advanced queries and functions in "Part II":https://github.com/tthibo/SQL-Tutorial/blob/master/part2.textile.
 
 h3. Further References
 

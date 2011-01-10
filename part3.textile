@@ -58,7 +58,7 @@ h3. Referentially speaking: Associating tables using foreign keys
 
 So, now we have the candidates table, but we also have a problem. Now that we've moved the candidate data out of the *contributors* table, how do we link contributors to their candidates? Without this link, we have no way of running queries that give, for example, total contributions per candidate. To create this reference between the two tables, we'll need a common field that the two tables share. The standard way of setting up this relationship is to include the *Primary Key* from the *referenced* table as a field in the *referencing* table. The new column in the referencing table is known as a "*Foreign Key*":http://en.wikipedia.org/wiki/Foreign_key.
 
-Simply creating this foreign key column in the referencing table would be enough let us run queries across both tables, but SQL also allows us to explicitly declare the foreign key and thus enforce this reference at the database level.
+Simply creating this foreign key column in the referencing table would be enough to let us run queries across both tables, but SQL also allows us to explicitly declare the foreign key and thus enforce this reference at the database level.
 
 So, let's create a new *contributors* table, but in addition to the data about the contributor, let's add a *candidate_id* field and let SQLite know that it is a foreign key referencing the *id* column in the *candidates* table:
 <pre><code>
