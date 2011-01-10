@@ -47,24 +47,24 @@ Click "Install Now." (You may need to upgrade Firefox if you're using a version 
 Restart Firefox.
 In the Tools menu, you should find the SQLite Manager: 
 
-!http://github.com/tthibo/SQL-Tutorial/raw/master/tool_menu.jpg!
+!https://github.com/tthibo/SQL-Tutorial/raw/master/tool_menu.jpg!
 
 Clicking that item should bring up the manager. It's a simple interface for creating and interacting with your SQLite databases.
-!http://github.com/tthibo/SQL-Tutorial/raw/master/sqlite_manager_empty.png!
+!https://github.com/tthibo/SQL-Tutorial/raw/master/sqlite_manager_empty.png!
 
 h3. Creating the First Database
 
 Mousing over each of the icons at the top of the SQLite Manager tool will show what the icon does.
-To create a database, simply click on the icon for "New Database" !http://github.com/tthibo/SQL-Tutorial/raw/master/new_database.png!
+To create a database, simply click on the icon for "New Database" !https://github.com/tthibo/SQL-Tutorial/raw/master/new_database.png!
 Name the database "test" and save it anywhere you like (the desktop will work, or your documents folder). This single file will contain
 the entire database you create.
 
 h3. Creating a Table
 
-Click the "Create Table" icon (!http://github.com/tthibo/SQL-Tutorial/raw/master/new_table.png!), and you'll get a form allowing you to create a new table. 
+Click the "Create Table" icon (!https://github.com/tthibo/SQL-Tutorial/raw/master/new_table.png!), and you'll get a form allowing you to create a new table. 
 To create a table, we have to define the attributes or columns that make it up. For each column, we define the datatype of the data it will contain. Define the columns as follows:
 
-!http://github.com/tthibo/SQL-Tutorial/raw/master/create_table.png!
+!https://github.com/tthibo/SQL-Tutorial/raw/master/create_table.png!
 
 * Name the table "contributors."
 * The id field will be a unique identifier for each contributor (and therefore will be the "Primary Key" for the row). It will be an integer that will automatically increment with each row we add (so each new row will have a new id), and it cannot be null or empty (because we need it as the unique identifier).
@@ -84,7 +84,7 @@ h3. Inserting Data
 
 Now that we have a table in the database, we can start inserting data. This task is accomplished with (oddly enough) an INSERT statement.
 
-Click the "Execute SQL" tab (it's in the second menu row, under the icons): !http://github.com/tthibo/SQL-Tutorial/raw/master/execute_sql.png!
+Click the "Execute SQL" tab (it's in the second menu row, under the icons): !https://github.com/tthibo/SQL-Tutorial/raw/master/execute_sql.png!
 
 You'll see that the "Enter SQL" box is already pre-populated with a SELECT statement. Since we don't have anything in the table yet, this won't really help. So, delete the "SELECT * from tablename" statement, and replace it with the following:
 
@@ -104,7 +104,7 @@ Finally, we didn't include dollar signs or commas in the "amount" column. We cre
 If you haven't done so already, click the "Run SQL" button. The "Last Error" field should show "not an error." Success! You've added data.
 
 You can view the data by going to the "Browse and Search" tab:
-!http://github.com/tthibo/SQL-Tutorial/raw/master/browse_and_search.png!
+!https://github.com/tthibo/SQL-Tutorial/raw/master/browse_and_search.png!
 
 Just so we'll have some data to play with, let's execute a couple of other <code>INSERT</code> statements. Go back to the "Execute SQL" tab and paste in these lines:
 <pre><code>INSERT INTO contributors (last_name, first_name, city, state, zip, amount) VALUES ('Winfrey', 'Oprah', 'Chicago', 'IL', '60601', 500);
@@ -126,7 +126,7 @@ You should see a nice grid display of all contributors you've added. The ***** c
 To define which columns of data you want to return, simply provide a comma-separated list of column names to SELECT:
 <pre><code>SELECT city, state FROM contributors;</code></pre>
 Clicking "Run SQL" should give you a two-column table of cities and states.
-!http://github.com/tthibo/SQL-Tutorial/raw/master/city_state.png!
+!https://github.com/tthibo/SQL-Tutorial/raw/master/city_state.png!
 
 h3. Using DISTINCT to get a distinct set
 
@@ -134,7 +134,7 @@ The SELECT query above gives us a list of cities and states, but it includes dup
 
 <pre><code>SELECT DISTINCT city, state FROM contributors;</code></pre>
 
-!http://github.com/tthibo/SQL-Tutorial/raw/master/select_distinct.png!
+!https://github.com/tthibo/SQL-Tutorial/raw/master/select_distinct.png!
 
 Now you should have only three rows in your results, showing the distinct values for city and state in the table.
 
@@ -142,7 +142,7 @@ Notice what happens if you add the <code>last_name</code> field to the DISTINCT 
 
 <pre><code>SELECT DISTINCT last_name, city, state FROM contributors;</code></pre>
 
-!http://github.com/tthibo/SQL-Tutorial/raw/master/select_distinct_lname.png!
+!https://github.com/tthibo/SQL-Tutorial/raw/master/select_distinct_lname.png!
 
 We're back to four rows. There are four distinct combinations of last_name, city and state in the table, so that's what we get from DISTINCT.
 
@@ -153,7 +153,7 @@ The WHERE clause provides the scalpel for your SQL operations. A well-crafted WH
 Say, for example, we only wanted to see contributors from Georgia:
 <pre><code>SELECT * from contributors WHERE state='GA';</code></pre>
 (Remember the single quotes around the string "GA".)
-!http://github.com/tthibo/SQL-Tutorial/raw/master/where_clause1.png!
+!https://github.com/tthibo/SQL-Tutorial/raw/master/where_clause1.png!
 
 And you can test for more than equality in the WHERE clause. This query finds only the contributors who have donated more than $1200: 
 <pre><code>SELECT * from contributors WHERE amount > 1200;</code></pre>
@@ -177,15 +177,15 @@ h3. Combining conditions with AND and OR
 
 You can combine conditions using AND and OR. For example, let's find all contributors from Georgia who have given more than $1000:
 <pre><code>SELECT * FROM contributors WHERE state = 'GA' AND amount > 1000;</code></pre>
-!http://github.com/tthibo/SQL-Tutorial/raw/master/first_and.png!
+!https://github.com/tthibo/SQL-Tutorial/raw/master/first_and.png!
 
 Now let's find all contributors who either live in Georgia or who have given more than $1000:
 <pre><code>SELECT * FROM contributors WHERE state = 'GA' OR amount > 1000;</code></pre>
-!http://github.com/tthibo/SQL-Tutorial/raw/master/or_statement.png!
+!https://github.com/tthibo/SQL-Tutorial/raw/master/or_statement.png!
 
 And now let's try to get the big spenders from Chicago and Georgia:
 <pre><code>SELECT * FROM contributors WHERE city = 'Chicago' OR state = 'GA' AND amount > 1000;</code></pre>
-!http://github.com/tthibo/SQL-Tutorial/raw/master/and_or_sans_parens.png!
+!https://github.com/tthibo/SQL-Tutorial/raw/master/and_or_sans_parens.png!
 Hmm . . . Oprah is in the list, but she only donated $500. What gives?
 The problem here is that the AND operator has a higher precedence than the OR operator, which means it gets evaluated first. So, in effect, our query really looks like this:
 <pre><code>SELECT * FROM contributors WHERE city = 'Chicago' OR (state = 'GA' AND amount > 1000);</code></pre>
@@ -198,15 +198,15 @@ h3. Sorting results with ORDER BY
 
 To order your result set by the values in a particular column, use ORDER BY:
 <pre><code>SELECT last_name, amount FROM contributors WHERE amount > 200 ORDER BY amount;</code></pre>
-!http://github.com/tthibo/SQL-Tutorial/raw/master/order_by.png!
+!https://github.com/tthibo/SQL-Tutorial/raw/master/order_by.png!
 Only the rows matching the WHERE clase are returned (i.e. only those with an amount exceeding $200). 
 The default direction for ORDER BY is ascending; results are ordered from smallest amount to greatest.
 To specify the direction of the ORDER BY, use the <code>DESC</code> or <code>ASC</code> keyword:
 <pre><code>SELECT last_name, amount FROM contributors WHERE amount > 200 ORDER BY amount DESC;</code></pre>
-!http://github.com/tthibo/SQL-Tutorial/raw/master/order_by_desc.png!
+!https://github.com/tthibo/SQL-Tutorial/raw/master/order_by_desc.png!
 You can also order the results by more than one column. Rows with the same value for the first column of the ORDER BY are further ordered by the additional column(s):
 <pre><code>SELECT last_name, state, amount FROM contributors ORDER BY state, amount DESC;</code></pre>
-!http://github.com/tthibo/SQL-Tutorial/raw/master/order_by_multiple.png!
+!https://github.com/tthibo/SQL-Tutorial/raw/master/order_by_multiple.png!
 Here we get the list of contributors ordered by state and then ordered by the amount of their contribution. This is one quick way to see who has contributed the most in each state.
 
 h3. Changing values with UPDATE
@@ -215,7 +215,7 @@ Now we have some basic skills for creating tables, inserting data into the table
 
 One thing that just looks wrong with our data set is that value "Nebraska" in the state column:
 <pre><code>SELECT state FROM contributors;</code></pre>
-!http://github.com/tthibo/SQL-Tutorial/raw/master/state_column.png!
+!https://github.com/tthibo/SQL-Tutorial/raw/master/state_column.png!
 
 That should be the postal abbreviation, like the other rows. To change that value, we need to use <code>UPDATE</code> to <code>SET</code> the value for a column. But we want to make sure we don't blow away the state values in our other columns.
 If we just used <code>UPDATE contributors SET state = 'NE'; //DON'T DO THIS!!</code>, we would end up replacing the <code>state</code> value in every row with "NE". Not exactly what we want.
@@ -224,7 +224,7 @@ So, we have to define a WHERE clause to determine which rows will be changed by 
 <pre><code>UPDATE contributors SET state = 'NE' WHERE state = 'Nebraska';</code></pre>
 Ok, let's see how the state list looks:
 <pre><code>SELECT DISTINCT state FROM contributors;</code></pre>
-!http://github.com/tthibo/SQL-Tutorial/raw/master/state_after_update.png!
+!https://github.com/tthibo/SQL-Tutorial/raw/master/state_after_update.png!
 Now that's more like it.
 
 h3. DELETE
@@ -237,7 +237,7 @@ So, let's get rid of one of our rows. How about deleting Warren Buffet?
 
 For our <code>WHERE</code> clause, we could match on any column or combination of columns, but if we know the <code>PRIMARY KEY</code> value of the row, that's our safest bet. Because it's a unique identifier, we can be certain we're not accidentally deleting other rows. First let's make sure we have the row we want:
 <pre><code>SELECT * FROM contributors WHERE id = 1;</code></pre>
-!http://github.com/tthibo/SQL-Tutorial/raw/master/buffet_by_id.png!
+!https://github.com/tthibo/SQL-Tutorial/raw/master/buffet_by_id.png!
 
 Looks like the one we want, so let's delete it:
 <pre><code>DELETE FROM contributors WHERE id = 1;</code></pre>
@@ -252,15 +252,15 @@ Finally let's move on to a topic that takes us a bit outside the basic SQL synta
 
 Each database management system handles importing values from a file a bit differently. The SQLite Manager provides a nice interface for doing data imports from text files (you'll have to "export":http://office.microsoft.com/en-us/excel/HP100997251033.aspx#export an Excel file as a CSV before importing it).
 
-First, let's grab a plain text file full of contributors from the FEC database. Go to ["http://github.com/tthibo/SQL-Tutorial/raw/master/contributors.txt":http://github.com/tthibo/SQL-Tutorial/raw/master/contributors.txt] and save the file as "contributors.txt" somewhere you can find it (your desktop is a good place).
+First, let's grab a plain text file full of contributors from the FEC database. Go to ["https://github.com/tthibo/SQL-Tutorial/raw/master/contributors.txt":https://github.com/tthibo/SQL-Tutorial/raw/master/contributors.txt] and save the file as "contributors.txt" somewhere you can find it (your desktop is a good place).
 
 Notice that this file is pipe-delimited (the columns are separated by the **|** character). I find this delimiter easy to use because it's so unlikely to appear within a value in the import data. But using comma or tab characters to separate the values will work as well. Also notice that there is an **id** column here with no values in it. SQLite will populate that attribute for each row using auto-increment, much as it did for our earlier <code>INSERT</code> example.
 
-Now that we know what we're importing, go back to the SQLite Manager (you may need to select it from the Window menu), and click the Import icon (!http://github.com/tthibo/SQL-Tutorial/raw/master/import_icon.png!).
+Now that we know what we're importing, go back to the SQLite Manager (you may need to select it from the Window menu), and click the Import icon (!https://github.com/tthibo/SQL-Tutorial/raw/master/import_icon.png!).
 
 The Import Wizard should appear, which you can use to define your import.
 
-!http://github.com/tthibo/SQL-Tutorial/raw/master/import.png!
+!https://github.com/tthibo/SQL-Tutorial/raw/master/import.png!
 
 * Using the **Select File** button, browse for the **contributors.txt** file you just saved.
 * Check the "First row contains column names" check box.
