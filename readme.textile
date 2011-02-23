@@ -1,8 +1,8 @@
 h2. A Gentle Introduction to SQL Using SQLite
 
-"Part I":https://github.com/tthibo/SQL-Tutorial/blob/master/part1.textile
-"Part II":https://github.com/tthibo/SQL-Tutorial/blob/master/part2.textile
-"Part III":https://github.com/tthibo/SQL-Tutorial/blob/master/part3.textile
+"Part I":https://github.com/tthibo/SQL-Tutorial/blob/master/tutorial_files/part1.textile
+"Part II":https://github.com/tthibo/SQL-Tutorial/blob/master/tutorial_files/part2.textile
+"Part III":https://github.com/tthibo/SQL-Tutorial/blob/master/tutorial_files/part3.textile
 
 Part IV TK
 
