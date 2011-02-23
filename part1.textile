@@ -3,7 +3,7 @@ h2. A Gentle Introduction to SQL Using SQLite
 h2. Part I
 
 SQL or Structured Query language is the language used to communicate with relational databases. What are relational databases? Well, most of the popular database systems you may know, such as MS Access, MySQL or SQLite, are all relational. That is, they all use a relational model, which, it turns out, can be described much like a spreadsheet: 
-* Data is organized into tables (relations) that represent a collection of similar objects (e.g. contributors). 
+* Data are organized into tables (relations) that represent a collection of similar objects (e.g. contributors). 
 * The columns of the table represent the attributes that members of the collection share (last name, home address, amount of contribution). 
 * Each row in the table represents an individual member of the collection (one contributor). 
 * And the values in the row represent the attributes of that individual (Smith, 1228 Laurel St., $250).
