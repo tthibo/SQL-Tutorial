@@ -1,0 +1,12 @@
+h2. A Quick Introduction to SQL Using SQLite (Just the Steps)
+
+1. Open Firefox and find the SQLite Manager Plugin in the tools menu:
+
+!https://github.com/tthibo/SQL-Tutorial/raw/master/tutorial_files/images/sqlite_manager_ff.png!
+
+2. Create a new database called "contributions":
+!https://github.com/tthibo/SQL-Tutorial/raw/master/tutorial_files/images/new_database.png!
+
+3. Create a new table called "contributors" 9!https://github.com/tthibo/SQL-Tutorial/raw/master/tutorial_files/images/new_table.png!) and give it the following field definitions:
+!https://github.com/tthibo/SQL-Tutorial/raw/master/tutorial_files/images/create_table.png!
+
