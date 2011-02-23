@@ -27,14 +27,14 @@ data accordingly.
 
 To get started, let's create a fresh database. Start up Firefox and open the SQLite Manager:
 
-!https://github.com/tthibo/SQL-Tutorial/raw/master/tutorial_files/open_sqlite.png!
+!https://github.com/tthibo/SQL-Tutorial/raw/master/tutorial_files/images/open_sqlite.png!
 
 When asked if you want to open the last database, click "Cancel," so you can create a new database:
 
-!https://github.com/tthibo/SQL-Tutorial/raw/master/tutorial_files/sqlite_open_last_db.png!
+!https://github.com/tthibo/SQL-Tutorial/raw/master/tutorial_files/images/sqlite_open_last_db.png!
 
 
-Click the New Database icon (!https://github.com/tthibo/SQL-Tutorial/raw/master/tutorial_files/new_database.png!) and create a database called *contributors_candidates*.
+Click the New Database icon (!https://github.com/tthibo/SQL-Tutorial/raw/master/tutorial_files/images/new_database.png!) and create a database called *contributors_candidates*.
 Save it somewhere you can find it, such as the Desktop.
 
 First, we'll create the *candidates* table. Here's the SQL <code>CREATE TABLE</code> statement to execute:
@@ -43,14 +43,14 @@ First, we'll create the *candidates* table. Here's the SQL <code>CREATE TABLE</c
 This should all be old hat by now. We're just creating a table for the candidates, including some basic information (name and party), and adding a *PRIMARY KEY*, a unique identifier for each candidate.
 
 Now, let's add some data to that table. Grab the text file at "https://github.com/tthibo/SQL-Tutorial/raw/master/tutorial_files/candidates.txt":https://github.com/tthibo/SQL-Tutorial/raw/master/tutorial_files/candidates.txt and import
-it using the Import icon (!https://github.com/tthibo/SQL-Tutorial/raw/master/tutorial_files/import_icon.png!) as you did in Part I. 
+it using the Import icon (!https://github.com/tthibo/SQL-Tutorial/raw/master/tutorial_files/images/import_icon.png!) as you did in Part I. 
 
 * Remember to check the "First row contains column names" check box.
 * And set the "Fields separated by" value to "Pipe (|)."
 
 The import should add 17 rows to your *candidates* table:
 
-!https://github.com/tthibo/SQL-Tutorial/raw/master/tutorial_files/browse_candidates.png!
+!https://github.com/tthibo/SQL-Tutorial/raw/master/tutorial_files/images/browse_candidates.png!
 
 So now, rather than having candidate data included with each row of the contributor data, we have one row for each candidate. It's a much cleaner data structure.
 
@@ -84,14 +84,14 @@ Now SQLite will enforce this reference, and if we try to enter a row in the *con
 
 Now let's add some contributor data to the table. Dowload the text file at "https://github.com/tthibo/SQL-Tutorial/raw/master/tutorial_files/contributors_with_candidate_id.txt":https://github.com/tthibo/SQL-Tutorial/raw/master/tutorial_files/contributors_with_candidate_id.txt and import it into the *contributors* table:
 
-!https://github.com/tthibo/SQL-Tutorial/raw/master/tutorial_files/import_contributors.png! 
+!https://github.com/tthibo/SQL-Tutorial/raw/master/tutorial_files/images/import_contributors.png! 
 
 *NOTE:* You'll have to set the table name to *contributors*. Otherwise, SQLite will create a new table called *contributors_with_candidate_id*, based on the name of the text file.
 Also, you'll have to check the "First row contains column names" box and set the separator to "Pipe(|)."
 
 You should now have 175 rows in the *contributors* table:
 
-!https://github.com/tthibo/SQL-Tutorial/raw/master/tutorial_files/browse_contributors.png! 
+!https://github.com/tthibo/SQL-Tutorial/raw/master/tutorial_files/images/browse_contributors.png! 
 
 (A quick aside about the text file: it includes an empty "id" column. SQLite will insert an autoincremented id into this field when importing the data, so we'll have unique *Primary Key* values. For the *candidates* table, we specified the *id* field in each row so that they would match the *candidate_id* values in this data. In a real project, we would probably use autoincrementing values for the ids in the *candidates* table, and populating the *candidate_id* field in the *contributors* table with the appropriate value would be a separate task.)
 
@@ -106,7 +106,7 @@ will need to treat the two tables as a combined data set. A query that combines 
 
 <pre><code>SELECT contributors.last_name, contributors.first_name, candidates.last_name FROM contributors, candidates WHERE contributors.candidate_id = candidates.id;</code></pre>
 
-!https://github.com/tthibo/SQL-Tutorial/raw/master/tutorial_files/select_contributors_candidates_names.png! 
+!https://github.com/tthibo/SQL-Tutorial/raw/master/tutorial_files/images/select_contributors_candidates_names.png! 
 
 * Notice that we're including both of the tables in the <code>FROM</code> clause.
 * Also notice that we're using a fully-qualified version of the column names: <code>contributors.last_name</code>, <code>candidates.last_name</code>. We're including the table name here because <code>last_name</code> appears in both tables. So, just using <code>last_name</code>, as we usually would, would be ambiguous (the last name of the contributor or the last name of the candidate?). Adding the table name and a dot (.) before the column name disambiguates the column.
@@ -133,13 +133,13 @@ Aliases work with <code>JOIN</code> as well:
 Now let's try something a bit more interesting:
 <pre><code>SELECT count(a.id), b.id, b.last_name FROM contributors a JOIN candidates b ON a.candidate_id = b.id GROUP BY b.id, b.last_name;</code></pre>
 
-!https://github.com/tthibo/SQL-Tutorial/raw/master/tutorial_files/group_by_join.png! 
+!https://github.com/tthibo/SQL-Tutorial/raw/master/tutorial_files/images/group_by_join.png! 
 
 Excellent! We now know that we have 25 contributors for each candidate. Very cool. But, hey, wait. Our list of candidates seems to be coming up short. Let's check it:
 
 <pre><code>SELECT DISTINCT id, last_name FROM candidates;</code></pre>
 	
-!https://github.com/tthibo/SQL-Tutorial/raw/master/tutorial_files/group_by_join_results.png! 
+!https://github.com/tthibo/SQL-Tutorial/raw/master/tutorial_files/images/group_by_join_results.png! 
 
 What the? We're missing 10 candidates. SQLite has gone mad!
 
@@ -172,7 +172,7 @@ This all probably makes more sense in an example. Let's rewrite the grouping que
 
 Notice the <code>JOIN</code> statement: <code>candidates LEFT OUTER JOIN contributors</code>. Because *candidates* is on the left side of that statement, the result set will include all of the candidate rows, even those for which there are no matching *contributors*:
 
-!https://github.com/tthibo/SQL-Tutorial/raw/master/tutorial_files/group_by_left_outer_join.png! 
+!https://github.com/tthibo/SQL-Tutorial/raw/master/tutorial_files/images/group_by_left_outer_join.png! 
 
 Much better.
 
@@ -191,7 +191,7 @@ way is to join the table to itself and take the same approach we used to find th
 
 Notice the final condition in the <code>WHERE</code> clause: <code>a.id < b.id</code>. So, we're asking for rows that have the same last_name and first_name but not the same id. By using <code><</code> rather than <code>!=</code>, we eliminate some duplicates (otherwise, we would get a result row for each side of the match).
 
-!https://github.com/tthibo/SQL-Tutorial/raw/master/tutorial_files/group_by_left_outer_join.png! 
+!https://github.com/tthibo/SQL-Tutorial/raw/master/tutorial_files/images/group_by_left_outer_join.png! 
 
 This approach has the same limitations we would have if there were two tables involved; without a unique identifier that appears in both tables, we can't be sure that these are really the same people. Also, as you can see from the results, because there are some contributors who appear more than twice, we're getting some duplicates in the output. There are ways to eliminate these duplicates
 
@@ -203,7 +203,7 @@ But normalization comes with a cost. Adding that <code>parties</code> table woul
 
 <pre><code>SELECT contributors.last_name, candidates.last_name, parties.name FROM contributors JOIN candidates ON contributors.candidate_id = candidates.id JOIN parties ON candidates.party_id = parties.id;</code></pre>
 
-!https://github.com/tthibo/SQL-Tutorial/raw/master/tutorial_files/multiple_joins.png! 
+!https://github.com/tthibo/SQL-Tutorial/raw/master/tutorial_files/images/multiple_joins.png! 
 
 Doing multiple joins can become rather expensive in terms of memory, so often developers will create summary tables from the output of a SELECT:
 
