@@ -14,7 +14,7 @@ Use the "Execute SQL" tab (it's in the second menu row, under the icons): !https
 
 <pre><code>
 INSERT INTO contributors (last_name, first_name, city, state, zip, amount) VALUES ('Buffet', 'Warren', 'Omaha', 'Nebraska', '68101', 1500);
-
+</code></pre>
 5. Insert three more rows (one at a time or all at once)
 <pre><code>
 INSERT INTO contributors (last_name, first_name, city, state, zip, amount) VALUES ('Winfrey', 'Oprah', 'Chicago', 'IL', '60601', 500);
