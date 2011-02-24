@@ -34,6 +34,7 @@ INSERT INTO contributors (last_name, first_name, city, state, zip, amount) VALUE
 9. Add some conditions to the SELECT:
 <pre><code>SELECT * from contributors WHERE state='GA';</code></pre>
 Now try playing around with some of the operators:
+
 |*operator*|*description*|
 |=|Equal|
 |<>|Not equal*|
