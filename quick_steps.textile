@@ -3,10 +3,108 @@ h2. A Quick Introduction to SQL Using SQLite (Just the Steps)
 1. Open Firefox and find the SQLite Manager Plugin in the tools menu:
 
 !https://github.com/tthibo/SQL-Tutorial/raw/master/tutorial_files/images/sqlite_manager_ff.png!
-
 2. Create a new database called "contributions":
 !https://github.com/tthibo/SQL-Tutorial/raw/master/tutorial_files/images/new_database.png!
 
-3. Create a new table called "contributors" 9!https://github.com/tthibo/SQL-Tutorial/raw/master/tutorial_files/images/new_table.png!) and give it the following field definitions:
+3. Create a new table called "contributors" (!https://github.com/tthibo/SQL-Tutorial/raw/master/tutorial_files/images/new_table.png!) and give it the following field definitions:
 !https://github.com/tthibo/SQL-Tutorial/raw/master/tutorial_files/images/create_table.png!
+
+4. Insert a row of data:
+Use the "Execute SQL" tab (it's in the second menu row, under the icons): !https://github.com/tthibo/SQL-Tutorial/raw/master/tutorial_files/images/execute_sql.png!
+
+<pre><code>
+INSERT INTO contributors (last_name, first_name, city, state, zip, amount) VALUES ('Buffet', 'Warren', 'Omaha', 'Nebraska', '68101', 1500);
+
+5. Insert three more rows (one at a time or all at once)
+<pre><code>
+INSERT INTO contributors (last_name, first_name, city, state, zip, amount) VALUES ('Winfrey', 'Oprah', 'Chicago', 'IL', '60601', 500);
+INSERT INTO contributors (last_name, first_name, city, state, zip, amount) VALUES ('Chambers', 'Anne Cox', 'Atlanta', 'GA', '30301', 200);
+INSERT INTO contributors (last_name, first_name, city, state, zip, amount) VALUES ('Cathy', 'S. Truett', 'Atlanta', 'GA', '30301', 1200);
+</code></pre>
+
+6. Select everything from the contributors table:
+<pre><code>SELECT * FROM contributors;</code></pre>
+
+7. Choose some fields to select:
+<pre><code>SELECT city, state FROM contributors;</code></pre>
+
+8. Get a distinct set of cities and states:
+<pre><code>SELECT DISTINCT city, state FROM contributors;</code></pre>
+
+9. Add some conditions to the SELECT:
+<pre><code>SELECT * from contributors WHERE state='GA';</code></pre>
+Now try playing around with some of the operators:
+|*operator*|*description*|
+|=|Equal|
+|<>|Not equal*|
+|>|Greater than|
+|<|Less than|
+|>=|Greater than or equal|
+|<=|Less than or equal|
+
+Here are some examples:
+<pre><code>SELECT * from contributors WHERE amount > 1200;</code></pre>
+<pre><code>SELECT * from contributors WHERE amount >= 1200;</code></pre>
+<pre><code>SELECT last_name from contributors WHERE state <> 'GA';</code></pre>
+
+10. Combine conditions with AND or OR:
+<pre><code>SELECT * FROM contributors WHERE state = 'GA' AND amount > 1000;</code></pre>
+<pre><code>SELECT * FROM contributors WHERE state = 'GA' OR amount > 1000;</code></pre>
+
+11. But watch out for operator precedence:
+<pre><code>SELECT * FROM contributors WHERE city = 'Chicago' OR state = 'GA' AND amount > 1000;</code></pre>
+Where's Oprah?
+Try that again:
+<pre><code>SELECT * FROM contributors WHERE (city = 'Chicago' OR state = 'GA') AND amount > 1000;</code></pre>
+
+12. Order the results:
+<pre><code>SELECT last_name, amount FROM contributors WHERE amount > 200 ORDER BY amount;</code></pre>
+And reverse the order:
+<pre><code>SELECT last_name, amount FROM contributors WHERE amount > 200 ORDER BY amount DESC;</code></pre>
+And order by more than one column:
+<pre><code>SELECT last_name, state, amount FROM contributors ORDER BY state, amount DESC;</code></pre>
+
+13. Return only the top two contributors:
+<pre><code>SELECT * FROM CONTRIBUTORS ORDER BY amount DESC LIMIT 2;</code></pre>
+
+
+h3. Importing data from a flat file
+
+14. Import a delimited file:
+a. Go to ["https://github.com/tthibo/SQL-Tutorial/raw/master/tutorial_files/contributors.txt":https://github.com/tthibo/SQL-Tutorial/raw/master/tutorial_files/contributors.txt]
+
+b. Save the file as "contributors.txt" somewhere you can find it (your desktop is a good place).
+
+c. Click the SQLite Manager Import Wizard icon (!https://github.com/tthibo/SQL-Tutorial/raw/master/tutorial_files/images/import_icon.png!).
+
+* Using the **Select File** button, browse for the **contributors.txt** file you just saved.
+* Check the "First row contains column names" check box.
+* Select **Pipe(|)** for "Fields separated by"
+* For everything else, you can keep the default selections.
+* You should have 103 rows of data.
+
+h3. Aggregate Functions
+
+15. Count the number of contributors from California:
+<pre><code>SELECT COUNT(id) FROM contributors WHERE state = 'CA';</code></pre>
+
+16. Select the minimum and maximum contributions:
+<pre><code>SELECT MAX(amount) FROM contributors;</code></pre>
+<pre><code>SELECT MIN(amount) FROM contributors;</code></pre>
+
+17. Add up the contributions from Georgia:
+<pre><code>SELECT SUM(amount) FROM contributors WHERE state = 'GA';</code></pre>
+
+18. Find the average contribution:
+<pre><code>SELECT AVG(amount) FROM contributors;</code></pre>
+
+19. Find the total amount of contributions per state:
+<pre><code>SELECT state, SUM(amount) FROM contributors GROUP BY state;</code></pre>
+
+
+20. Find the total amount of contributions per city and state:
+<pre><code>SELECT city, state, SUM(amount) FROM contributors GROUP BY city, state;</code></pre>
+Now order cities by their total contributions:
+<pre><code>SELECT city, state, SUM(amount) FROM contributors GROUP BY city, state ORDER BY SUM(amount) DESC;</code></pre>
+ 
 

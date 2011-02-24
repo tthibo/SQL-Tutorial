@@ -264,7 +264,7 @@ The Import Wizard should appear, which you can use to define your import.
 
 * Using the **Select File** button, browse for the **contributors.txt** file you just saved.
 * Check the "First row contains column names" check box.
-
+* Select **Pipe(|)** for "Fields separated by"
 For everything else, you can keep the default selections.
 
 Click OK, and you'll get a couple of confirmation pop-ups, one asking if you're sure you want to import, and another asking if you want to import
