@@ -54,7 +54,7 @@ Here are some examples:
 
 11. But watch out for operator precedence:
 <pre><code>SELECT * FROM contributors WHERE city = 'Chicago' OR state = 'GA' AND amount > 1000;</code></pre>
-Where's Oprah?
+How did Oprah sneak in there?
 Try that again:
 <pre><code>SELECT * FROM contributors WHERE (city = 'Chicago' OR state = 'GA') AND amount > 1000;</code></pre>
 
