@@ -1,0 +1,58 @@
+h2. Quick Introduction to Data Normalization Using SQLite
+
+1. Open Firefox and the SQLite Manager plugin.
+
+2. Create a new database called contributors_candidates.
+
+3. Create teh *candidates* table:
+<pre><code>CREATE TABLE "candidates" ("id" INTEGER PRIMARY KEY NOT NULL, "first_name" VARCHAR NOT NULL, "last_name" VARCHAR NOT NULL , "middle_name" VARCHAR, "party" VARCHAR NOT NULL )</code></pre>
+
+4. Download the text file at "https://github.com/tthibo/SQL-Tutorial/raw/master/tutorial_files/candidates.txt":https://github.com/tthibo/SQL-Tutorial/raw/master/tutorial_files/candidates.txt and import
+it using the Import icon (!https://github.com/tthibo/SQL-Tutorial/raw/master/tutorial_files/images/import_icon.png!).
+* Remember to check the "First row contains column names" check box.
+* And set the "Fields separated by" value to "Pipe (|)."
+
+5. Create the *contributors* table, including an foreign key:
+<pre><code>
+	CREATE TABLE "contributors" (
+	"id" INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL, 
+	"last_name" VARCHAR, 
+	"first_name" VARCHAR, 
+	"middle_name" VARCHAR, 
+	"street_1" VARCHAR, 
+	"street_2" VARCHAR, 
+	"city" VARCHAR, 
+	"state" VARCHAR, 
+	"zip" VARCHAR, 
+	"amount" INTEGER, 
+	"date" DATETIME, 
+	"candidate_id" INTEGER NOT NULL,
+	FOREIGN KEY(candidate_id) REFERENCES candidates(id)
+	);</code></pre>
+
+6. Dowload the text file at "https://github.com/tthibo/SQL-Tutorial/raw/master/tutorial_files/contributors_with_candidate_id.txt":https://github.com/tthibo/SQL-Tutorial/raw/master/tutorial_files/contributors_with_candidate_id.txt and import it into the *contributors* table.
+
+7. Use a subquery to find all contributors to Barack Obama:
+CREATE TABLE "candidates" ("id" INTEGER PRIMARY KEY NOT NULL, "first_name" VARCHAR NOT NULL, "last_name" VARCHAR NOT NULL , "middle_name" VARCHAR, "party" VARCHAR NOT NULL )
+
+8. Use a *WHERE* clause to join two tables:
+CREATE TABLE "candidates" ("id" INTEGER PRIMARY KEY NOT NULL, "first_name" VARCHAR NOT NULL, "last_name" VARCHAR NOT NULL , "middle_name" VARCHAR, "party" VARCHAR NOT NULL )
+
+9. Use aliases to reduce typing:
+<pre><code>SELECT a.last_name, a.first_name, b.last_name FROM contributors a, candidates b WHERE a.candidate_id = b.id;</code></pre>
+
+10. Use explicit *join* syntax to join two tables:
+<pre><code>SELECT contributors.last_name, contributors.first_name, candidates.last_name FROM contributors JOIN candidates ON contributors.candidate_id = candidates.id;</code></pre>
+
+11. Use aliases with explicit *join* syntax:
+<pre><code>SELECT a.last_name, a.first_name, b.last_name FROM contributors a JOIN candidates b ON a.candidate_id = b.id;</code></pre>
+
+12. Count the number of contributors per candidate using a join:
+<pre><code>SELECT count(a.id), b.id, b.last_name FROM contributors a JOIN candidates b ON a.candidate_id = b.id GROUP BY b.id, b.last_name;</code></pre>
+Notice that not all candidates are included: <pre><code>SELECT DISTINCT id, last_name FROM candidates;</code></pre>
+
+13. Rewrite the query to include all candidates, including those with no contributors:
+CREATE TABLE "candidates" ("id" INTEGER PRIMARY KEY NOT NULL, "first_name" VARCHAR NOT NULL, "last_name" VARCHAR NOT NULL , "middle_name" VARCHAR, "party" VARCHAR NOT NULL )
+
+14. Use a *self-join* to look for contributions by the same contributor:
+<pre><code>SELECT a.last_name, a.first_name, a.id as 'A ID', b.id AS 'B ID', a.amount, b.amount FROM contributors a, contributors b where a.last_name = b.last_name AND a.first_name=b.first_name AND a.id < b.id;</code></pre>
