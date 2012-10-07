@@ -82,7 +82,7 @@ Notice the last two lines of that <code>CREATE</code> statement. The penultimate
 
 Now SQLite will enforce this reference, and if we try to enter a row in the *contributors* table without a *candidate_id* or using a *candidate_id* that doesn't actually appear in the *candidates* table, we'll get an error. In other words, every contributor must now have a candidate, and that candidate must already exist in the *candidates* table.
 
-Now let's add some contributor data to the table. Dowload the text file at "https://github.com/tthibo/SQL-Tutorial/raw/master/tutorial_files/contributors_with_candidate_id.txt":https://github.com/tthibo/SQL-Tutorial/raw/master/tutorial_files/contributors_with_candidate_id.txt and import it into the *contributors* table:
+Now let's add some contributor data to the table. Download the text file at "https://github.com/tthibo/SQL-Tutorial/raw/master/tutorial_files/contributors_with_candidate_id.txt":https://github.com/tthibo/SQL-Tutorial/raw/master/tutorial_files/contributors_with_candidate_id.txt and import it into the *contributors* table:
 
 !https://github.com/tthibo/SQL-Tutorial/raw/master/tutorial_files/images/import_contributors.png! 
 
@@ -197,7 +197,7 @@ This approach has the same limitations we would have if there were two tables in
 
 h3. Why be normal? Denormalization as an informed choice.
 
-Looking at the candidates table, there is another column showing some repetition: party. Many database designers would extract this column into its own table and then include a <code>party_id<code> foreign key in the candidates table. It might be a good idea here to use that id rather than a text field; as it stands, if the data came in with "R," "Republican" and "GOP" all appearing in that column, we would have a real mess. If we had a *parties* table that included only "R," "D" and "I," then we'd know we have a nonstandard value coming in when we tried to look up the party_id for "GOP," for example.
+Looking at the candidates table, there is another column showing some repetition: party. Many database designers would extract this column into its own table and then include a <code>party_id</code> foreign key in the candidates table. It might be a good idea here to use that id rather than a text field; as it stands, if the data came in with "R," "Republican" and "GOP" all appearing in that column, we would have a real mess. If we had a *parties* table that included only "R," "D" and "I," then we'd know we have a nonstandard value coming in when we tried to look up the party_id for "GOP," for example.
 
 But normalization comes with a cost. Adding that <code>parties</code> table would mean that, any time we want to show candidate name and party, we'd have to do a join. And if we wanted contributor, candidate, and party, we'd have a query with two joins:
 
