@@ -12,7 +12,7 @@ it using the Import icon (!https://github.com/tthibo/SQL-Tutorial/raw/master/tut
 * Remember to check the "First row contains column names" check box.
 * And set the "Fields separated by" value to "Pipe (|)."
 
-5. Create the *contributors* table, including an foreign key:
+5. Create the *contributors* table, including a foreign key:
 <pre><code>
 	CREATE TABLE "contributors" (
 	"id" INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL, 
