@@ -4,7 +4,7 @@ h2. Quick Introduction to Data Normalization Using SQLite
 
 2. Create a new database called contributors_candidates.
 
-3. Create teh *candidates* table:
+3. Create the *candidates* table:
 <pre><code>CREATE TABLE "candidates" ("id" INTEGER PRIMARY KEY NOT NULL, "first_name" VARCHAR NOT NULL, "last_name" VARCHAR NOT NULL , "middle_name" VARCHAR, "party" VARCHAR NOT NULL )</code></pre>
 
 4. Download the text file at "https://github.com/tthibo/SQL-Tutorial/raw/master/tutorial_files/candidates.txt":https://github.com/tthibo/SQL-Tutorial/raw/master/tutorial_files/candidates.txt and import
