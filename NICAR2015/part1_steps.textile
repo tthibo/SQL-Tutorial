@@ -1,0 +1,114 @@
+h2. A Quick Introduction to SQL Using SQLite (Just the Steps)
+
+1. Open Firefox and find the SQLite Manager Plugin in the tools menu:
+
+!https://github.com/tthibo/SQL-Tutorial/raw/master/tutorial_files/images/sqlite_manager_ff.png!
+2. Create a new database called "campaign_finance":
+!https://github.com/tthibo/SQL-Tutorial/raw/master/tutorial_files/images/new_database.png!
+
+3. Create a new table called "contributions" (!https://github.com/tthibo/SQL-Tutorial/raw/master/tutorial_files/images/new_table.png!) and give it the following field definitions:
+!https://github.com/tthibo/SQL-Tutorial/raw/master/NICAR2015/images/create_contributions_table.png!
+
+4. Insert a row of data:
+Use the "Execute SQL" tab (it's in the second menu row, under the icons): !https://github.com/tthibo/SQL-Tutorial/raw/master/tutorial_files/images/execute_sql.png!
+
+<pre><code>
+INSERT INTO contributions (committee_id, entity_type, last_name, first_name, city, state, zip_code, employer, occupation, amount) VALUES ('C00494740','IND','BUFFETT','WARREN','OMAHA','NE','68131','BERKSHIRE HATHAWAY/CHAIRMAN','CHAIRMAN','2500');
+</code></pre>
+
+5. Insert three more rows (one at a time or all at once)
+<pre><code>
+INSERT INTO contributions (committee_id, entity_type, last_name, first_name, city, state, zip_code, employer, occupation, amount) VALUES ('C00494740','IND','WINFREY','OPRAH','CHICAGO','IL','60607','HARPO INC.','CHAIRMAN/CEO',250);
+INSERT INTO contributions (last_name, first_name, city, state, zip, amount) VALUES ('C00431171','IND','ADELSON','SHELDON','LAS VEGAS','NV','89109','VENETIAN HOTEL','OWNER','2500');
+INSERT INTO contributions (last_name, first_name, city, state, zip, amount) VALUES ('C00431171','IND','MARRIOTT','BILL MR. JR.','BETHESDA','MD','20817','MARRIOTT INTERNATINAL INC.','CHAIRMAN & C.E.O.','587');
+</code></pre>
+
+6. Select everything from the contributions table:
+<pre><code>SELECT * FROM contributions;</code></pre>
+
+7. Choose some fields to select:
+<pre><code>SELECT city, state FROM contributions;</code></pre>
+
+8. Get a distinct set of cities and states:
+<pre><code>SELECT DISTINCT city, state FROM contributions;</code></pre>
+
+9. Add some conditions to the SELECT:
+<pre><code>SELECT * from contributions WHERE state='GA';</code></pre>
+Now try playing around with some of the operators:
+
+|*operator*|*description*|
+|=|Equal|
+|<>|Not equal*|
+|>|Greater than|
+|<|Less than|
+|>=|Greater than or equal|
+|<=|Less than or equal|
+
+Here are some examples:
+<pre><code>SELECT * from contributions WHERE amount > 1200;</code></pre>
+<pre><code>SELECT * from contributions WHERE amount >= 1200;</code></pre>
+<pre><code>SELECT last_name from contributions WHERE state <> 'GA';</code></pre>
+
+10. Combine conditions with AND or OR:
+<pre><code>SELECT * FROM contributions WHERE state = 'GA' AND amount > 1000;</code></pre>
+<pre><code>SELECT * FROM contributions WHERE state = 'GA' OR amount > 1000;</code></pre>
+
+11. But watch out for operator precedence:
+<pre><code>SELECT * FROM contributions WHERE city = 'Chicago' OR state = 'GA' AND amount > 1000;</code></pre>
+How did Oprah sneak in there?
+Try that again:
+<pre><code>SELECT * FROM contributions WHERE (city = 'Chicago' OR state = 'GA') AND amount > 1000;</code></pre>
+
+12. Order the results:
+<pre><code>SELECT last_name, amount FROM contributions WHERE amount > 200 ORDER BY amount;</code></pre>
+And reverse the order:
+<pre><code>SELECT last_name, amount FROM contributions WHERE amount > 200 ORDER BY amount DESC;</code></pre>
+And order by more than one column:
+<pre><code>SELECT last_name, state, amount FROM contributions ORDER BY state, amount DESC;</code></pre>
+
+13. Return only the top two contributions:
+<pre><code>SELECT * FROM CONTRIBUTIONS ORDER BY amount DESC LIMIT 2;</code></pre>
+
+
+h3. Importing data from a flat file
+
+14. Import a delimited file:
+a. Go to ["https://github.com/tthibo/SQL-Tutorial/raw/master/tutorial_files/contributions.txt":https://github.com/tthibo/SQL-Tutorial/raw/master/tutorial_files/contributions.txt]
+
+b. Save the file as "contributions.txt" somewhere you can find it (your desktop is a good place).
+
+c. Click the SQLite Manager Import Wizard icon (!https://github.com/tthibo/SQL-Tutorial/raw/master/tutorial_files/images/import_icon.png!).
+
+* Using the **Select File** button, browse for the **contributions.txt** file you just saved.
+* Check the "First row contains column names" check box.
+* Select **Pipe(|)** for "Fields separated by"
+* For everything else, you can keep the default selections.
+* You should have 103 rows of data.
+
+h3. Aggregate Functions
+
+15. Count the number of contributions from California:
+<pre><code>SELECT COUNT(id) FROM contributions WHERE state = 'CA';</code></pre>
+
+16. Select the minimum and maximum contributions:
+<pre><code>SELECT MAX(amount) FROM contributions;</code></pre>
+<pre><code>SELECT MIN(amount) FROM contributions;</code></pre>
+
+17. Add up the contributions from Georgia:
+<pre><code>SELECT SUM(amount) FROM contributions WHERE state = 'GA';</code></pre>
+
+18. Find the average contribution:
+<pre><code>SELECT AVG(amount) FROM contributions;</code></pre>
+
+19. Find the total amount of contributions per state:
+<pre><code>SELECT state, SUM(amount) FROM contributions GROUP BY state;</code></pre>
+
+
+20. Find the total amount of contributions per city and state:
+<pre><code>SELECT city, state, SUM(amount) FROM contributions GROUP BY city, state;</code></pre>
+Now order cities by their total contributions:
+<pre><code>SELECT city, state, SUM(amount) FROM contributions GROUP BY city, state ORDER BY SUM(amount) DESC;</code></pre>
+ 
+
+
+<a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/3.0/"><img alt="Creative Commons License" style="border-width:0" src="http://i.creativecommons.org/l/by-nc-nd/3.0/88x31.png" /></a><br /><span xmlns:dct="http://purl.org/dc/terms/" href="http://purl.org/dc/dcmitype/Text" property="dct:title" rel="dct:type">A Gentle Introduction to SQL Using SQLite</span> by <a xmlns:cc="http://creativecommons.org/ns#" href="https://github.com/tthibo/SQL-Tutorial" property="cc:attributionName" rel="cc:attributionURL">Troy Thibodeaux</a> is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/3.0/">Creative Commons Attribution-NonCommercial-NoDerivs 3.0 Unported License</a>.
