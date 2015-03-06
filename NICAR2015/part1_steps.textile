@@ -25,6 +25,7 @@ INSERT INTO contributions (committee_id, entity_type, last_name, first_name, cit
 INSERT INTO contributions (committee_id, entity_type, last_name, first_name, city, state, zip_code, employer, occupation, amount) VALUES ('C00431171','IND','MARRIOTT','BILL MR. JR.','BETHESDA','MD','20817','MARRIOTT INTERNATINAL INC.','CHAIRMAN & C.E.O.','587');
 </code></pre>
 
+
 6. Select everything from the contributions table:
 <pre><code>SELECT * FROM contributions;</code></pre>
 
