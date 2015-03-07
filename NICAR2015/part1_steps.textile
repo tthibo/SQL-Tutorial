@@ -90,7 +90,7 @@ h3. Limiting the number of rows returned
 h3. Changing values with UPDATE
 
 14. Check the list of state names again:
-SELECT state FROM contributors;
+<pre><code>SELECT state FROM contributors;</code></pre>
 
 Let's correct Nebraska:
 <pre><code>UPDATE contributors SET state = 'NE' WHERE state = 'Nebraska';</code></pre>
