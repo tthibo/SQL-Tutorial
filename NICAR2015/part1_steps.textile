@@ -65,12 +65,12 @@ Find any big spender and anyone from Illinois
 11. But watch out for operator precedence
 
 Looking for big spenders from Nevada and Chicago
-<pre><code>SELECT * FROM contributions WHERE city = 'Chicago' OR state = 'NV' AND amount > 2000;</code></pre>
+<pre><code>SELECT * FROM contributions WHERE city = 'CHICAGO' OR state = 'NV' AND amount > 2000;</code></pre>
 
 How did Oprah sneak in there?
 
 Try that again:
-<pre><code>SELECT * FROM contributions WHERE (city = 'Chicago' OR state = 'NV') AND amount > 2000;</code></pre>
+<pre><code>SELECT * FROM contributions WHERE (city = 'CHICAGO' OR state = 'NV') AND amount > 2000;</code></pre>
 
 h3. Sorting the results
 
