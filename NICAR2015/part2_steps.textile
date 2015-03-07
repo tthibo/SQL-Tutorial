@@ -1,6 +1,6 @@
 h2. An Introduction to Grouping and Summing Using SQLite (Just the Steps)
 
-h3. Review: CREATE and INSERT statements
+h3. Review: CREATE, INSERT, SELECT and WHERE
 
 1. Create a new database called campaign_finance (SQLite manager will save the file as campaign_finance.sqlite).
 
@@ -17,32 +17,32 @@ INSERT INTO contributions (committee_id, entity_type, last_name, first_name, cit
 INSERT INTO contributions (committee_id, entity_type, last_name, first_name, city, state, zip_code, employer, occupation, amount) VALUES ('C00431171','IND','MARRIOTT','BILL MR. JR.','BETHESDA','MD','20817','MARRIOTT INTERNATINAL INC.','CHAIRMAN & C.E.O.','587');
 </code></pre>
 
-h3. Review: SELECT and WHERE
+4. Import a data file (contributions.txt)
 
-4. Write a query to select all fields from contributions greater than $500 and less than $1000.
+5. Write a query to select all fields from contributions of at least $500 and no more than $1000.
 
 h3. Using BETWEEN to find values in a range
-<pre><code>SELECT * FROM contributions WHERE amount BETWEEN 500 AND 1000;</code></pre>
-Note: equivalent is <pre><code>SELECT * FROM contributions WHERE amount >= 500 AND amount <= 1000;</code></pre>
+
+6. <pre><code>SELECT * FROM contributions WHERE amount BETWEEN 500 AND 1000;</code></pre>
 
 h3. Using IN to choose from a list
 
-1. Select all contributions from Alabama, Georgia or Florida:
+7. Select all contributions from Alabama, Georgia or Florida:
 <pre><code>SELECT * FROM contributions WHERE state IN ('AL', 'GA', 'FL');</code></pre>
 
-2. Select all contributions from some state other than California, Oregon or Arizona:
+8. Select all contributions from some state other than California, Oregon or Arizona:
 <pre><code>SELECT * FROM contributions WHERE state NOT IN ('CA', 'OR', 'AZ');</code></pre>
 
 h3. Wildcard matching with LIKE
 
-3. Scroll through the Zip codes to see the issue:
+9. Scroll through the Zip codes to see the issue:
 <pre><code>SELECT DISTINCT city, state, zip_code FROM contributions WHERE city = 'NEW YORK' AND state = 'NY' ORDER BY zip_code;</code></pre>
 <pre><code>SELECT zip_code FROM contributions WHERE zip_code = '10017';</code></pre>
 
 Use % to match any number of characters.
 <pre><code>SELECT zip_code FROM contributions WHERE zip_code LIKE '10017%';</code></pre>
 
-5. Find all contributions where the middle initial is included in the first_name field:
+10. Find all contributions where the middle initial is included in the first_name field:
 Use _ to match exactly one character.
 <pre><code>SELECT * FROM contributions WHERE first_name LIKE '% _.'; </code></pre>
 
@@ -51,11 +51,11 @@ h3. Dealing with NULL values
 Another data problem:
 <pre><code>SELECT first_name, last_name FROM contributions WHERE state = 'NH';</pre></code>
 
-6. How do we find any rows missing the last_name value?
+11. How do we find any rows missing the last_name value?
 NOTE: "=" won't work.
 <pre><code>SELECT * FROM contributions WHERE last_name IS NULL;</code></pre>
 
-7. How do we find any New Hampshire contribution by someone whose last name isn't "BAKER":
+12. How do we find any New Hampshire contribution by someone whose last name isn't "BAKER":
 
 <pre><code>SELECT * FROM contributions WHERE state = 'NH';</code></pre>
 
@@ -65,11 +65,11 @@ NOTE: "=" won't work.
 
 h3. Manipulating text with string functions
 
-8. Use SUBSTR() to get a substring
+13. Use SUBSTR() to get a substring
 <pre><code>SELECT zip_code FROM contributions WHERE SUBSTR(zip_code, 1, 5) = '10017';</code></pre>
 <pre><code>SELECT SUBSTR(zip_code, 1, 5) FROM contributions;</code></pre>
 
-9. Use TRIM() to get rid of leading and trailing whitespace
+14. Use TRIM() to get rid of leading and trailing whitespace
    a. Change Oprah's row to introduce whitepace around the state name:
       <pre><code>UPDATE contributions SET state = ' IL ' WHERE last_name = 'Winfrey';</code></pre>
    b. Now check to see that you've created a new state:
@@ -77,39 +77,39 @@ h3. Manipulating text with string functions
    c. Use TRIM() to set things right:
       <pre><code>UPDATE contributions SET state = TRIM(state);</pre></code>
 
-10. Use UPPER() or LOWER() to handle inconsistent capitalization
+15. Use UPPER() or LOWER() to handle inconsistent capitalization
 <pre><code>SELECT * FROM contributions WHERE state = 'AL' AND city = 'Birmingham';</code></pre>
 <pre><code>SELECT * FROM contributions WHERE state = 'AL';</code></pre>
 <pre><code>SELECT * from contributions WHERE UPPER(city) = 'BIRMINGHAM';</code></pre>
 NOTE: case sensitivity is system-dependent. In SQLite, LIKE is not case sensitive. In MySQL, "=" is not case sensitive.
 It's safer to be explicit about case so your SQL is portable.
 
-11. Use || to concatenate strings
+16. Use || to concatenate strings
 <pre><code>SELECT city || ',' || state FROM contributions ORDER BY state, city;</code></pre>
 
 
 h3. Aggregate Functions
 
-12. Count the number of contributions from California:
+17. Count the number of contributions from California:
 <pre><code>SELECT COUNT(id) FROM contributions WHERE state = 'CA';</code></pre>
 
-13. Find out how many zip codes there are in the table:
+18. Find out how many zip codes there are in the table:
 SELECT COUNT(DISTINCT zip_code)  FROM contributions;
 
-14. Select the minimum and maximum contributions:
+19. Select the minimum and maximum contributions:
 <pre><code>SELECT MAX(amount) FROM contributions;</code></pre>
 <pre><code>SELECT MIN(amount) FROM contributions;</code></pre>
 
-15. Add up the contributions from Georgia:
+20. Add up the contributions from Georgia:
 <pre><code>SELECT SUM(amount) FROM contributions WHERE state = 'GA';</code></pre>
 
-16. Find the average contribution:
+21. Find the average contribution:
 <pre><code>SELECT AVG(amount) FROM contributions;</code></pre>
 
-17. Find the total amount of contributions per state:
+22. Find the total amount of contributions per state:
 <pre><code>SELECT state, SUM(amount) FROM contributions GROUP BY state;</code></pre>
 
-18. Find the total amount of contributions per city and state:
+23. Find the total amount of contributions per city and state:
 <pre><code>SELECT city, state, SUM(amount) FROM contributions GROUP BY city, state;</code></pre>
 Now order cities by their total contributions:
 <pre><code>SELECT city, state, SUM(amount) FROM contributions GROUP BY city, state ORDER BY SUM(amount) DESC;</code></pre>
@@ -117,10 +117,10 @@ Now order cities by their total contributions:
 
 h3. Using Subqueries
 
-19. A failed attempt to get all contributors who gave the maximum:
+24. A failed attempt to get all contributors who gave the maximum:
 <pre><code>SELECT * FROM contributions WHERE amount = MAX(amount);</code></pre>
 
-20. Doing it right with a subquery
+25. Doing it right with a subquery
 
 What we want is:
 <pre><code>SELECT MAX(amount) FROM contributions;</code></pre> -- The result is 5000
@@ -130,7 +130,7 @@ And then, using the result of that query:
 Combine them with a subquery:
 <pre><code>SELECT * FROM contributions WHERE amount = (SELECT MAX(amount) FROM contributions);</code></pre>
 
-21. Use a subquery to total the amounts from the top 20 contributions
+26. Use a subquery to total the amounts from the top 20 contributions
 <pre><code>SELECT SUM(amount) FROM contributions WHERE id IN (SELECT id FROM contributions ORDER BY amount DESC LIMIT 20);</code></pre>
 
 <a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/3.0/"><img alt="Creative Commons License" style="border-width:0" src="http://i.creativecommons.org/l/by-nc-nd/3.0/88x31.png" /></a><br /><span xmlns:dct="http://purl.org/dc/terms/" href="http://purl.org/dc/dcmitype/Text" property="dct:title" rel="dct:type">A Gentle Introduction to SQL Using SQLite</span> by <a xmlns:cc="http://creativecommons.org/ns#" href="https://github.com/tthibo/SQL-Tutorial" property="cc:attributionName" rel="cc:attributionURL">Troy Thibodeaux</a> is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/3.0/">Creative Commons Attribution-NonCommercial-NoDerivs 3.0 Unported License</a>.
@@ -138,27 +138,27 @@ Combine them with a subquery:
 
 h3. Grouping with Group By
 
-23. Get total amount contributed by state:
+27. Get total amount contributed by state:
 <pre><code>SELECT state, SUM(amount) FROM contributions GROUP BY state;</code></pre>
 
-24. Or by city (grouping by two columns):
+28. Or by city (grouping by two columns):
 <pre><code>SELECT city, state, SUM(amount) FROM contributions GROUP BY city, state;</code></pre>
 
-25. And easily see which cities gave the most (using ORDER BY):
+29. And easily see which cities gave the most (using ORDER BY):
 <pre><code>SELECT city, state, SUM(amount) FROM contributions GROUP BY city, state ORDER BY SUM(amount) DESC;</code></pre>
 
-26. Be wary of any non-aggregate fields in the SELECT clause that aren't in the GROUP BY:
+30. Be wary of any non-aggregate fields in the SELECT clause that aren't in the GROUP BY:
 <pre><code>SELECT city, state, SUM(amount) FROM contributions GROUP BY state ORDER BY SUM(amount) DESC;</code></pre>
 
 h3. Filtering by aggregate values using HAVING
 
-27. A failed attempt to return totals for cities where at least $3,000 has been contributed:
+31. A failed attempt to return totals for cities where at least $3,000 has been contributed:
 <pre><code>SELECT city, state, SUM(amount) FROM contributions WHERE SUM(amount) >= 3000  GROUP BY city, state  ORDER BY SUM(amount) DESC;</code></pre>
 
-28. And the way that works:
+32. And the way that works:
 <pre><code>SELECT city, state, SUM(amount) FROM contributions GROUP BY city, state HAVING SUM(amount) >= 3000 ORDER BY SUM(amount) DESC;</code></pre>
 
-29. What's the difference betwen WHERE and HAVING?
+33. What's the difference betwen WHERE and HAVING?
     a. A simple WHERE:
     <pre><code>SELECT city, state, amount FROM contributions WHERE amount >= 2300;</code></pre>
     b. Where with a GROUP BY:
@@ -167,3 +167,7 @@ h3. Filtering by aggregate values using HAVING
     <pre><code>SELECT city, state, SUM(amount) FROM contributions WHERE amount >= 2300 GROUP BY city, state HAVING SUM(amount) > 4000;</code></pre>
 
 
+h3. Is this data normal?
+
+* If I wanted to find all contributions to a given candidate, what query would I use?
+* If I wanted to get the candidate's name or the committee treasurer's name, what would I need to do? Why?
