@@ -5,7 +5,9 @@ h3. Review: CREATE and INSERT statements
 1. Create a new database called campaign_finance (SQLite manager will save the file as campaign_finance.sqlite).
 
 2. Create a new table called "contributions":
-<pre><code>CREATE TABLE "contributions" ("id" INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL , "committee_id" VARCHAR, "entity_type" VARCHAR, "last_name" VARCHAR, "first_name" VARCHAR, "city" VARCHAR, "state" VARCHAR, "zip_code" VARCHAR, "employer" VARCHAR, "occupation" VARCHAR, "amount" INTEGER)</code></pre>
+<pre><code>CREATE TABLE "contributions" ("id" INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL, "committee_id" VARCHAR,
+"entity_type" VARCHAR, "last_name" VARCHAR, "first_name" VARCHAR, "city" VARCHAR, "state" VARCHAR, "zip_code" VARCHAR,
+"employer" VARCHAR, "occupation" VARCHAR, "amount" INTEGER)</code></pre>
 
 3. Add a few rows of data:
 <pre><code>

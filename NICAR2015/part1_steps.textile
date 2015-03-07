@@ -90,19 +90,19 @@ h3. Limiting the number of rows returned
 h3. Changing values with UPDATE
 
 14. Check the list of state names again:
-<pre><code>SELECT state FROM contributors;</code></pre>
+<pre><code>SELECT state FROM contributions;</code></pre>
 
 Let's correct Nebraska:
-<pre><code>UPDATE contributors SET state = 'NE' WHERE state = 'Nebraska';</code></pre>
+<pre><code>UPDATE contributions SET state = 'NE' WHERE state = 'Nebraska';</code></pre>
 
 And check again:
-<pre><code>SELECT DISTINCT state FROM contributors;</code></pre>
+<pre><code>SELECT DISTINCT state FROM contributions;</code></pre>
 
 h3. DELETING rows
 
 15. Let's get rid of a row:
-<pre><code>SELECT * FROM contributors WHERE id = 1;</code></pre>
-<pre><code>DELETE FROM contributors WHERE id = 1;</code></pre>
+<pre><code>SELECT * FROM contributions WHERE id = 1;</code></pre>
+<pre><code>DELETE FROM contributions WHERE id = 1;</code></pre>
 
 h3. Importing data from a flat file
 
