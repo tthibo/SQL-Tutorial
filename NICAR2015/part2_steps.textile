@@ -35,7 +35,7 @@ h3. Using IN to choose from a list
 
 h3. Wildcard matching with LIKE
 
-9. Scroll through the Zip codes to see the issue:
+9. Scroll through the New York ZIP codes to see the issue:
 <pre><code>SELECT DISTINCT city, state, zip_code FROM contributions WHERE city = 'NEW YORK' AND state = 'NY' ORDER BY zip_code;</code></pre>
 <pre><code>SELECT zip_code FROM contributions WHERE zip_code = '10017';</code></pre>
 
@@ -44,7 +44,7 @@ Use % to match any number of characters.
 
 10. Find all contributions where the middle initial is included in the first_name field:
 Use _ to match exactly one character.
-<pre><code>SELECT * FROM contributions WHERE first_name LIKE '% _.'; </code></pre>
+<pre><code>SELECT * FROM contributions WHERE first_name LIKE '% _.%'; </code></pre>
 
 h3. Dealing with NULL values
 
@@ -59,33 +59,36 @@ NOTE: "=" won't work.
 
 <pre><code>SELECT * FROM contributions WHERE state = 'NH';</code></pre>
 
-<pre><code>SELECT * FROM contributors WHERE state = 'VA' AND last_name <> 'BAKER';</code></pre>
+<pre><code>SELECT * FROM contributions WHERE state = 'NH' AND last_name <> 'BAKER';</code></pre>
 
-<pre><code>SELECT * FROM contributors WHERE state = 'VA' AND last_name <> 'BAKER' AND last_name IS NOT NULL;</code></pre>
+<pre><code>SELECT * FROM contributions WHERE state = 'NH' AND (last_name <> 'BAKER' OR last_name IS NULL);</code></pre>
+
+13. Grab only rows from NH where there is a value for last_name:
+<pre><code>SELECT * FROM contributions WHERE state = 'NH' AND last_name IS NOT NULL;</code></pre>
 
 h3. Manipulating text with string functions
 
-13. Use SUBSTR() to get a substring
-<pre><code>SELECT zip_code FROM contributions WHERE SUBSTR(zip_code, 1, 5) = '10017';</code></pre>
-<pre><code>SELECT SUBSTR(zip_code, 1, 5) FROM contributions;</code></pre>
-
 14. Use TRIM() to get rid of leading and trailing whitespace
    a. Change Oprah's row to introduce whitepace around the state name:
-      <pre><code>UPDATE contributions SET state = ' IL ' WHERE last_name = 'Winfrey';</code></pre>
+      <pre><code>UPDATE contributions SET state = ' IL ' WHERE last_name = 'WINFREY';</code></pre>
    b. Now check to see that you've created a new state:
-      <pre><code>SELECT DISTINCT state FROM contributions;</pre></code>
+      <pre><code>SELECT DISTINCT state FROM contributions ORDER BY state;</pre></code>
    c. Use TRIM() to set things right:
       <pre><code>UPDATE contributions SET state = TRIM(state);</pre></code>
 
 15. Use UPPER() or LOWER() to handle inconsistent capitalization
-<pre><code>SELECT * FROM contributions WHERE state = 'AL' AND city = 'Birmingham';</code></pre>
-<pre><code>SELECT * FROM contributions WHERE state = 'AL';</code></pre>
-<pre><code>SELECT * from contributions WHERE UPPER(city) = 'BIRMINGHAM';</code></pre>
+<pre><code>SELECT city, state FROM contributions WHERE state = 'AL' ORDER BY city, state;</code></pre>
+<pre><code>SELECT * FROM contributions WHERE state = 'AL' AND city = 'BIRMINGHAM';</code></pre>
+<pre><code>SELECT * from contributions WHERE state = 'AL' AND UPPER(city) = 'BIRMINGHAM';</code></pre>
 NOTE: case sensitivity is system-dependent. In SQLite, LIKE is not case sensitive. In MySQL, "=" is not case sensitive.
 It's safer to be explicit about case so your SQL is portable.
 
-16. Use || to concatenate strings
-<pre><code>SELECT city || ',' || state FROM contributions ORDER BY state, city;</code></pre>
+16. Use SUBSTR() to get a substring
+Let's revisit the ZIP+4 problem:
+<pre><code>SELECT DISTINCT city, state, zip_code FROM contributions WHERE city = 'NEW YORK' AND state = 'NY' ORDER BY zip_code;</code></pre>
+
+Now let's return just the 5-digit ZIPs:
+<pre><code>SELECT SUBSTR(zip_code, 1, 5) FROM contributions;</code></pre>
 
 
 h3. Aggregate Functions
@@ -94,17 +97,21 @@ h3. Aggregate Functions
 <pre><code>SELECT COUNT(id) FROM contributions WHERE state = 'CA';</code></pre>
 
 18. Find out how many zip codes there are in the table:
-SELECT COUNT(DISTINCT zip_code)  FROM contributions;
+<pre><code>SELECT COUNT(DISTINCT zip_code)  FROM contributions;</code></pre>
+<pre><code>SELECT COUNT(DISTINCT state)  FROM contributions;</code></pre>
 
 19. Select the minimum and maximum contributions:
 <pre><code>SELECT MAX(amount) FROM contributions;</code></pre>
 <pre><code>SELECT MIN(amount) FROM contributions;</code></pre>
 
-20. Add up the contributions from Georgia:
+20. Find the average contribution:
+<pre><code>SELECT AVG(amount) FROM contributions;</code></pre>
+
+21. Add up the contributions from Georgia:
 <pre><code>SELECT SUM(amount) FROM contributions WHERE state = 'GA';</code></pre>
 
-21. Find the average contribution:
-<pre><code>SELECT AVG(amount) FROM contributions;</code></pre>
+
+h3. Grouping with GROUP BY
 
 22. Find the total amount of contributions per state:
 <pre><code>SELECT state, SUM(amount) FROM contributions GROUP BY state;</code></pre>
@@ -117,7 +124,7 @@ Now order cities by their total contributions:
 
 h3. Using Subqueries
 
-24. A failed attempt to get all contributors who gave the maximum:
+24. A failed attempt to get all contributions who gave the maximum:
 <pre><code>SELECT * FROM contributions WHERE amount = MAX(amount);</code></pre>
 
 25. Doing it right with a subquery
@@ -132,8 +139,6 @@ Combine them with a subquery:
 
 26. Use a subquery to total the amounts from the top 20 contributions
 <pre><code>SELECT SUM(amount) FROM contributions WHERE id IN (SELECT id FROM contributions ORDER BY amount DESC LIMIT 20);</code></pre>
-
-<a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/3.0/"><img alt="Creative Commons License" style="border-width:0" src="http://i.creativecommons.org/l/by-nc-nd/3.0/88x31.png" /></a><br /><span xmlns:dct="http://purl.org/dc/terms/" href="http://purl.org/dc/dcmitype/Text" property="dct:title" rel="dct:type">A Gentle Introduction to SQL Using SQLite</span> by <a xmlns:cc="http://creativecommons.org/ns#" href="https://github.com/tthibo/SQL-Tutorial" property="cc:attributionName" rel="cc:attributionURL">Troy Thibodeaux</a> is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/3.0/">Creative Commons Attribution-NonCommercial-NoDerivs 3.0 Unported License</a>.
 
 
 h3. Grouping with Group By
@@ -156,7 +161,7 @@ h3. Filtering by aggregate values using HAVING
 <pre><code>SELECT city, state, SUM(amount) FROM contributions WHERE SUM(amount) >= 3000  GROUP BY city, state  ORDER BY SUM(amount) DESC;</code></pre>
 
 32. And the way that works:
-<pre><code>SELECT city, state, SUM(amount) FROM contributions GROUP BY city, state HAVING SUM(amount) >= 3000 ORDER BY SUM(amount) DESC;</code></pre>
+<pre><code>SELECT city, state, SUM(amount) FROM contributions GROUP BY city, state HAVING SUM(amount) >= 10000 ORDER BY SUM(amount) DESC;</code></pre>
 
 33. What's the difference betwen WHERE and HAVING?
     a. A simple WHERE:
@@ -164,10 +169,14 @@ h3. Filtering by aggregate values using HAVING
     b. Where with a GROUP BY:
     <pre><code>SELECT city, state, SUM(amount) FROM contributions WHERE amount >= 2300 GROUP BY city, state;</code></pre>
     c. Now limiting those cities by the total contributions:
-    <pre><code>SELECT city, state, SUM(amount) FROM contributions WHERE amount >= 2300 GROUP BY city, state HAVING SUM(amount) > 4000;</code></pre>
+    <pre><code>SELECT city, state, SUM(amount) FROM contributions WHERE amount >= 2300 GROUP BY city, state HAVING SUM(amount) > 10000;</code></pre>
 
 
 h3. Is this data normal?
 
 * If I wanted to find all contributions to a given candidate, what query would I use?
 * If I wanted to get the candidate's name or the committee treasurer's name, what would I need to do? Why?
+
+
+<a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/3.0/"><img alt="Creative Commons License" style="border-width:0" src="http://i.creativecommons.org/l/by-nc-nd/3.0/88x31.png" /></a><br /><span xmlns:dct="http://purl.org/dc/terms/" href="http://purl.org/dc/dcmitype/Text" property="dct:title" rel="dct:type">A Gentle Introduction to SQL Using SQLite</span> by <a xmlns:cc="http://creativecommons.org/ns#" href="https://github.com/tthibo/SQL-Tutorial" property="cc:attributionName" rel="cc:attributionURL">Troy Thibodeaux</a> is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/3.0/">Creative Commons Attribution-NonCommercial-NoDerivs 3.0 Unported License</a>.
+
