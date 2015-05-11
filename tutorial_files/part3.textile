@@ -179,8 +179,8 @@ Much better.
 
 h3. Know thyself: Self Joins
 
-Occasionally, it's useful to perform a query that joins a table to itself. Consider, for example, if we had two tables of contributors and we wanted to find contributors who appeared in both tables. Even without an explicit reference defined via a foreign key, we could still do a rough join on a combination of other columns, such as first and last names:
-<pre><code>SELECT a.last_name, a.first_name, a.amount, b.amount FROM a, b WHERE a.last_name = b.last_name AND a.first_name = b.first_name;</code></pre>
+Occasionally, it's useful to perform a query that joins a table to itself. Consider, for example, if we had two tables of contributors (contributors_a and contributors_b), and we wanted to find contributors who appeared in both tables. Even without an explicit reference defined via a foreign key, we could still do a rough join on a combination of other columns, such as first and last names:
+<pre><code>SELECT a.last_name, a.first_name, a.amount, b.amount FROM contributors_a a, contributors_b b WHERE a.last_name = b.last_name AND a.first_name = b.first_name;</code></pre>
 
 Obviously, there are some limitations here (what if two people have the same first and last names? What if someone appears twice in one of the tables?) But it would still give us a rough and ready picture of the overlap between the two tables.
 
