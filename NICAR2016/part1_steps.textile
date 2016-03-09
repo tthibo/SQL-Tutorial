@@ -1,5 +1,4 @@
 h2. A Quick Introduction to SQL Using SQLite (Just the Steps)
-
 1. Open Firefox and find the SQLite Manager Plugin:
 
 !https://github.com/tthibo/SQL-Tutorial/raw/master/tutorial_files/images/customize_menu.png!
@@ -20,17 +19,17 @@ h2. A Quick Introduction to SQL Using SQLite (Just the Steps)
 Use the "Execute SQL" tab (it's in the second menu row, under the icons): !https://github.com/tthibo/SQL-Tutorial/raw/master/tutorial_files/images/execute_sql.png!
 
 <pre><code>
-INSERT INTO contributions (committee_id, entity_type, last_name, first_name, city, state, zip_code, employer, occupation, amount) VALUES ('C00494740','IND','BUFFETT','WARREN','OMAHA','Nebraska','68131','BERKSHIRE HATHAWAY/CHAIRMAN','CHAIRMAN','2500');
+INSERT INTO contributions (committee_id, entity_type, last_name, first_name, middle_name, city, state, zip_code, employer, occupation, date, amount) VALUES ('C00494740','IND','BUFFETT','WARREN','OMAHA','Nebraska','68131','BERKSHIRE HATHAWAY/CHAIRMAN','CHAIRMAN','2500');
 </code></pre>
 
 <hr/>
 
 5. Insert three more rows (one at a time or all at once)
 <pre><code>
-INSERT INTO contributions (committee_id, entity_type, last_name, first_name, city, state, zip_code, employer, occupation, amount) VALUES ('C00494740','IND','WINFREY','OPRAH','CHICAGO','IL','60607','HARPO INC.','CHAIRMAN/CEO',500);
-INSERT INTO contributions (committee_id, entity_type, last_name, first_name, city, state, zip_code, employer, occupation, amount)  VALUES ('C00494740','IND','PRITZKER','PENNY S','CHICAGO','IL','60614','HYATT','EXEC',2500);
-INSERT INTO contributions (committee_id, entity_type, last_name, first_name, city, state, zip_code, employer, occupation, amount) VALUES ('C00431171','IND','ADELSON','SHELDON','LAS VEGAS','NV','89109','VENETIAN HOTEL','OWNER','2500');
-INSERT INTO contributions (committee_id, entity_type, last_name, first_name, city, state, zip_code, employer, occupation, amount) VALUES ('C00431171','IND','MARRIOTT','BILL MR. JR.','BETHESDA','MD','20817','MARRIOTT INTERNATINAL INC.','CHAIRMAN & C.E.O.','587');
+INSERT INTO contributions (committee_id, entity_type, last_name, first_name, city, state, zip_code, employer, occupation, date, amount) VALUES ('C00494740','IND','WINFREY','OPRAH','','CHICAGO','IL','60607','HARPO INC.','CHAIRMAN/CEO','2015-03-03',500);
+INSERT INTO contributions (committee_id, entity_type, last_name, first_name, city, state, zip_code, employer, occupation, date, amount)  VALUES ('C00494740','IND','PRITZKER','PENNY','S','CHICAGO','IL','60614','HYATT','EXEC','2015-03-14',2500);
+INSERT INTO contributions (committee_id, entity_type, last_name, first_name, city, state, zip_code, employer, occupation, date, amount) VALUES ('C00431171','IND','ADELSON','SHELDON','','LAS VEGAS','NV','89109','VENETIAN HOTEL','OWNER','2015-10-10','2500');
+INSERT INTO contributions (committee_id, entity_type, last_name, first_name, city, state, zip_code, employer, occupation, date, amount) VALUES ('C00431171','IND','MARRIOTT','BILL MR. JR.','','BETHESDA','MD','20817','MARRIOTT INTERNATINAL INC.','CHAIRMAN & C.E.O.','2015-11-19','587');
 </code></pre>
 
 
@@ -115,7 +114,7 @@ h3. DELETING rows
 h3. Importing data from a flat file
 
 14. Import a delimited file:
-a. Go to ["https://raw.githubusercontent.com/tthibo/SQL-Tutorial/master/NICAR2015/contributions.txt":https://raw.githubusercontent.com/tthibo/SQL-Tutorial/master/NICAR2015/contributions.txt]
+a. Go to ["https://raw.githubusercontent.com/tthibo/SQL-Tutorial/master/NICAR2016/contributions.txt":https://raw.githubusercontent.com/tthibo/SQL-Tutorial/master/NICAR2016/contributions.txt]
 b. Save the file as "contributions.txt" somewhere you can find it (your desktop is a good place).
 
 c. Click the SQLite Manager Import Wizard icon (!https://github.com/tthibo/SQL-Tutorial/raw/master/tutorial_files/images/import_icon.png!).
