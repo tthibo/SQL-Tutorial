@@ -1,7 +1,7 @@
 h2. A Quick Introduction to SQL Using SQLite (Just the Steps)
 1. Open Firefox and find the SQLite Manager Plugin:
 
-!https://github.com/tthibo/SQL-Tutorial/raw/master/tutorial_files/images/customize_menu.png!
+!https://raw.githubusercontent.com/tthibo/SQL-Tutorial/master/NICAR2016/images/customize_menu.png!
 
 <hr/>
 
