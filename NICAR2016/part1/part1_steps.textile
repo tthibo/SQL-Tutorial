@@ -97,7 +97,7 @@ Here are some examples:
 <b>10. Combine conditions with AND or OR:</b>
 
 Find only the big spenders from New York
-<pre><code>SELECT * FROM contributions WHERE state = 'NY' AND amount > 2000;</code></pre>
+<pre><code>SELECT * FROM contributions WHERE city = 'NY' AND amount > 2000;</code></pre>
 
 Find any big spender and anyone from New York
 <pre><code>SELECT * FROM contributions WHERE state = 'NY' OR amount > 2000;</code></pre>
@@ -119,22 +119,22 @@ Try that again:
 h3. Pick One: Using <code>BETWEEN</code> and <code>IN</code> (<code>NOT IN</code>)
 
 <b>11. Find all contributions between $500 and $1000</b>
-<pre><code>SELECT * FROM contributors WHERE amount BETWEEN 500 AND 1000;</code></pre>
+<pre><code>SELECT * FROM contributions WHERE amount BETWEEN 251 AND 2699;</code></pre>
 (Note: this query returns the same results as <code>SELECT * FROM contributors WHERE amount >= 500 AND amount <= 1000;</code> -- but it's much more readable.)
 
 <hr />
 
-<b>12. Find all contributors from a few southern states:</b>
-<pre><code>SELECT * FROM contributors WHERE state IN ('AL', 'GA', 'FL');</code></pre>
+<b>12. Find all contributors from a list of states:</b>
+<pre><code>SELECT * from contributions WHERE state IN ('OH', 'NY');</code></pre>
 
-(Note: A compound statement could accomplish this same goal:  <code>state = 'AL' OR state = 'GA' OR state = 'FL'</code> 
+(Note: A compound statement could accomplish this same goal:  <code>state = 'OH' OR state = 'NY'</code> 
 But the <code>IN</code> syntax makes things much clearer, and it's easier to write.)
 
 <hr/>
 
 <b>13. Use <code>NOT IN</code> to find results where a value is not included in the given set:</b>
-<pre><code>SELECT * FROM contributors WHERE state NOT IN ('CA', 'OR', 'AZ');</code></pre>
-But beware that <code>NOT IN</code> won't work with null fields. So, if one of the rows has a null value for state, it would not be returned by the query above.
+<pre><code>SELECT * FROM contributions WHERE state NOT IN ('NY', 'OH');</code></pre>
+
 
 <hr/>
 
@@ -153,7 +153,7 @@ And order by more than one column:
 h3. Limiting the number of rows returned
 
 <b>15. Return only the top two contributions:</b>
-<pre><code>SELECT * FROM CONTRIBUTIONS ORDER BY amount DESC LIMIT 2;</code></pre>
+<pre><code>SELECT * FROM contributions ORDER BY amount DESC LIMIT 2;</code></pre>
 
 <hr />
 
@@ -185,7 +185,7 @@ h3. DELETING rows
 h3. Importing data from a flat file
 
 <b>18. Import a delimited file:</b>
-a. Go to ["https://raw.githubusercontent.com/tthibo/SQL-Tutorial/master/NICAR2016/contributions.txt":https://raw.githubusercontent.com/tthibo/SQL-Tutorial/master/NICAR2016/contributions.txt] (Or grab it from the conference computer.)
+a. Go to ["https://raw.githubusercontent.com/tthibo/SQL-Tutorial/master/NICAR2016/part1/data/contributions.txt":https://raw.githubusercontent.com/tthibo/SQL-Tutorial/master/NICAR2016/part1/data/contributions.txt] (Or grab it from the conference computer.)
 
 b. Save the file as "contributions.txt" somewhere you can find it (your desktop is a good place).
 

@@ -79,7 +79,7 @@ INSERT INTO contributions (committee_id, entity_type, last_name, first_name, mid
 <hr />
 <p><b>10. Combine conditions with AND or OR:</b></p>
 <p>Find only the big spenders from New York</p>
-<pre><code>SELECT * FROM contributions WHERE state = &#39;NY&#39; AND amount &gt; 2000;</code></pre>
+<pre><code>SELECT * FROM contributions WHERE city = &#39;NY&#39; AND amount &gt; 2000;</code></pre>
 <p>Find any big spender and anyone from New York</p>
 <pre><code>SELECT * FROM contributions WHERE state = &#39;NY&#39; OR amount &gt; 2000;</code></pre>
 <hr />
@@ -92,17 +92,16 @@ INSERT INTO contributions (committee_id, entity_type, last_name, first_name, mid
 <hr />
 <h3 id="pick-one-using-between-and-in-not-in">Pick One: Using <code>BETWEEN</code> and <code>IN</code> (<code>NOT IN</code>)</h3>
 <p><b>11. Find all contributions between $500 and $1000</b></p>
-<pre><code>SELECT * FROM contributors WHERE amount BETWEEN 500 AND 1000;</code></pre>
+<pre><code>SELECT * FROM contributions WHERE amount BETWEEN 251 AND 2699;</code></pre>
 <p>(Note: this query returns the same results as <code>SELECT * FROM contributors WHERE amount &gt;= 500 AND amount &lt;= 1000;</code> -- but it's much more readable.)</p>
 <hr />
-<p><b>12. Find all contributors from a few southern states:</b></p>
-<pre><code>SELECT * FROM contributors WHERE state IN (&#39;AL&#39;, &#39;GA&#39;, &#39;FL&#39;);</code></pre>
-<p>(Note: A compound statement could accomplish this same goal: <code>state = 'AL' OR state = 'GA' OR state = 'FL'</code><br />
+<p><b>12. Find all contributors from a list of states:</b></p>
+<pre><code>SELECT * from contributions WHERE state IN (&#39;OH&#39;, &#39;NY&#39;);</code></pre>
+<p>(Note: A compound statement could accomplish this same goal: <code>state = 'OH' OR state = 'NY'</code><br />
 But the <code>IN</code> syntax makes things much clearer, and it's easier to write.)</p>
 <hr/>
 <p><b>13. Use <code>NOT IN</code> to find results where a value is not included in the given set:</b></p>
-<pre><code>SELECT * FROM contributors WHERE state NOT IN (&#39;CA&#39;, &#39;OR&#39;, &#39;AZ&#39;);</code></pre>
-<p>But beware that <code>NOT IN</code> won't work with null fields. So, if one of the rows has a null value for state, it would not be returned by the query above.</p>
+<pre><code>SELECT * FROM contributions WHERE state NOT IN (&#39;NY&#39;, &#39;OH&#39;);</code></pre>
 <hr/>
 <h3 id="sorting-the-results">Sorting the results</h3>
 <p><b>14. Use ORDER BY to sort:</b></p>
@@ -114,7 +113,7 @@ But the <code>IN</code> syntax makes things much clearer, and it's easier to wri
 <hr />
 <h3 id="limiting-the-number-of-rows-returned">Limiting the number of rows returned</h3>
 <p><b>15. Return only the top two contributions:</b></p>
-<pre><code>SELECT * FROM CONTRIBUTIONS ORDER BY amount DESC LIMIT 2;</code></pre>
+<pre><code>SELECT * FROM contributions ORDER BY amount DESC LIMIT 2;</code></pre>
 <hr />
 <h3 id="changing-values-with-update">Changing values with UPDATE</h3>
 <p><b>16. Check the list of state names again:</b></p>
@@ -131,7 +130,7 @@ But the <code>IN</code> syntax makes things much clearer, and it's easier to wri
 <hr/>
 <h3 id="importing-data-from-a-flat-file">Importing data from a flat file</h3>
 <p><b>18. Import a delimited file:</b><br />
-a. Go to <a href="https://raw.githubusercontent.com/tthibo/SQL-Tutorial/master/NICAR2016/contributions.txt" class="uri">https://raw.githubusercontent.com/tthibo/SQL-Tutorial/master/NICAR2016/contributions.txt</a> (Or grab it from the conference computer.)</p>
+a. Go to <a href="https://raw.githubusercontent.com/tthibo/SQL-Tutorial/master/NICAR2016/part1/data/contributions.txt" class="uri">https://raw.githubusercontent.com/tthibo/SQL-Tutorial/master/NICAR2016/part1/data/contributions.txt</a> (Or grab it from the conference computer.)</p>
 <p>b. Save the file as &quot;contributions.txt&quot; somewhere you can find it (your desktop is a good place).</p>
 <p>c. Click the SQLite Manager Import Wizard icon (<img src="./images/import_icon.png" alt="" />).</p>
 <ul>
