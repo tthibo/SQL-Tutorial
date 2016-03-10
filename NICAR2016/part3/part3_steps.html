@@ -59,7 +59,7 @@ CREATE TABLE &quot;candidates&quot; (
 <pre><code>SELECT SUM(amount) FROM contributions WHERE id IN (SELECT id FROM contributions ORDER BY amount DESC LIMIT 20);</code></pre>
 <hr/>
 <h3 id="using-a-subquery-on-another-table">Using a subquery on another table</h3>
-<p><b>9. Find all of the contributors to Hillary Clinton</b></p>
+<p><b>9. Find all of the contributions to Hillary Clinton</b></p>
 <pre><code>SELECT * FROM contributions WHERE candidate_id = (SELECT id from candidates WHERE last_name = &#39;Clinton&#39; AND first_name = &#39;Hillary&#39;);</code></pre>
 <hr/>
 <h3 id="joins-queries-across-tables">Joins: Queries across tables</h3>
@@ -98,5 +98,9 @@ like, but obviously shorter aliases will save more typing, while longer ones may
 </ul>
 <p>Currently, SQLite only supports <code>LEFT OUTER JOIN</code> from the list above, but some other database management systems support the other two types as well.</p>
 <p><b>15. Get the number of contributions for each candidate, including those with no contributions:</b></p>
-<pre><code>SELECT count(contributions.id), candidates.id, candidates.last_name FROM candidates LEFT OUTER JOIN contributoins ON candidates.id = contributions.candidate_id GROUP BY candidates.id, candidates.last_name;</code></pre>
+<pre><code>SELECT candidates.last_name, count(contributions.id)
+FROM candidates LEFT OUTER JOIN contributions 
+ON candidates.id = contributions.candidate_id 
+GROUP BY candidates.id, candidates.last_name 
+ORDER BY count(contributions.id);</code></pre>
 <p>(Note: Aliases would work here as well.)</p>
