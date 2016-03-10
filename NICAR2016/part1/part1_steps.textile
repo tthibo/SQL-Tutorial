@@ -95,6 +95,24 @@ Here are some examples:
 
 <hr />
 
+h3. Pick One: Using <code>BETWEEN</code> and <code>IN</code> (<code>NOT IN</code>)
+
+Often you'll want to get a value from within a range. The <code>BETWEEN</code> operator can do exactly that. Let's see which of our contributors has given between 500 and 1000 dollars:
+<pre><code>SELECT * FROM contributors WHERE amount BETWEEN 500 AND 1000;</code></pre>
+(Note: this query returns the same results as <code>SELECT * FROM contributors WHERE amount >= 500 AND amount <= 1000;</code> -- but it's much more readable.)
+
+At other times, you may need to match values from within a set of choices. This is where the <code>IN</code> operator comes in handy. Let's find all contributors from a few southern states:
+<pre><code>SELECT * FROM contributors WHERE state IN ('AL', 'GA', 'FL');</code></pre>
+The choices are surrounded by parentheses and separated by commas. And don't forget the quote marks around literal strings. here's the result: 
+!https://github.com/tthibo/SQL-Tutorial/raw/master/tutorial_files/images/in.png!
+(Again, you could have used a compound statement with <code>state = 'AL' OR state = 'GA' OR state = 'FL'</code> to achieve the same result, but the <code>IN</code> syntax makes things much clearer, and it's easier to write.)
+
+You can also use <code>NOT IN</code> to find results where a value is not included in the given set:
+<pre><code>SELECT * FROM contributors WHERE state NOT IN ('CA', 'OR', 'AZ');</code></pre>
+But beware that <code>NOT IN</code> won't work with null fields. So, if one of the rows has a null value for state, it would not be returned by the query above.
+
+<hr/>
+
 <b>10. Combine conditions with AND or OR:</b>
 
 Find only the big spenders from New York
@@ -157,6 +175,8 @@ h3. DELETING rows
 
 
 <hr/>
+
+
 
 h3. Importing data from a flat file
 
