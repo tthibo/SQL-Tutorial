@@ -60,7 +60,7 @@ CREATE TABLE &quot;candidates&quot; (
 <hr/>
 <h3 id="using-a-subquery-on-another-table">Using a subquery on another table</h3>
 <p><b>9. Find all of the contributions to Hillary Clinton</b></p>
-<pre><code>SELECT * FROM contributions WHERE candidate_id = (SELECT id from candidates WHERE last_name = &#39;Clinton&#39; AND first_name = &#39;Hillary&#39;);</code></pre>
+<pre><code>SELECT * FROM contributions WHERE candidate_id = (SELECT id from candidates WHERE last_name = &#39;CLINTON&#39; AND first_name = &#39;HILLARY&#39;);</code></pre>
 <hr/>
 <h3 id="joins-queries-across-tables">Joins: Queries across tables</h3>
 <p><b>10. It is possible to do an <strong>implicit</strong> join simply by defining the relationship between the two tables in the <code>WHERE</code> clause:</b></p>

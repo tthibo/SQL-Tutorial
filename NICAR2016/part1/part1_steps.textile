@@ -97,10 +97,10 @@ Here are some examples:
 <b>10. Combine conditions with AND or OR:</b>
 
 Find only the big spenders from New York
-<pre><code>SELECT * FROM contributions WHERE city = 'NY' AND amount > 2000;</code></pre>
+<pre><code>SELECT * FROM contributions WHERE city = 'NEW YORK' AND amount > 2000;</code></pre>
 
 Find any big spender and anyone from New York
-<pre><code>SELECT * FROM contributions WHERE state = 'NY' OR amount > 2000;</code></pre>
+<pre><code>SELECT * FROM contributions WHERE city = 'NEW YORK' OR amount > 2000;</code></pre>
 
 <hr />
 

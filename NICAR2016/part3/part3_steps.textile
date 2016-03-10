@@ -97,7 +97,7 @@ h3. Using a subquery on another table
 
 <b>9. Find all of the contributions to Hillary Clinton</b>
 
-<pre><code>SELECT * FROM contributions WHERE candidate_id = (SELECT id from candidates WHERE last_name = 'Clinton' AND first_name = 'Hillary');</code></pre>
+<pre><code>SELECT * FROM contributions WHERE candidate_id = (SELECT id from candidates WHERE last_name = 'CLINTON' AND first_name = 'HILLARY');</code></pre>
 
 <hr/>
 

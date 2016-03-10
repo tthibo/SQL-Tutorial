@@ -79,9 +79,9 @@ INSERT INTO contributions (committee_id, entity_type, last_name, first_name, mid
 <hr />
 <p><b>10. Combine conditions with AND or OR:</b></p>
 <p>Find only the big spenders from New York</p>
-<pre><code>SELECT * FROM contributions WHERE city = &#39;NY&#39; AND amount &gt; 2000;</code></pre>
+<pre><code>SELECT * FROM contributions WHERE city = &#39;NEW YORK&#39; AND amount &gt; 2000;</code></pre>
 <p>Find any big spender and anyone from New York</p>
-<pre><code>SELECT * FROM contributions WHERE state = &#39;NY&#39; OR amount &gt; 2000;</code></pre>
+<pre><code>SELECT * FROM contributions WHERE city = &#39;NEW YORK&#39; OR amount &gt; 2000;</code></pre>
 <hr />
 <p><b>11. But watch out for operator precedence</b></p>
 <p>Looking for big spenders from Las Vegas and New York City</p>
