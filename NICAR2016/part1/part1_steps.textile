@@ -1,0 +1,175 @@
+h2. A Quick Introduction to SQL Using SQLite (Just the Steps)
+
+
+<b>1. Open Firefox and click on the menu icon:</b>
+
+!./images/ff-menu.png!
+
+Use the "customize" option to find the SQLite Manager Plugin:
+
+!./images/customize-menu.png!
+
+You can add it to your menu by dragging or right-click to add it to the toolbar.
+
+<hr/>
+
+<b>2. Create a new database called <em>campaign_finance</em>:</b>
+
+!./images/new_database.png!
+
+<hr/>
+
+<b>3. Create a new table called <em>contributions</em> (!./images/new_table.png!) and give it the following field definitions:</b>
+
+!./images/create_contributions_table.png!
+
+<hr/>
+
+h3. Inserting data manually (Don't worry,  you won't do this often.)
+
+<b>4. Insert a row of data.</b>
+
+Use the "Execute SQL" tab (it's in the second menu row, under the icons)
+!./images/execute_sql.png!
+
+And paste or type the following statement:
+<pre><code>
+INSERT INTO contributions (committee_id, entity_type, last_name, first_name, middle_name, city, state, zip_code, employer, occupation, date, amount) VALUES ('C00575795','IND','BUFFETT','WARREN','','OMAHA','Nebraska','68131','BERKSHIRE HATHAWAY','CHAIRMAN','2015-04-15',2700);
+</code></pre>
+
+<hr/>
+
+<b>5. Insert three more rows (one at a time or all at once)</b>
+<pre><code>
+INSERT INTO contributions (committee_id, entity_type, last_name, first_name, middle_name,city, state, zip_code, employer, occupation, date, amount) VALUES ('C00577130','IND','RUFFALO','MARK','','NEW YORK','NY','|100031526','SELF-EMPLOYED','ACTOR','2015-06-02',250);
+INSERT INTO contributions (committee_id, entity_type, last_name, first_name, middle_name,city, state, zip_code, employer, occupation, date, amount) VALUES ('C00458844','IND','ADELSON','SHELDON','','LAS VEGAS','NV','89145','','','2015-06-12',2600);
+INSERT INTO contributions (committee_id, entity_type, last_name, first_name, middle_name,city, state, zip_code, employer, occupation, date, amount) VALUES ('C00579458','IND','MANNING','PEYTON MR.','','CLEVELAND','OH','441141717','DENVER BRONCOS','PROFESSIONAL ATHLETE','2015-08-04',2700);
+INSERT INTO contributions (committee_id, entity_type, last_name, first_name, middle_name,city, state, zip_code, employer, occupation, date, amount) VALUES ('C00575795','IND','COPPOLA','SOFIA','','NEW YORK','NY','100130778','SELF-EMPLOYED','DIRECTOR/WRITER/ACTOR','2016-01-22',2700);
+</code></pre>
+
+
+<hr />
+
+h3. The SELECT statement
+
+<b>6. Select everything from the contributions table:</b>
+
+<pre><code>SELECT * FROM contributions;</code></pre>
+
+Note the wildcard * character.
+
+<hr />
+
+<b>7. Choose some fields to select:</b>
+
+<pre><code>SELECT city, state FROM contributions;</code></pre>
+
+Note the duplicates; why are they there?
+
+<hr />
+
+<b>8. Get a distinct set of cities and states:</b>
+
+<pre><code>SELECT DISTINCT city, state FROM contributions;</code></pre>
+
+<hr />
+
+h3. THE WHERE CLAUSE
+
+<b>9. Add some conditions to the SELECT:</b>
+<pre><code>SELECT * from contributions WHERE state='NY';</code></pre>
+Now try playing around with some of the operators:
+
+|*operator*|*description*|
+|=|Equal|
+|<>|Not equal*|
+|>|Greater than|
+|<|Less than|
+|>=|Greater than or equal|
+|<=|Less than or equal|
+
+Here are some examples:
+<pre><code>SELECT * from contributions WHERE amount > 500;</code></pre>
+<pre><code>SELECT * from contributions WHERE amount >= 500;</code></pre>
+<pre><code>SELECT last_name from contributions WHERE state <> 'NY';</code></pre>
+
+<hr />
+
+<b>10. Combine conditions with AND or OR:</b>
+
+Find only the big spenders from New York
+<pre><code>SELECT * FROM contributions WHERE state = 'NY' AND amount > 2000;</code></pre>
+
+Find any big spender and anyone from New York
+<pre><code>SELECT * FROM contributions WHERE state = 'NY' OR amount > 2000;</code></pre>
+
+<hr />
+
+<b>11. But watch out for operator precedence</b>
+
+Looking for big spenders from Las Vegas and New York City
+<pre><code>SELECT * FROM contributions WHERE city = 'NEW YORK' OR city = 'LAS VEGAS' AND amount > 2000;</code></pre>
+
+How did Mark Ruffalo sneak in there?
+
+Try that again:
+<pre><code>SELECT * FROM contributions WHERE (city = 'NEW YORK' OR city = 'LAS VEGAS') AND amount > 2000;</code></pre>
+
+<hr />
+
+h3. Sorting the results
+
+<b>12. Use ORDER BY to sort:</b>
+<pre><code>SELECT last_name, amount FROM contributions WHERE amount > 250 ORDER BY amount;</code></pre>
+And reverse the order:
+<pre><code>SELECT last_name, amount FROM contributions WHERE amount > 250 ORDER BY amount DESC;</code></pre>
+And order by more than one column:
+<pre><code>SELECT state, last_name, amount FROM contributions ORDER BY state, amount DESC;</code></pre>
+
+<hr />
+
+h3. Limiting the number of rows returned
+
+<b>13. Return only the top two contributions:</b>
+<pre><code>SELECT * FROM CONTRIBUTIONS ORDER BY amount DESC LIMIT 2;</code></pre>
+
+<hr />
+
+h3. Changing values with UPDATE
+
+<b>14. Check the list of state names again:</b>
+<pre><code>SELECT state FROM contributions;</code></pre>
+
+Let's correct Nebraska:
+<pre><code>UPDATE contributions SET state = 'NE' WHERE state = 'Nebraska';</code></pre>
+
+And check again:
+<pre><code>SELECT DISTINCT state FROM contributions;</code></pre>
+
+
+<hr />
+
+h3. DELETING rows
+
+<b>15. Let's get rid of a row:</b>
+<pre><code>SELECT * FROM contributions WHERE id = 1;</code></pre>
+<pre><code>DELETE FROM contributions WHERE id = 1;</code></pre>
+
+
+<hr/>
+
+h3. Importing data from a flat file
+
+<b>16. Import a delimited file:</b>
+a. Go to ["https://raw.githubusercontent.com/tthibo/SQL-Tutorial/master/NICAR2016/contributions.txt":https://raw.githubusercontent.com/tthibo/SQL-Tutorial/master/NICAR2016/contributions.txt] (Or grab it from the conference computer.)
+
+b. Save the file as "contributions.txt" somewhere you can find it (your desktop is a good place).
+
+c. Click the SQLite Manager Import Wizard icon (!./images/import_icon.png!).
+
+* Using the **Select File** button, browse for the **contributions.txt** file you just saved.
+* Check the "First row contains column names" check box.
+* Select **Pipe(|)** for "Fields separated by"
+* For everything else, you can keep the default selections.
+* You should have 204 rows of data.
+

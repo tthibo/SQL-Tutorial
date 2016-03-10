@@ -1,0 +1,129 @@
+<h2 id="a-quick-introduction-to-sql-using-sqlite-just-the-steps">A Quick Introduction to SQL Using SQLite (Just the Steps)</h2>
+<p><b>1. Open Firefox and click on the menu icon:</b></p>
+<p><img src="./images/ff-menu.png" alt="" /></p>
+<p>Use the &quot;customize&quot; option to find the SQLite Manager Plugin:</p>
+<p><img src="./images/customize-menu.png" alt="" /></p>
+<p>You can add it to your menu by dragging or right-click to add it to the toolbar.</p>
+<hr/>
+<p><b>2. Create a new database called <em>campaign_finance</em>:</b></p>
+<p><img src="./images/new_database.png" alt="" /></p>
+<hr/>
+<p><b>3. Create a new table called <em>contributions</em> (<img src="./images/new_table.png" alt="" />) and give it the following field definitions:</b></p>
+<p><img src="./images/create_contributions_table.png" alt="" /></p>
+<hr/>
+<h3 id="inserting-data-manually-dont-worry-you-wont-do-this-often.">Inserting data manually (Don't worry, you won't do this often.)</h3>
+<p><b>4. Insert a row of data.</b></p>
+<p>Use the &quot;Execute SQL&quot; tab (it's in the second menu row, under the icons)<br />
+<img src="./images/execute_sql.png" alt="" /></p>
+<p>And paste or type the following statement:</p>
+<pre><code>INSERT INTO contributions (committee_id, entity_type, last_name, first_name, middle_name, city, state, zip_code, employer, occupation, date, amount) VALUES (&#39;C00575795&#39;,&#39;IND&#39;,&#39;BUFFETT&#39;,&#39;WARREN&#39;,&#39;&#39;,&#39;OMAHA&#39;,&#39;Nebraska&#39;,&#39;68131&#39;,&#39;BERKSHIRE HATHAWAY&#39;,&#39;CHAIRMAN&#39;,&#39;2015-04-15&#39;,2700);</code></pre>
+<hr/>
+<p><b>5. Insert three more rows (one at a time or all at once)</b></p>
+<pre><code>INSERT INTO contributions (committee_id, entity_type, last_name, first_name, middle_name,city, state, zip_code, employer, occupation, date, amount) VALUES (&#39;C00577130&#39;,&#39;IND&#39;,&#39;RUFFALO&#39;,&#39;MARK&#39;,&#39;&#39;,&#39;NEW YORK&#39;,&#39;NY&#39;,&#39;|100031526&#39;,&#39;SELF-EMPLOYED&#39;,&#39;ACTOR&#39;,&#39;2015-06-02&#39;,250);
+INSERT INTO contributions (committee_id, entity_type, last_name, first_name, middle_name,city, state, zip_code, employer, occupation, date, amount) VALUES (&#39;C00458844&#39;,&#39;IND&#39;,&#39;ADELSON&#39;,&#39;SHELDON&#39;,&#39;&#39;,&#39;LAS VEGAS&#39;,&#39;NV&#39;,&#39;89145&#39;,&#39;&#39;,&#39;&#39;,&#39;2015-06-12&#39;,2600);
+INSERT INTO contributions (committee_id, entity_type, last_name, first_name, middle_name,city, state, zip_code, employer, occupation, date, amount) VALUES (&#39;C00579458&#39;,&#39;IND&#39;,&#39;MANNING&#39;,&#39;PEYTON MR.&#39;,&#39;&#39;,&#39;CLEVELAND&#39;,&#39;OH&#39;,&#39;441141717&#39;,&#39;DENVER BRONCOS&#39;,&#39;PROFESSIONAL ATHLETE&#39;,&#39;2015-08-04&#39;,2700);
+INSERT INTO contributions (committee_id, entity_type, last_name, first_name, middle_name,city, state, zip_code, employer, occupation, date, amount) VALUES (&#39;C00575795&#39;,&#39;IND&#39;,&#39;COPPOLA&#39;,&#39;SOFIA&#39;,&#39;&#39;,&#39;NEW YORK&#39;,&#39;NY&#39;,&#39;100130778&#39;,&#39;SELF-EMPLOYED&#39;,&#39;DIRECTOR/WRITER/ACTOR&#39;,&#39;2016-01-22&#39;,2700);</code></pre>
+<hr />
+<h3 id="the-select-statement">The SELECT statement</h3>
+<p><b>6. Select everything from the contributions table:</b></p>
+<pre><code>SELECT * FROM contributions;</code></pre>
+<p>Note the wildcard * character.</p>
+<hr />
+<p><b>7. Choose some fields to select:</b></p>
+<pre><code>SELECT city, state FROM contributions;</code></pre>
+<p>Note the duplicates; why are they there?</p>
+<hr />
+<p><b>8. Get a distinct set of cities and states:</b></p>
+<pre><code>SELECT DISTINCT city, state FROM contributions;</code></pre>
+<hr />
+<h3 id="the-where-clause">THE WHERE CLAUSE</h3>
+<p><b>9. Add some conditions to the SELECT:</b></p>
+<pre><code>SELECT * from contributions WHERE state=&#39;NY&#39;;</code></pre>
+<p>Now try playing around with some of the operators:</p>
+<table>
+<tbody>
+<tr class="odd">
+<td align="left"><strong>operator</strong></td>
+<td align="left"><strong>description</strong></td>
+</tr>
+<tr class="even">
+<td align="left">=</td>
+<td align="left">Equal</td>
+</tr>
+<tr class="odd">
+<td align="left">&lt;&gt;</td>
+<td align="left">Not equal*</td>
+</tr>
+<tr class="even">
+<td align="left">&gt;</td>
+<td align="left">Greater than</td>
+</tr>
+<tr class="odd">
+<td align="left">&lt;</td>
+<td align="left">Less than</td>
+</tr>
+<tr class="even">
+<td align="left">&gt;=</td>
+<td align="left">Greater than or equal</td>
+</tr>
+<tr class="odd">
+<td align="left">&lt;=</td>
+<td align="left">Less than or equal</td>
+</tr>
+</tbody>
+</table>
+<p>Here are some examples:</p>
+<pre><code>SELECT * from contributions WHERE amount &gt; 500;</code></pre>
+<pre><code>SELECT * from contributions WHERE amount &gt;= 500;</code></pre>
+<pre><code>SELECT last_name from contributions WHERE state &lt;&gt; &#39;NY&#39;;</code></pre>
+<hr />
+<p><b>10. Combine conditions with AND or OR:</b></p>
+<p>Find only the big spenders from New York</p>
+<pre><code>SELECT * FROM contributions WHERE state = &#39;NY&#39; AND amount &gt; 2000;</code></pre>
+<p>Find any big spender and anyone from New York</p>
+<pre><code>SELECT * FROM contributions WHERE state = &#39;NY&#39; OR amount &gt; 2000;</code></pre>
+<hr />
+<p><b>11. But watch out for operator precedence</b></p>
+<p>Looking for big spenders from Las Vegas and New York City</p>
+<pre><code>SELECT * FROM contributions WHERE city = &#39;NEW YORK&#39; OR city = &#39;LAS VEGAS&#39; AND amount &gt; 2000;</code></pre>
+<p>How did Mark Ruffalo sneak in there?</p>
+<p>Try that again:</p>
+<pre><code>SELECT * FROM contributions WHERE (city = &#39;NEW YORK&#39; OR city = &#39;LAS VEGAS&#39;) AND amount &gt; 2000;</code></pre>
+<hr />
+<h3 id="sorting-the-results">Sorting the results</h3>
+<p><b>12. Use ORDER BY to sort:</b></p>
+<pre><code>SELECT last_name, amount FROM contributions WHERE amount &gt; 250 ORDER BY amount;</code></pre>
+<p>And reverse the order:</p>
+<pre><code>SELECT last_name, amount FROM contributions WHERE amount &gt; 250 ORDER BY amount DESC;</code></pre>
+<p>And order by more than one column:</p>
+<pre><code>SELECT state, last_name, amount FROM contributions ORDER BY state, amount DESC;</code></pre>
+<hr />
+<h3 id="limiting-the-number-of-rows-returned">Limiting the number of rows returned</h3>
+<p><b>13. Return only the top two contributions:</b></p>
+<pre><code>SELECT * FROM CONTRIBUTIONS ORDER BY amount DESC LIMIT 2;</code></pre>
+<hr />
+<h3 id="changing-values-with-update">Changing values with UPDATE</h3>
+<p><b>14. Check the list of state names again:</b></p>
+<pre><code>SELECT state FROM contributions;</code></pre>
+<p>Let's correct Nebraska:</p>
+<pre><code>UPDATE contributions SET state = &#39;NE&#39; WHERE state = &#39;Nebraska&#39;;</code></pre>
+<p>And check again:</p>
+<pre><code>SELECT DISTINCT state FROM contributions;</code></pre>
+<hr />
+<h3 id="deleting-rows">DELETING rows</h3>
+<p><b>15. Let's get rid of a row:</b></p>
+<pre><code>SELECT * FROM contributions WHERE id = 1;</code></pre>
+<pre><code>DELETE FROM contributions WHERE id = 1;</code></pre>
+<hr/>
+<h3 id="importing-data-from-a-flat-file">Importing data from a flat file</h3>
+<p><b>16. Import a delimited file:</b><br />
+a. Go to <a href="https://raw.githubusercontent.com/tthibo/SQL-Tutorial/master/NICAR2016/contributions.txt" class="uri">https://raw.githubusercontent.com/tthibo/SQL-Tutorial/master/NICAR2016/contributions.txt</a> (Or grab it from the conference computer.)</p>
+<p>b. Save the file as &quot;contributions.txt&quot; somewhere you can find it (your desktop is a good place).</p>
+<p>c. Click the SQLite Manager Import Wizard icon (<img src="./images/import_icon.png" alt="" />).</p>
+<ul>
+<li>Using the <strong>Select File</strong> button, browse for the <strong>contributions.txt</strong> file you just saved.</li>
+<li>Check the &quot;First row contains column names&quot; check box.</li>
+<li>Select <strong>Pipe(|)</strong> for &quot;Fields separated by&quot;</li>
+<li>For everything else, you can keep the default selections.</li>
+<li>You should have 204 rows of data.</li>
+</ul>
