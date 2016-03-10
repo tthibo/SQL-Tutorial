@@ -1,6 +1,5 @@
 h2. A Quick Introduction to SQL Using SQLite (Just the Steps)
 
-
 <b>1. Open Firefox and click on the menu icon:</b>
 
 !./images/ff-menu.png!
@@ -95,24 +94,6 @@ Here are some examples:
 
 <hr />
 
-h3. Pick One: Using <code>BETWEEN</code> and <code>IN</code> (<code>NOT IN</code>)
-
-Often you'll want to get a value from within a range. The <code>BETWEEN</code> operator can do exactly that. Let's see which of our contributors has given between 500 and 1000 dollars:
-<pre><code>SELECT * FROM contributors WHERE amount BETWEEN 500 AND 1000;</code></pre>
-(Note: this query returns the same results as <code>SELECT * FROM contributors WHERE amount >= 500 AND amount <= 1000;</code> -- but it's much more readable.)
-
-At other times, you may need to match values from within a set of choices. This is where the <code>IN</code> operator comes in handy. Let's find all contributors from a few southern states:
-<pre><code>SELECT * FROM contributors WHERE state IN ('AL', 'GA', 'FL');</code></pre>
-The choices are surrounded by parentheses and separated by commas. And don't forget the quote marks around literal strings. here's the result: 
-!https://github.com/tthibo/SQL-Tutorial/raw/master/tutorial_files/images/in.png!
-(Again, you could have used a compound statement with <code>state = 'AL' OR state = 'GA' OR state = 'FL'</code> to achieve the same result, but the <code>IN</code> syntax makes things much clearer, and it's easier to write.)
-
-You can also use <code>NOT IN</code> to find results where a value is not included in the given set:
-<pre><code>SELECT * FROM contributors WHERE state NOT IN ('CA', 'OR', 'AZ');</code></pre>
-But beware that <code>NOT IN</code> won't work with null fields. So, if one of the rows has a null value for state, it would not be returned by the query above.
-
-<hr/>
-
 <b>10. Combine conditions with AND or OR:</b>
 
 Find only the big spenders from New York
@@ -135,9 +116,32 @@ Try that again:
 
 <hr />
 
+h3. Pick One: Using <code>BETWEEN</code> and <code>IN</code> (<code>NOT IN</code>)
+
+<b>11. Find all contributions between $500 and $1000</b>
+<pre><code>SELECT * FROM contributors WHERE amount BETWEEN 500 AND 1000;</code></pre>
+(Note: this query returns the same results as <code>SELECT * FROM contributors WHERE amount >= 500 AND amount <= 1000;</code> -- but it's much more readable.)
+
+<hr />
+
+<b>12. Find all contributors from a few southern states:</b>
+<pre><code>SELECT * FROM contributors WHERE state IN ('AL', 'GA', 'FL');</code></pre>
+
+(Note: A compound statement could accomplish this same goal:  <code>state = 'AL' OR state = 'GA' OR state = 'FL'</code> 
+But the <code>IN</code> syntax makes things much clearer, and it's easier to write.)
+
+<hr/>
+
+<b>13. Use <code>NOT IN</code> to find results where a value is not included in the given set:</b>
+<pre><code>SELECT * FROM contributors WHERE state NOT IN ('CA', 'OR', 'AZ');</code></pre>
+But beware that <code>NOT IN</code> won't work with null fields. So, if one of the rows has a null value for state, it would not be returned by the query above.
+
+<hr/>
+
+
 h3. Sorting the results
 
-<b>12. Use ORDER BY to sort:</b>
+<b>14. Use ORDER BY to sort:</b>
 <pre><code>SELECT last_name, amount FROM contributions WHERE amount > 250 ORDER BY amount;</code></pre>
 And reverse the order:
 <pre><code>SELECT last_name, amount FROM contributions WHERE amount > 250 ORDER BY amount DESC;</code></pre>
@@ -148,14 +152,14 @@ And order by more than one column:
 
 h3. Limiting the number of rows returned
 
-<b>13. Return only the top two contributions:</b>
+<b>15. Return only the top two contributions:</b>
 <pre><code>SELECT * FROM CONTRIBUTIONS ORDER BY amount DESC LIMIT 2;</code></pre>
 
 <hr />
 
 h3. Changing values with UPDATE
 
-<b>14. Check the list of state names again:</b>
+<b>16. Check the list of state names again:</b>
 <pre><code>SELECT state FROM contributions;</code></pre>
 
 Let's correct Nebraska:
@@ -169,7 +173,7 @@ And check again:
 
 h3. DELETING rows
 
-<b>15. Let's get rid of a row:</b>
+<b>17. Let's get rid of a row:</b>
 <pre><code>SELECT * FROM contributions WHERE id = 1;</code></pre>
 <pre><code>DELETE FROM contributions WHERE id = 1;</code></pre>
 
@@ -180,7 +184,7 @@ h3. DELETING rows
 
 h3. Importing data from a flat file
 
-<b>16. Import a delimited file:</b>
+<b>18. Import a delimited file:</b>
 a. Go to ["https://raw.githubusercontent.com/tthibo/SQL-Tutorial/master/NICAR2016/contributions.txt":https://raw.githubusercontent.com/tthibo/SQL-Tutorial/master/NICAR2016/contributions.txt] (Or grab it from the conference computer.)
 
 b. Save the file as "contributions.txt" somewhere you can find it (your desktop is a good place).

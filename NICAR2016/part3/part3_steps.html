@@ -1,0 +1,102 @@
+<h2 id="sqlite-iii-subqueries-and-joins-in-sqlite">SQLite III: Subqueries and Joins in SQLite</h2>
+<p><b>1. Open Firefox and the SQLite Manager Plugin</b><br />
+<img src="./images/ff-menu.png" alt="" /></p>
+<hr/>
+<p><b>2. Create a new database called contributions_candidates</b></p>
+<p><img src="./images/new_database.png" alt="" /></p>
+<hr/>
+<p><b>3. Use a CREATE TABLE statement to create a new table for candidate data:</b></p>
+<pre><code>
+CREATE TABLE &quot;candidates&quot; (
+    &quot;id&quot; INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL  UNIQUE , 
+    &quot;committee_id&quot; VARCHAR, 
+    &quot;first_name&quot; VARCHAR, 
+    &quot;last_name&quot; VARCHAR, 
+    &quot;middle_name&quot; VARCHAR, 
+    &quot;party&quot; VARCHAR
+);
+</code></pre>
+<hr/>
+<p><b>4. Use the SQLite Manager Import Wizard (<img src="./images/import_icon.png" alt="" />) to import candidates.txt</b></p>
+<p>Remember to select the pipe delimiter (&quot;|&quot;) and to check the box indicating that the first row contains headers.</p>
+</hr>
+<p><b>5. Use a CREATE TABLE statement to create a new contributions table:</b></p>
+<pre><code>CREATE TABLE &quot;contributions&quot; (
+    &quot;id&quot; INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL  UNIQUE , 
+    &quot;committee_id&quot; VARCHAR, 
+    &quot;entity_type&quot; VARCHAR, 
+    &quot;last_name&quot; VARCHAR, 
+    &quot;first_name&quot; VARCHAR, 
+    &quot;middle_name&quot; VARCHAR, 
+    &quot;city&quot; VARCHAR, 
+    &quot;state&quot; VARCHAR, 
+    &quot;zip_code&quot; VARCHAR, 
+    &quot;employer&quot; VARCHAR, 
+    &quot;occupation&quot; VARCHAR, 
+    &quot;date&quot; DATETIME, 
+    &quot;amount&quot; INTEGER,
+    &quot;candidate_id&quot; INTEGER NOT NULL,
+    FOREIGN KEY(candidate_id) REFERENCES candidates(id)
+);
+</code></pre>
+<p><b>6. Use the SQLite Manager Import Wizard (<img src="./images/import_icon.png" alt="" />) to import contributions.txt:</b></p>
+<hr/>
+<h3 id="using-subqueries">Using Subqueries</h3>
+<p><b>7. Find out the maxiumum contribution amount in the data set and see which contributors have given this amount.</b></p>
+<p>First, determine the maximum amount contriubuted:<br />
+<code>SELECT MAX (amount) FROM contributions;</code></p>
+<p>Then SELECT all fields for any contribution at that amount . . . but how?</p>
+<p>Like this?<br />
+<font color="red"><code>SELECT * FROM contributions WHERE amount = MAX (amount);</code></font></p>
+<p>Nope.</p>
+<p>Hardcode the amount?</p>
+<pre><code>SELECT * FROM contributions WHERE amount = 5400;</code></pre>
+<p>But what if next month the max changes? How can we make this dynamic?</p>
+<p>Subqueries to the rescue:</p>
+<pre><code>SELECT * FROM contributions WHERE amount = (SELECT MAX(amount) FROM contributions);</code></pre>
+<hr/>
+<p><b>8. Write a query that gets the sum amount of the top 20 contributions</b></p>
+<pre><code>SELECT SUM(amount) FROM contributions WHERE id IN (SELECT id FROM contributions ORDER BY amount DESC LIMIT 20);</code></pre>
+<hr/>
+<h3 id="using-a-subquery-on-another-table">Using a subquery on another table</h3>
+<p><b>9. Find all of the contributors to Hillary Clinton</b></p>
+<pre><code>SELECT * FROM contributions WHERE candidate_id = (SELECT id from candidates WHERE last_name = &#39;Clinton&#39; AND first_name = &#39;Hillary&#39;);</code></pre>
+<hr/>
+<h3 id="joins-queries-across-tables">Joins: Queries across tables</h3>
+<p><b>10. It is possible to do an <strong>implicit</strong> join simply by defining the relationship between the two tables in the <code>WHERE</code> clause:</b></p>
+<pre><code>SELECT contributions.last_name, contributions.first_name, candidates.last_name FROM contributions, candidates WHERE contributions.candidate_id = candidates.id;</code></pre>
+<hr/>
+<p><b>11. Use table name aliases to save typing:</b></p>
+<pre><code>SELECT a.last_name, a.first_name, b.last_name FROM contributions a, candidates b WHERE a.candidate_id = b.id;</code></pre>
+<p>This query returns the same results as the one above, but it saves some typing by making &quot;a&quot; an alias for &quot;contributions&quot; and &quot;b&quot; an alias for &quot;candidates.&quot; The alias can use any valid table name you<br />
+like, but obviously shorter aliases will save more typing, while longer ones may make the intention of the query easier to understand.</p>
+<hr/>
+<h4 id="explicit-join-syntax">Explicit <code>JOIN</code> syntax</h4>
+<p><b>12. Rewrite the above query using explicit JOIN syntax:</b></p>
+<pre><code>SELECT contributions.last_name, contributions.first_name, candidates.last_name FROM contributions JOIN candidates ON contributions.candidate_id = candidates.id;</code></pre>
+<hr/>
+<p><b>13. Use aliases work with <code>JOIN</code> syntax:</b></p>
+<pre><code>SELECT a.last_name, a.first_name, b.last_name FROM contributions a JOIN candidates b ON a.candidate_id = b.id;</code></pre>
+<hr/>
+<p><b>14. Get the number of contributions for each candidate</b></p>
+<pre><code>SELECT count(a.id), b.id, b.last_name FROM contributions a JOIN candidates b ON a.candidate_id = b.id GROUP BY b.id, b.last_name;</code></pre>
+<p>Our list of candidates seems to be coming up short. Let's check it:</p>
+<pre><code>SELECT DISTINCT id, last_name FROM candidates;</code></pre>
+<p>Definitely missing candidates. What happened?</p>
+<p>Performing the <code>JOIN</code> returns the same results as the query with this clause: <code>WHERE contributions.candidate_id = candidates.id</code>.</p>
+<p>What if a candidate has no contributions? Then that candidate is not returned by the query.</p>
+<p>The <code>JOIN</code> acts just like the <code>WHERE</code> clause and filters out any rows that don't match the condition defined.</p>
+<p>Joins that return only rows in which there is a match in both tables are known as <strong>INNER JOINs</strong>. This is often exactly the behavior you want from the join (ignore any rows from either table that don't relate to a row in the other table). So by default, the <code>JOIN</code> keyword executes an <code>INNER JOIN</code>. You can also explicitly request an <code>INNER JOIN</code>, just to make things clearer:</p>
+<pre><code>SELECT count(a.id), b.id, b.last_name FROM contributions a INNER JOIN candidates b ON a.candidate_id = b.id GROUP BY b.id, b.last_name;</code></pre>
+<p>The results will be the same.</p>
+<hr/>
+<h3 id="outer-joins">OUTER JOINS</h3>
+<ul>
+<li>A <code>LEFT OUTER JOIN</code> includes all rows from the table on the left side of the statement and only matching rows from the table on the right side of the statement.</li>
+<li>A <code>RIGHT OUTER JOIN</code> includes all rows from the table on the right side of the statement and only matching rows from the left side of the statement.</li>
+<li>A <code>FULL OUTER JOIN</code> includes all rows from both tables.</li>
+</ul>
+<p>Currently, SQLite only supports <code>LEFT OUTER JOIN</code> from the list above, but some other database management systems support the other two types as well.</p>
+<p><b>15. Get the number of contributions for each candidate, including those with no contributions:</b></p>
+<pre><code>SELECT count(contributions.id), candidates.id, candidates.last_name FROM candidates LEFT OUTER JOIN contributoins ON candidates.id = contributions.candidate_id GROUP BY candidates.id, candidates.last_name;</code></pre>
+<p>(Note: Aliases would work here as well.)</p>
