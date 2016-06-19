@@ -1,0 +1,208 @@
+h2. SQLite II: Aggregate Functions
+
+<b>1. Open Firefox and click on the menu icon:</b>
+
+!./images/ff-menu.png!
+
+Use the "customize" option to find the SQLite Manager Plugin:
+
+!./images/customize-menu.png!
+
+<hr/>
+
+<b>2. Create a new database called contributions_candidates</b>
+
+!./images/new_database.png!
+
+<hr/>
+
+<b>3. Use a CREATE TABLE statement to create a new contributions table:</b>
+
+<hr/>
+
+<pre><code>
+CREATE TABLE "contributions" (
+    "id" INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL  UNIQUE , 
+    "committee_id" VARCHAR, 
+    "entity_type" VARCHAR, 
+    "last_name" VARCHAR, 
+    "first_name" VARCHAR, 
+    "middle_name" VARCHAR, 
+    "city" VARCHAR, 
+    "state" VARCHAR, 
+    "zip_code" VARCHAR, 
+    "employer" VARCHAR, 
+    "occupation" VARCHAR, 
+    "date" DATETIME, 
+    "amount" INTEGER,
+    "candidate_id" INTEGER NOT NULL,
+    FOREIGN KEY(candidate_id) REFERENCES candidates(id)
+);
+</code>
+</pre>
+
+<b>4. Use the SQLite Manager Import Wizard (!./images/import_icon.png!) to import contributions.txt:</b>
+
+<hr/>
+
+h3. Aggregate Functions (count, max, min, sum, avg)
+
+5. Count the number of contributors from California:
+<pre><code>SELECT COUNT(id) FROM contributors WHERE state = 'CA';</code></pre>
+
+6. Select the minimum and maximum contributions:
+<pre><code>SELECT MAX(amount) FROM contributors;</code></pre>
+<pre><code>SELECT MIN(amount) FROM contributors;</code></pre>
+
+7. Add up the contributions from Georgia:
+<pre><code>SELECT SUM(amount) FROM contributors WHERE state = 'GA';</code></pre>
+
+8. Find the average contribution:
+<pre><code>SELECT AVG(amount) FROM contributors;</code></pre>
+
+<b>Use GROUP BY to create subtotals</b>
+
+9. Find the total amount of contributions per state:
+<pre><code>SELECT state, SUM(amount) FROM contributors GROUP BY state;</code></pre>
+
+10. Find the total amount of contributions per city and state:
+<pre><code>SELECT city, state, SUM(amount) FROM contributors GROUP BY city, state;</code></pre>
+Now order cities by their total contributions:
+<pre><code>SELECT city, state, SUM(amount) FROM contributors GROUP BY city, state ORDER BY SUM(amount) DESC;</code></pre>
+
+h2. Subqueries and Joins
+ 
+<b>11. Use a CREATE TABLE statement to create a new table for candidate data:</b>
+<pre>
+<code>
+CREATE TABLE "candidates" (
+    "id" INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL  UNIQUE , 
+    "committee_id" VARCHAR, 
+    "first_name" VARCHAR, 
+    "last_name" VARCHAR, 
+    "middle_name" VARCHAR, 
+    "party" VARCHAR
+);
+</code>
+</pre>
+
+<hr/>
+
+<b>12. Use the SQLite Manager Import Wizard (!./images/import_icon.png!) to import candidates.txt</b>
+
+Remember to select the pipe delimiter ("|") and to check the box indicating that the first row contains headers.
+
+</hr>
+
+h3. Using Subqueries
+
+<b>13. Find out the maxiumum contribution amount in the data set and see which contributors have given this amount.</b>
+
+First, determine the maximum amount contriubuted:
+<code>SELECT MAX(amount) FROM contributions;</code>
+
+Then SELECT all fields for any contribution at that amount . . . but how?
+
+Like this?
+<font color="red"><code>SELECT * FROM contributions WHERE amount = MAX(amount);</code></font>
+
+Nope.
+
+Hardcode the amount?
+<pre><code>SELECT * FROM contributions WHERE amount = 5400;</code></pre>
+
+But what if next month the max changes? How can we make this dynamic?
+
+Subqueries to the rescue:
+<pre><code>SELECT * FROM contributions WHERE amount = (SELECT MAX(amount) FROM contributions);</code></pre>
+
+<hr/>
+
+
+<b>14. Write a query that gets the sum amount of the top 20 contributions</b>
+
+<pre><code>SELECT SUM(amount) FROM contributions WHERE id IN (SELECT id FROM contributions ORDER BY amount DESC LIMIT 20);</code></pre>
+
+<hr/>
+
+
+h3. Using a subquery on another table
+
+<b>15. Find all of the contributions to Hillary Clinton</b>
+
+<pre><code>SELECT * FROM contributions WHERE candidate_id = (SELECT id from candidates WHERE last_name = 'CLINTON' AND first_name = 'HILLARY');</code></pre>
+
+<hr/>
+
+
+h3. Joins: Queries across tables
+
+<b>16. It is possible to do an *implicit* join simply by defining the relationship between the two tables in the <code>WHERE</code> clause:</b>
+
+<pre><code>SELECT contributions.last_name, contributions.first_name, candidates.last_name FROM contributions, candidates WHERE contributions.candidate_id = candidates.id;</code></pre>
+
+<hr/>
+
+<b>17. Use table name aliases to save typing:</b>
+
+<pre><code>SELECT a.last_name, a.first_name, b.last_name FROM contributions a, candidates b WHERE a.candidate_id = b.id;</code></pre>
+
+This query returns the same results as the one above, but it saves some typing by making "a" an alias for "contributions" and "b" an alias for "candidates." The alias can use any valid table name you
+like, but obviously shorter aliases will save more typing, while longer ones may make the intention of the query easier to understand.
+
+<hr/>
+
+h4. Explicit <code>JOIN</code> syntax
+
+<b>18. Rewrite the above query using explicit JOIN syntax:</b>
+<pre><code>SELECT contributions.last_name, contributions.first_name, candidates.last_name FROM contributions JOIN candidates ON contributions.candidate_id = candidates.id;</code></pre>
+
+<hr/>
+
+<b>19. Use aliases work with <code>JOIN</code> syntax:</b>
+<pre><code>SELECT a.last_name, a.first_name, b.last_name FROM contributions a JOIN candidates b ON a.candidate_id = b.id;</code></pre>
+
+<hr/>
+
+<b>20. Get the number of contributions for each candidate</b>
+<pre><code>SELECT count(a.id), b.id, b.last_name FROM contributions a JOIN candidates b ON a.candidate_id = b.id GROUP BY b.id, b.last_name;</code></pre>
+
+Our list of candidates seems to be coming up short. Let's check it:
+
+<pre><code>SELECT DISTINCT id, last_name FROM candidates;</code></pre>
+	
+Definitely missing candidates. What happened?
+
+Performing the <code>JOIN</code> returns the same results as the query with this clause: <code>WHERE contributions.candidate_id = candidates.id</code>.
+
+What if a candidate has no contributions? Then that candidate is not returned by the query. 
+
+The <code>JOIN</code> acts just like the <code>WHERE</code> clause and filters out any rows that don't match the condition defined. 
+
+Joins that return only rows in which there is a match in both tables are known as *INNER JOINs*. This is often exactly the behavior you want from the join (ignore any rows from either table that don't relate to a row in the other table). So by default, the <code>JOIN</code> keyword executes an <code>INNER JOIN</code>. You can also explicitly request an <code>INNER JOIN</code>, just to make things clearer:
+
+<pre><code>SELECT count(a.id), b.id, b.last_name FROM contributions a INNER JOIN candidates b ON a.candidate_id = b.id GROUP BY b.id, b.last_name;</code></pre>
+
+The results will be the same.
+<hr/>
+
+
+h3. OUTER JOINS
+
+* A <code>LEFT OUTER JOIN</code> includes all rows from the table on the left side of the statement and only matching rows from the table on the right side of the statement.
+* A <code>RIGHT OUTER JOIN</code> includes all rows from the table on the right side of the statement and only matching rows from the left side of the statement.
+* A <code>FULL OUTER JOIN</code> includes all rows from both tables.
+
+Currently, SQLite only supports <code>LEFT OUTER JOIN</code> from the list above, but some other database management systems support the other two types as well. 
+
+<b>15. Get the number of contributions for each candidate, including those with no contributions:</b>
+<pre><code>
+SELECT candidates.last_name, count(contributions.id)
+FROM candidates LEFT OUTER JOIN contributions 
+ON candidates.id = contributions.candidate_id 
+GROUP BY candidates.id, candidates.last_name 
+ORDER BY count(contributions.id);
+</code></pre>
+
+(Note: Aliases would work here as well.)
+
