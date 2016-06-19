@@ -48,27 +48,27 @@ CREATE TABLE "contributions" (
 h3. Aggregate Functions (count, max, min, sum, avg)
 
 5. Count the number of contributors from California:
-<pre><code>SELECT COUNT(id) FROM contributors WHERE state = 'CA';</code></pre>
+<pre><code>SELECT COUNT(id) FROM contributions WHERE state = 'CA';</code></pre>
 
 6. Select the minimum and maximum contributions:
-<pre><code>SELECT MAX(amount) FROM contributors;</code></pre>
-<pre><code>SELECT MIN(amount) FROM contributors;</code></pre>
+<pre><code>SELECT MAX(amount) FROM contributions;</code></pre>
+<pre><code>SELECT MIN(amount) FROM contributions;</code></pre>
 
 7. Add up the contributions from Georgia:
-<pre><code>SELECT SUM(amount) FROM contributors WHERE state = 'GA';</code></pre>
+<pre><code>SELECT SUM(amount) FROM contributions WHERE state = 'GA';</code></pre>
 
 8. Find the average contribution:
-<pre><code>SELECT AVG(amount) FROM contributors;</code></pre>
+<pre><code>SELECT AVG(amount) FROM contributions;</code></pre>
 
 <b>Use GROUP BY to create subtotals</b>
 
 9. Find the total amount of contributions per state:
-<pre><code>SELECT state, SUM(amount) FROM contributors GROUP BY state;</code></pre>
+<pre><code>SELECT state, SUM(amount) FROM contributions GROUP BY state;</code></pre>
 
 10. Find the total amount of contributions per city and state:
-<pre><code>SELECT city, state, SUM(amount) FROM contributors GROUP BY city, state;</code></pre>
+<pre><code>SELECT city, state, SUM(amount) FROM contributions GROUP BY city, state;</code></pre>
 Now order cities by their total contributions:
-<pre><code>SELECT city, state, SUM(amount) FROM contributors GROUP BY city, state ORDER BY SUM(amount) DESC;</code></pre>
+<pre><code>SELECT city, state, SUM(amount) FROM contributions GROUP BY city, state ORDER BY SUM(amount) DESC;</code></pre>
 
 h2. Subqueries and Joins
  
