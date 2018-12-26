@@ -1,3 +1,7 @@
+h2. Note: This version of the tutorial is out of date: the SQLite Manager Firefox plugin referenced is obsolete.
+Please check out the newer version of this tutorial being maintained by @zstumoren:
+https://a-gentle-introduction-to-sql.readthedocs.io/en/latest/
+
 h2. A Gentle Introduction to SQL Using SQLite
 
 "Part I":https://github.com/tthibo/SQL-Tutorial/blob/master/tutorial_files/part1.textile
